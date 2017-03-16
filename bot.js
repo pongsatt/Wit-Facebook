@@ -31,23 +31,23 @@ const actions = {
     // Let's retrieve the Facebook user whose session belongs to from context
     // TODO: need to get Facebook user name
     // const recipientId = context._fbid_;
-    // if (recipientId) {
-    //   // Yay, we found our recipient!
-    //   // Let's forward our bot response to her.
-    //   FB.fbMessage(recipientId, message, (err, data) => {
-    //     if (err) {
-    //       console.log(
-    //         'Oops! An error occurred while forwarding the response to',
-    //         recipientId,
-    //         ':',
-    //         err
-    //       );
-    //     }
+    if (recipientId) {
+      // Yay, we found our recipient!
+      // Let's forward our bot response to her.
+      FB.fbMessage(recipientId, text, (err, data) => {
+        if (err) {
+          console.log(
+            'Oops! An error occurred while forwarding the response to',
+            recipientId,
+            ':',
+            err
+          );
+        }
 
-    //   });
-    // } else {
-    //   console.log('Oops! Couldn\'t find user in context:', context);
-    // }
+      });
+    } else {
+      console.log('Oops! Couldn\'t find user in context:', context);
+    }
   },
   getForecast({context, entities}) {
     var location = firstEntityValue(entities, 'location');
