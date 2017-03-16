@@ -30,7 +30,7 @@ const actions = {
     // Our bot has something to say!
     // Let's retrieve the Facebook user whose session belongs to from context
     // TODO: need to get Facebook user name
-    // const recipientId = context._fbid_;
+    const recipientId = context._fbid_;
     if (recipientId) {
       // Yay, we found our recipient!
       // Let's forward our bot response to her.
