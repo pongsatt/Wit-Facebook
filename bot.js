@@ -5,6 +5,7 @@
 const {Wit, interactive} = require('node-wit');
 const FB = require('./facebook.js');
 const Config = require('./const.js');
+const WordApi = require('./wordapi.js');
 const accessToken = Config.WIT_TOKEN;
 
 const firstEntityValue = (entities, entity) => {
@@ -45,8 +46,6 @@ const actions = {
         }
 
       });
-    } else {
-      console.log('Oops! Couldn\'t find user in context:', context);
     }
   },
   getForecast({context, entities}) {
@@ -59,6 +58,24 @@ const actions = {
       delete context.forecast;
     }
     return context;
+  },
+  getMeaning({context, entities}) {
+    return new Promise((resolve, reject) => {
+      var word = firstEntityValue(entities, 'word');
+
+      return WordApi.getWords(word, function (error, words) {
+        console.log("Get words is done.", words);
+        if (words && words.length) {
+          context.meaning = word + ' means ' + words[0].words[0].definition;
+          delete context.missingWord;
+        } else {
+          context.missingWord = true;
+          delete context.meaning;
+        }
+        return resolve(context);
+      });
+    });
+    
   },
 
 };
