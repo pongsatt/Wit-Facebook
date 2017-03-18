@@ -98,17 +98,17 @@ const getWit = () => {
 
 const buildCard = (title, subtitle) => {
   return {
-  "attachment": {
-    "type": "template",
-    "payload": {
-      "template_type": "generic",
-      "elements": [{
-        "title": title,
-        "subtitle": subtitle,
-      }]
+    "attachment": {
+      "type": "template",
+      "payload": {
+        "template_type": "generic",
+        "elements": [{
+          "title": title,
+          "subtitle": subtitle,
+        }]
+      }
     }
   }
-}
 }
 
 const witMessage = (client, msg, context) => {
@@ -118,7 +118,7 @@ const witMessage = (client, msg, context) => {
       const { entities } = data;
       var word = firstEntityValue(entities, 'word');
 
-      let msg = buildCard("test", "test sub title");
+      let msg = buildCard("test", "<ul><li>test sub title1</li><li>test sub title2</li></ul>");
 
       fbSend(msg, context);
       // return WordApi.getWords(word, function (error, words) {
