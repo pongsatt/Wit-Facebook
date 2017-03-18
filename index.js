@@ -79,8 +79,8 @@ app.post('/webhook', (req, res) => {
   // Parsing the Messenger API response
   const messaging = FB.getFirstMessagingEntry(req.body);
   console.log("Receive facebook message: ", messaging);
-  
-  if (messaging && messaging.message) {
+
+  if (messaging && messaging.message && !messaging.message.is_echo) {
 
     // Yay! We got a new message!
 
