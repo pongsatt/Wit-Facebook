@@ -11,6 +11,8 @@ const getWords = (word, fn) => {
     }
 
     var url = Config.WORD_API_URL + '/vocabs/search?group=true&q=' + word;
+    console.log("Connecting to " + url);
+    
     request({ url: url, json: true, headers: { 'X-User': 'bd628cda-50a9-afa0-c90f-28f834931fe8' } }, function (error, response, data) {
         if (error) {
             console.error(error);
