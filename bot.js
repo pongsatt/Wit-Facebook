@@ -151,13 +151,16 @@ const witMessage = (client, msg, context) => {
 
       switch(intentValue){
         case 'word_meaning':
-          return onMeaning(word, context);
-          // let w = testWord;
-          // let text = wordFormat(w);
+          // return onMeaning(word, context);
+          let w = testWord;
+          let text = wordFormat(w);
 
-          // return fbTextSend(text, context);
+          return fbTextSend(text, context);
         case 'word_pronounce':
-          return onPronounce(word, context);
+          // return onPronounce(word, context);
+          let msg = buildAudio("http://dictionary.cambridge.org/media/english/us_pron/v/vul/vulne/vulnerable.mp3");
+
+          return fbSend(msg, context);
       }
     })
     .catch(console.error);
