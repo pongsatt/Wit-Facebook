@@ -225,9 +225,15 @@ const onMeaning = (word, context) => {
 
 const onPronounce = (word, context) => {
   if (word.pronunciationAudios) {
-    fbTextSend(`Here is how to pronounce "${word.vocab}"`, context);
+    fbTextSend(`Here is how to pronounce "${word.vocab}" in us`, context);
 
     let msg = buildAudio(word.pronunciationAudios["us"]);
+
+    fbSend(msg, context);
+
+    fbTextSend(`Here is how to pronounce "${word.vocab}" in uk`, context);
+
+    let msg = buildAudio(word.pronunciationAudios["uk"]);
 
     return fbSend(msg, context);
   }
