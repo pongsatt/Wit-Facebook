@@ -1,6 +1,7 @@
 'use strict';
 
-var request = require('request')
+var request = require('request');
+var Config = require('./const.js');
 
 const getWords = (word, fn) => {
     console.log('Getting word:', word)
@@ -9,7 +10,7 @@ const getWords = (word, fn) => {
         return fn(new Error('Word not defined.'));
     }
 
-    var url = 'https://a7f465682d.execute-api.ap-southeast-1.amazonaws.com/prod/vocabs/search?q=' + word;
+    var url = Config.WORD_API_URL + '/vocabs/search?group=true&q=' + word;
     request({ url: url, json: true, headers: { 'X-User': 'bd628cda-50a9-afa0-c90f-28f834931fe8' } }, function (error, response, data) {
         if (error) {
             console.error(error);

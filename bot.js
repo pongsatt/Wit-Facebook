@@ -6,6 +6,13 @@ const {Wit, interactive} = require('node-wit');
 const FB = require('./facebook.js');
 const Config = require('./const.js');
 const WordApi = require('./wordapi.js');
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
 const accessToken = Config.WIT_TOKEN;
 
 const firstEntityValue = (entities, entity) => {
@@ -19,19 +26,8 @@ const firstEntityValue = (entities, entity) => {
   return typeof val === 'object' ? val.value : val;
 };
 
-// Bot actions
-const actions = {
-  send(request, response) {
-    const {sessionId, context, entities} = request;
-    const {text, quickreplies} = response;
-
-    console.log('sending...', JSON.stringify(response));
-
-
-    // Our bot has something to say!
-    // Let's retrieve the Facebook user whose session belongs to from context
-    // TODO: need to get Facebook user name
-    const recipientId = context._fbid_;
+const fbSend = (text, context) => {
+  const recipientId = context._fbid_;
     if (recipientId) {
       // Yay, we found our recipient!
       // Let's forward our bot response to her.
@@ -47,6 +43,17 @@ const actions = {
 
       });
     }
+}
+
+// Bot actions
+const actions = {
+  send(request, response) {
+    const {sessionId, context, entities} = request;
+    const {text, quickreplies} = response;
+
+    console.log('sending...', JSON.stringify(response));
+
+    fbSend(text, context);
   },
   getForecast({context, entities}) {
     var location = firstEntityValue(entities, 'location');
@@ -66,7 +73,7 @@ const actions = {
       return WordApi.getWords(word, function (error, words) {
         console.log("Get words is done.", words);
         if (words && words.length) {
-          context.meaning = word + ' means ' + words[0].words[0].definition;
+          context.meaning = word + ' means ' + words[0].definitions[words[0].groups[0]][0];
           delete context.missingWord;
         } else {
           context.missingWord = true;
@@ -85,12 +92,59 @@ const getWit = () => {
   return new Wit({accessToken, actions});
 };
 
+const witMessage = (msg, context) => {
+  let client = getWit();
+
+  return client.message(msg, {context})
+    .then((data) => {
+      console.log('Yay, got Wit.ai response: ' + JSON.stringify(data));
+      const { entities } = data;
+      var word = firstEntityValue(entities, 'word');
+
+      return WordApi.getWords(word, function (error, words) {
+        console.log("Get words is done.", words);
+        
+        if(words && words.length){
+          let w = words[0];
+          
+          fbSend(w.definitions[w.groups[0]][0], context);
+        }
+
+      });
+    })
+    .catch(console.error);
+}
+
+const onMessage = (msg, context) => {
+  return witMessage(msg, context);
+}
+
 exports.getWit = getWit;
+exports.onMessage = onMessage;
+
+const rlInteractive = (client) => {
+  rl.setPrompt('> ');
+  const prompt = () => {
+    rl.prompt();
+    rl.write(null, {ctrl: true, name: 'e'});
+  };
+  prompt();
+  rl.on('line', (line) => {
+    line = line.trim();
+    if (!line) {
+      return prompt();
+    }
+    console.log(line);
+    witMessage(line, {});
+  });
+}
 
 // bot testing mode
 // http://stackoverflow.com/questions/6398196
 if (require.main === module) {
   console.log("Bot testing mode.");
   const client = getWit();
-  interactive(client);
+  // interactive(client);
+  rlInteractive(client);
+  
 }
