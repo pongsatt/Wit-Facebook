@@ -107,7 +107,7 @@ app.post('/webhook', (req, res) => {
       // Let's forward the message to the Wit.ai Bot Engine
       // This will run all actions until our bot has nothing left to do
       var context = sessions[sessionId].context;
-      onMessage(msg, context);
+      onMessage(wit, msg, context);
 
       // wit.runActions(
       //   sessionId, // the user's current session

@@ -92,9 +92,7 @@ const getWit = () => {
   return new Wit({accessToken, actions});
 };
 
-const witMessage = (msg, context) => {
-  let client = getWit();
-
+const witMessage = (client, msg, context) => {
   return client.message(msg, {context})
     .then((data) => {
       console.log('Yay, got Wit.ai response: ' + JSON.stringify(data));
@@ -115,12 +113,14 @@ const witMessage = (msg, context) => {
     .catch(console.error);
 }
 
-const onMessage = (msg, context) => {
-  return witMessage(msg, context);
+const onMessage = (client, msg, context) => {
+  return witMessage(client, msg, context);
 }
 
-exports.getWit = getWit;
-exports.onMessage = onMessage;
+module.exports = {
+  getWit: getWit,
+  onMessage: onMessage
+}
 
 const rlInteractive = (client) => {
   rl.setPrompt('> ');
@@ -135,7 +135,7 @@ const rlInteractive = (client) => {
       return prompt();
     }
     console.log(line);
-    witMessage(line, {});
+    witMessage(client, line, {});
   });
 }
 
