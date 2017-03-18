@@ -10,12 +10,12 @@ const bodyParser = require('body-parser');
 const express = require('express');
 
 // get Bot, const, and Facebook API
-const {bot, onMessage} = require('./bot.js');
+const {getWit, onMessage} = require('./bot.js');
 const Config = require('./const.js');
 const FB = require('./facebook.js');
 
 // Setting up our bot
-const wit = bot.getWit();
+const wit = getWit();
 
 // Webserver parameter
 const PORT = process.env.PORT || 8445;
