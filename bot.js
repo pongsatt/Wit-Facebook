@@ -158,11 +158,13 @@ const witMessage = (client, msg, context) => {
           texts.forEach((text) => {
             fbTextSend(text, context);
           });
+          break;
         case 'word_pronounce':
           // return onPronounce(word, context);
           let msg = buildAudio("http://dictionary.cambridge.org/media/english/us_pron/v/vul/vulne/vulnerable.mp3");
 
-          return fbSend(msg, context);
+          fbSend(msg, context);
+          break;
       }
     })
     .catch(console.error);
