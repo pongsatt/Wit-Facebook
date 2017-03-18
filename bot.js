@@ -146,13 +146,13 @@ const witMessage = (client, msg, context) => {
 
       switch(intentValue){
         case 'word_meaning':
-          // return onMeaning(word);
-          let w = testWord;
-          let text = wordFormat(w);
+          return onMeaning(word, context);
+          // let w = testWord;
+          // let text = wordFormat(w);
 
-          return fbTextSend(text, context);
+          // return fbTextSend(text, context);
         case 'word_pronounce':
-          return onPronounce(word);
+          return onPronounce(word, context);
       }
     })
     .catch(console.error);
@@ -177,7 +177,7 @@ const wordFormat = (word) => {
   return text;
 }
 
-const onMeaning = (word) => {
+const onMeaning = (word, context) => {
   return WordApi.getWords(word, function (error, words) {
     console.log("Get words is done.", words);
 
@@ -191,10 +191,15 @@ const onMeaning = (word) => {
   });
 }
 
-const onPronounce = (word) => {
-  let msg = buildAudio("http://dictionary.cambridge.org/media/english/uk_pron/u/ukv/ukvor/ukvorte027.mp3");
+const onPronounce = (word, context) => {
+  if(word.pronunciationAudios && word.pronunciationAudios.length){
 
-  return fbSend(msg, context);
+    let msg = buildAudio(word.pronunciationAudios["us"]);
+
+    return fbSend(msg, context);
+  }
+
+  return fbTextSend("Cannot find pronounciation for this word", context);
 }
 
 const onMessage = (client, msg, context) => {
