@@ -96,6 +96,16 @@ const getWit = () => {
   return new Wit({ accessToken, actions });
 };
 
+const testWord = {
+  groups: ['noun'],
+  definitions: {
+    noun: [
+      'line1',
+      'line2'
+    ]
+  }
+}
+
 const buildCard = (title, subtitle) => {
   return {
     "attachment": {
@@ -126,24 +136,61 @@ const witMessage = (client, msg, context) => {
   return client.message(msg, { context })
     .then((data) => {
       console.log('Yay, got Wit.ai response: ' + JSON.stringify(data));
-      const { entities } = data;
-      var word = firstEntityValue(entities, 'word');
+      const { intent, entities} = data;
+      let intentValue = intent.value;
+      let word = firstEntityValue(entities, 'word');
 
-      let msg = buildAudio("http://dictionary.cambridge.org/media/english/uk_pron/u/ukv/ukvor/ukvorte027.mp3");
+      switch(word){
+        case 'word_meaning':
+          // return onMeaning(word);
+          let w = testWord();
+          let text = wordFormat(w);
 
-      fbSend(msg, context);
-      // return WordApi.getWords(word, function (error, words) {
-      //   console.log("Get words is done.", words);
-
-      //   if(words && words.length){
-      //     let w = words[0];
-
-      //     fbSend(w.definitions[w.groups[0]][0], context);
-      //   }
-
-      // });
+          return fbSend(text, context);
+        case 'word_pronounce':
+          return onPronounce(word);
+      }
     })
     .catch(console.error);
+}
+
+const wordFormat = (word) => {
+  let text = '';
+
+  for(var g=0; g<word.groups.length; g++){
+    let group = word.groups[g];
+    let definitions = word[group].definitions;
+
+    text+=group + '/n';
+
+    for(var d=0; d<definitions.length; d++){
+      let def = definitions[d];
+
+      text+='   ' + def + '/n';
+    }
+  }
+
+  return text;
+}
+
+const onMeaning = (word) => {
+  return WordApi.getWords(word, function (error, words) {
+    console.log("Get words is done.", words);
+
+    if(words && words.length){
+      let w = words[0];
+      let text = wordFormat(w);
+
+      return fbSend(text, context);
+    }
+
+  });
+}
+
+const onPronounce = (word) => {
+  let msg = buildAudio("http://dictionary.cambridge.org/media/english/uk_pron/u/ukv/ukvor/ukvorte027.mp3");
+
+  return fbSend(msg, context);
 }
 
 const onMessage = (client, msg, context) => {
