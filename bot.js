@@ -200,7 +200,7 @@ const wordFormat = (word) => {
     for (var d = 0; d < definitions.length; d++) {
       let def = definitions[d];
 
-      text += '   ' + def + '\n';
+      text += '  - ' + def + '\n';
     }
 
     texts.push(text);
