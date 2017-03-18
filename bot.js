@@ -153,9 +153,11 @@ const witMessage = (client, msg, context) => {
         case 'word_meaning':
           // return onMeaning(word, context);
           let w = testWord;
-          let text = wordFormat(w);
+          let texts = wordFormat(w);
 
-          return fbTextSend(text, context);
+          texts.foreach((text) => {
+            fbTextSend(text, context);
+          });
         case 'word_pronounce':
           // return onPronounce(word, context);
           let msg = buildAudio("http://dictionary.cambridge.org/media/english/us_pron/v/vul/vulne/vulnerable.mp3");
@@ -167,9 +169,11 @@ const witMessage = (client, msg, context) => {
 }
 
 const wordFormat = (word) => {
-  let text = '';
+  let texts = [];
 
   for(var g=0; g<word.groups.length; g++){
+    let text = '';
+
     let group = word.groups[g];
     let definitions = word.definitions[group];
 
@@ -180,9 +184,11 @@ const wordFormat = (word) => {
 
       text+='   ' + def + '\n';
     }
+
+    texts.push(text);
   }
 
-  return text;
+  return texts;
 }
 
 const onMeaning = (word, context) => {
@@ -191,9 +197,11 @@ const onMeaning = (word, context) => {
 
     if(words && words.length){
       let w = words[0];
-      let text = wordFormat(w);
+      let texts = wordFormat(w);
 
-      return fbSend(text, context);
+      texts.foreach((text) => {
+        fbTextSend(text, context);
+      });
     }
 
   });
