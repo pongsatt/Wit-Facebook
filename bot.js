@@ -27,7 +27,7 @@ const firstEntityValue = (entities, entity) => {
 };
 
 const fbTextSend = (text, context) => {
-  fbSend({ text, context });
+  fbSend(text, context);
 }
 
 const fbSend = (msg, context) => {
