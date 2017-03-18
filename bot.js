@@ -155,7 +155,7 @@ const witMessage = (client, msg, context) => {
           let w = testWord;
           let texts = wordFormat(w);
 
-          texts.foreach((text) => {
+          texts.forEach((text) => {
             fbTextSend(text, context);
           });
         case 'word_pronounce':
@@ -199,7 +199,7 @@ const onMeaning = (word, context) => {
       let w = words[0];
       let texts = wordFormat(w);
 
-      texts.foreach((text) => {
+      texts.forEach((text) => {
         fbTextSend(text, context);
       });
     }
