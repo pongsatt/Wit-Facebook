@@ -27,7 +27,7 @@ const firstEntityValue = (entities, entity) => {
 };
 
 const fbTextSend = (text, context) => {
-  fbSend({ text }, context);
+  return fbSend({ text }, context);
 }
 
 const fbSend = (msg, context) => {
@@ -35,20 +35,10 @@ const fbSend = (msg, context) => {
 
   const recipientId = context._fbid_;
   if (recipientId) {
-    // Yay, we found our recipient!
-    // Let's forward our bot response to her.
-    FB.fbMessage(recipientId, msg, (err, data) => {
-      if (err) {
-        console.log(
-          'Oops! An error occurred while forwarding the response to',
-          recipientId,
-          ':',
-          err
-        );
-      }
-
-    });
+    return FB.fbMessage(recipientId, msg);
   }
+
+  return Promise.resolve();
 }
 
 // Bot actions
@@ -140,17 +130,22 @@ const buildAudio = (url) => {
 }
 
 const onWitMessage = (intent, entities, context) => {
-  const {word} = entities;
+  let entitiesStr = JSON.stringify(entities);
+
+  console.log(`Found intent ${intent} and entities ${entitiesStr}`);
+
+  const { word } = entities;
 
   if (!word) {
     return fbTextSend("Which word do you mean exactly?", context);
   }
 
-  return WordApi.getWords(word, function (error, words) {
-      if(words && words.length){
+  return WordApi.getWords(word)
+    .then(words => {
+      if (words && words.length) {
         let w = words[0];
 
-        console.log("Process word: ", w);
+        console.log("Process word: ", w.vocab);
 
         switch (intent) {
           case 'word_meaning':
@@ -169,23 +164,24 @@ const onWitMessage = (intent, entities, context) => {
           // fbSend(msg, context);
           // break;
         }
+
+        return Promise.resolve();
       }
 
     });
-  
+
 }
 
 const witMessage = (client, msg, context) => {
   return client.message(msg, { context })
     .then((data) => {
-      console.log('Yay, got Wit.ai response: ' + JSON.stringify(data));
       const { entities } = data;
       const { intent } = entities;
 
       let intentValue = intent[0].value;
       let word = firstEntityValue(entities, 'word');
 
-      onWitMessage(intentValue, {word}, context);
+      return onWitMessage(intentValue, { word }, context);
     })
     .catch(console.error);
 }
@@ -214,28 +210,38 @@ const wordFormat = (word) => {
 }
 
 const onMeaning = (word, context) => {
-  fbTextSend(`Here is the meaning of word "${word.vocab}"`, context);
+  return fbTextSend(`Here is the meaning of word "${word.vocab}"`, context)
+  .then(() => {
+    let texts = wordFormat(word);
 
-  let texts = wordFormat(word);
+    var promises = [];
 
-  texts.forEach((text) => {
-    fbTextSend(text, context);
+    texts.forEach((text) => {
+      promises.push(fbTextSend(text, context));
+    });
+
+    return Promise.all(promises);
   });
+
+  
 }
 
 const pronounce = (word, context, country) => {
-  fbTextSend(`Here is how to pronounce "${word.vocab}" in ${country}`, context);
+  return fbTextSend(`Here is how to pronounce "${word.vocab}" in ${country}`, context)
+  .then(() => {
+    let msg = buildAudio(word.pronunciationAudios[country]);
 
-  let msg = buildAudio(word.pronunciationAudios[country]);
-
-  return fbSend(msg, context);
+    return fbSend(msg, context);
+  });
+  
 }
 
 const onPronounce = (word, context) => {
   if (word.pronunciationAudios) {
-    pronounce(word, context, "us");
-
-    return pronounce(word, context, "uk");
+    return pronounce(word, context, "us")
+    .then(() => {
+      return pronounce(word, context, "uk");
+    });
   }
 
   return fbTextSend("Cannot find pronounciation for this word", context);
@@ -262,9 +268,11 @@ const rlInteractive = (client) => {
     if (!line) {
       return prompt();
     }
-    console.log(line);
-    witMessage(client, line, {});
-    return prompt();
+    console.log("Executing sentence: ", line);
+    return witMessage(client, line, {})
+    .then(() => {
+      return prompt();
+    });
   });
 }
 

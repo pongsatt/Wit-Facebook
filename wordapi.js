@@ -1,6 +1,6 @@
 'use strict';
 
-var request = require('request');
+var request = require('request-promise');
 var Config = require('./const.js');
 
 const getWords = (word, fn) => {
@@ -13,19 +13,15 @@ const getWords = (word, fn) => {
     var url = Config.WORD_API_URL + '/vocabs/search?group=true&q=' + word;
     console.log("Connecting to " + url);
     
-    request({ url: url, json: true, headers: { 'X-User': 'bd628cda-50a9-afa0-c90f-28f834931fe8' } }, function (error, response, data) {
-        if (error) {
-            console.error(error);
-            return fn(error)
-        }
-        if (response.statusCode !== 200) {
-            console.error(response.body);
-            return fn(new Error('unexpected status ' + response.statusCode))
-        }
-        console.log('Data:', data);
+    let opts = { url: url, json: true, headers: { 'X-User': 'bd628cda-50a9-afa0-c90f-28f834931fe8' } };
+
+    return request(opts)
+    .then((data) => {
         var words = data || [];
-        fn(null, words)
+        console.log('Found words:', words.length);
+        return words;
     })
+    .catch(console.log);
 }
 
 module.exports = {

@@ -2,10 +2,11 @@
 
 // See the Send API reference
 // https://developers.facebook.com/docs/messenger-platform/send-api-reference
-const request = require('request');
+const request = require('request-promise');
+
 const Config = require('./const.js');
 
-const fbReq = request.defaults({
+const options = {
   uri: 'https://graph.facebook.com/me/messages',
   method: 'POST',
   json: true,
@@ -15,11 +16,10 @@ const fbReq = request.defaults({
   headers: {
     'Content-Type': 'application/json'
   },
-});
+};
 
 
-const fbMessage = (recipientId, msg, cb) => {
-
+const fbMessage = (recipientId, msg) => {
   const opts = {
     form: {
       recipient: {
@@ -29,11 +29,9 @@ const fbMessage = (recipientId, msg, cb) => {
     },
   };
 
-  fbReq(opts, (err, resp, data) => {
-    if (cb) {
-      cb(err || data.error && data.error.message, data);
-    }
-  });
+  let rpOpts = Object.assign({}, options, opts);
+  rp(rpOpts)
+    .catch(console.error);
 };
 
 
@@ -56,6 +54,5 @@ const getFirstMessagingEntry = (body) => {
 
 module.exports = {
   getFirstMessagingEntry: getFirstMessagingEntry,
-  fbMessage: fbMessage,
-  fbReq: fbReq
+  fbMessage: fbMessage
 };

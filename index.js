@@ -99,7 +99,7 @@ app.post('/webhook', (req, res) => {
       // We received an attachment
 
       // Let's reply with an automatic message
-      FB.fbMessage(
+      return FB.fbMessage(
         sender,
         {text:'Sorry I can only process text messages for now.'}
       );
@@ -109,7 +109,7 @@ app.post('/webhook', (req, res) => {
       // Let's forward the message to the Wit.ai Bot Engine
       // This will run all actions until our bot has nothing left to do
       var context = sessions[sessionId].context;
-      onMessage(wit, msg, context);
+      return onMessage(wit, msg, context);
 
       // wit.runActions(
       //   sessionId, // the user's current session
