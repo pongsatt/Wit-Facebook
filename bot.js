@@ -26,12 +26,16 @@ const firstEntityValue = (entities, entity) => {
   return typeof val === 'object' ? val.value : val;
 };
 
-const fbSend = (text, context) => {
+const fbTextSend = (text, context) => {
+  fbSend({text, context});
+}
+
+const fbSend = (msg, context) => {
   const recipientId = context._fbid_;
     if (recipientId) {
       // Yay, we found our recipient!
       // Let's forward our bot response to her.
-      FB.fbMessage(recipientId, text, (err, data) => {
+      FB.fbMessage(recipientId, msg, (err, data) => {
         if (err) {
           console.log(
             'Oops! An error occurred while forwarding the response to',
@@ -53,7 +57,7 @@ const actions = {
 
     console.log('sending...', JSON.stringify(response));
 
-    fbSend(text, context);
+    fbTextSend(text, context);
   },
   getForecast({context, entities}) {
     var location = firstEntityValue(entities, 'location');
@@ -92,6 +96,38 @@ const getWit = () => {
   return new Wit({accessToken, actions});
 };
 
+const testMsg = {
+		"attachment": {
+			"type": "template",
+			"payload": {
+				"template_type": "generic",
+				"elements": [{
+					"title": "First card",
+					"subtitle": "Element #1 of an hscroll",
+					"image_url": "http://messengerdemo.parseapp.com/img/rift.png",
+					"buttons": [{
+						"type": "web_url",
+						"url": "https://www.messenger.com",
+						"title": "web url"
+					}, {
+						"type": "postback",
+						"title": "Postback",
+						"payload": "Payload for first element in a generic bubble",
+					}],
+				}, {
+					"title": "Second card",
+					"subtitle": "Element #2 of an hscroll",
+					"image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
+					"buttons": [{
+						"type": "postback",
+						"title": "Postback",
+						"payload": "Payload for second element in a generic bubble",
+					}],
+				}]
+			}
+		}
+	}
+
 const witMessage = (client, msg, context) => {
   return client.message(msg, {context})
     .then((data) => {
@@ -99,16 +135,17 @@ const witMessage = (client, msg, context) => {
       const { entities } = data;
       var word = firstEntityValue(entities, 'word');
 
-      return WordApi.getWords(word, function (error, words) {
-        console.log("Get words is done.", words);
+      fbSend(testMsg, context);
+      // return WordApi.getWords(word, function (error, words) {
+      //   console.log("Get words is done.", words);
         
-        if(words && words.length){
-          let w = words[0];
+      //   if(words && words.length){
+      //     let w = words[0];
           
-          fbSend(w.definitions[w.groups[0]][0], context);
-        }
+      //     fbSend(w.definitions[w.groups[0]][0], context);
+      //   }
 
-      });
+      // });
     })
     .catch(console.error);
 }
