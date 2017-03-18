@@ -165,12 +165,12 @@ const wordFormat = (word) => {
     let group = word.groups[g];
     let definitions = word.definitions[group];
 
-    text+=group + '/n';
+    text+=group + '\n';
 
     for(var d=0; d<definitions.length; d++){
       let def = definitions[d];
 
-      text+='   ' + def + '/n';
+      text+='   ' + def + '\n';
     }
   }
 
