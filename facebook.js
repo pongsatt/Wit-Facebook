@@ -30,7 +30,7 @@ const fbMessage = (recipientId, msg) => {
   };
 
   let rpOpts = Object.assign({}, options, opts);
-  rp(rpOpts)
+  return request(rpOpts)
     .catch(console.error);
 };
 
