@@ -111,6 +111,17 @@ const buildCard = (title, subtitle) => {
   }
 }
 
+const buildAudio = (url) => {
+  return {
+    "attachment": {
+      "type": "audio",
+      "payload": {
+        "url": url
+      }
+    }
+  }
+}
+
 const witMessage = (client, msg, context) => {
   return client.message(msg, { context })
     .then((data) => {
@@ -118,7 +129,7 @@ const witMessage = (client, msg, context) => {
       const { entities } = data;
       var word = firstEntityValue(entities, 'word');
 
-      let msg = buildCard("test", "<ul><li>test sub title1</li><li>test sub title2</li></ul>");
+      let msg = buildAudio("http://dictionary.cambridge.org/media/english/uk_pron/u/ukv/ukvor/ukvorte027.mp3");
 
       fbSend(msg, context);
       // return WordApi.getWords(word, function (error, words) {
