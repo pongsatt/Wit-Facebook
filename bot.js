@@ -223,19 +223,19 @@ const onMeaning = (word, context) => {
   });
 }
 
+const pronounce = (word, context, country) => {
+  fbTextSend(`Here is how to pronounce "${word.vocab}" in ${country}`, context);
+
+  let msg = buildAudio(word.pronunciationAudios[country]);
+
+  return fbSend(msg, context);
+}
+
 const onPronounce = (word, context) => {
   if (word.pronunciationAudios) {
-    fbTextSend(`Here is how to pronounce "${word.vocab}" in us`, context);
+    pronounce(word, context, "us");
 
-    let msg = buildAudio(word.pronunciationAudios["us"]);
-
-    fbSend(msg, context);
-
-    fbTextSend(`Here is how to pronounce "${word.vocab}" in uk`, context);
-
-    let msg = buildAudio(word.pronunciationAudios["uk"]);
-
-    return fbSend(msg, context);
+    return pronounce(word, context, "uk");
   }
 
   return fbTextSend("Cannot find pronounciation for this word", context);
