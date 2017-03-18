@@ -99,11 +99,16 @@ const getWit = () => {
 };
 
 const testWord = {
-  groups: ['noun'],
+  groups: ['noun', 'verb'],
   definitions: {
     noun: [
       'line1',
       'line2'
+    ],
+    verb: [
+      'vline1',
+      'vline2',
+      'vline3'
     ]
   }
 }
