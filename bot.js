@@ -136,8 +136,8 @@ const witMessage = (client, msg, context) => {
   return client.message(msg, { context })
     .then((data) => {
       console.log('Yay, got Wit.ai response: ' + JSON.stringify(data));
-      const { intent, entities} = data;
-      let intentValue = intent.value;
+      const { intents, entities} = data;
+      let intent = intents[0].value;
       let word = firstEntityValue(entities, 'word');
 
       switch(word){
