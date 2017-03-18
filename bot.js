@@ -150,7 +150,7 @@ const witMessage = (client, msg, context) => {
           let w = testWord;
           let text = wordFormat(w);
 
-          return fbSend(text, context);
+          return fbTextSend(text, context);
         case 'word_pronounce':
           return onPronounce(word);
       }
