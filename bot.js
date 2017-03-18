@@ -151,20 +151,20 @@ const witMessage = (client, msg, context) => {
 
       switch(intentValue){
         case 'word_meaning':
-          // return onMeaning(word, context);
-          let w = testWord;
-          let texts = wordFormat(w);
+          return onMeaning(word, context);
+          // let w = testWord;
+          // let texts = wordFormat(w);
 
-          texts.forEach((text) => {
-            fbTextSend(text, context);
-          });
-          break;
+          // texts.forEach((text) => {
+          //   fbTextSend(text, context);
+          // });
+          // break;
         case 'word_pronounce':
-          // return onPronounce(word, context);
-          let msg = buildAudio("http://dictionary.cambridge.org/media/english/us_pron/v/vul/vulne/vulnerable.mp3");
+          return onPronounce(word, context);
+          // let msg = buildAudio("http://dictionary.cambridge.org/media/english/us_pron/v/vul/vulne/vulnerable.mp3");
 
-          fbSend(msg, context);
-          break;
+          // fbSend(msg, context);
+          // break;
       }
     })
     .catch(console.error);
@@ -196,6 +196,7 @@ const wordFormat = (word) => {
 const onMeaning = (word, context) => {
   return WordApi.getWords(word, function (error, words) {
     console.log("Get words is done.", words);
+    fbTextSend("Here is the meaning of word " + word);
 
     if(words && words.length){
       let w = words[0];
@@ -211,6 +212,7 @@ const onMeaning = (word, context) => {
 
 const onPronounce = (word, context) => {
   if(word.pronunciationAudios && word.pronunciationAudios.length){
+    fbTextSend("Here is how to pronounce " + word);
 
     let msg = buildAudio(word.pronunciationAudios["us"]);
 
