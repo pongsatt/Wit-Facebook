@@ -21,7 +21,7 @@ const getWords = (word, fn) => {
         console.log('Found words:', words.length);
         return words;
     })
-    .catch(console.log);
+    .catch(body => console.error(body));
 }
 
 module.exports = {
