@@ -2,7 +2,7 @@
 
 // Weather Example
 // See https://wit.ai/sungkim/weather/stories and https://wit.ai/docs/quickstart
-const {Wit, interactive} = require('node-wit');
+const { Wit, interactive } = require('node-wit');
 const FB = require('./facebook.js');
 const Config = require('./const.js');
 const WordApi = require('./wordapi.js');
@@ -27,39 +27,39 @@ const firstEntityValue = (entities, entity) => {
 };
 
 const fbTextSend = (text, context) => {
-  fbSend({text, context});
+  fbSend({ text, context });
 }
 
 const fbSend = (msg, context) => {
   const recipientId = context._fbid_;
-    if (recipientId) {
-      // Yay, we found our recipient!
-      // Let's forward our bot response to her.
-      FB.fbMessage(recipientId, msg, (err, data) => {
-        if (err) {
-          console.log(
-            'Oops! An error occurred while forwarding the response to',
-            recipientId,
-            ':',
-            err
-          );
-        }
+  if (recipientId) {
+    // Yay, we found our recipient!
+    // Let's forward our bot response to her.
+    FB.fbMessage(recipientId, msg, (err, data) => {
+      if (err) {
+        console.log(
+          'Oops! An error occurred while forwarding the response to',
+          recipientId,
+          ':',
+          err
+        );
+      }
 
-      });
-    }
+    });
+  }
 }
 
 // Bot actions
 const actions = {
   send(request, response) {
-    const {sessionId, context, entities} = request;
-    const {text, quickreplies} = response;
+    const { sessionId, context, entities } = request;
+    const { text, quickreplies } = response;
 
     console.log('sending...', JSON.stringify(response));
 
     fbTextSend(text, context);
   },
-  getForecast({context, entities}) {
+  getForecast({ context, entities }) {
     var location = firstEntityValue(entities, 'location');
     if (location) {
       context.forecast = 'sunny in ' + location; // we should call a weather API here
@@ -70,7 +70,7 @@ const actions = {
     }
     return context;
   },
-  getMeaning({context, entities}) {
+  getMeaning({ context, entities }) {
     return new Promise((resolve, reject) => {
       var word = firstEntityValue(entities, 'word');
 
@@ -86,62 +86,47 @@ const actions = {
         return resolve(context);
       });
     });
-    
+
   },
 
 };
 
 
 const getWit = () => {
-  return new Wit({accessToken, actions});
+  return new Wit({ accessToken, actions });
 };
 
-const testMsg = {
-		"attachment": {
-			"type": "template",
-			"payload": {
-				"template_type": "generic",
-				"elements": [{
-					"title": "First card",
-					"subtitle": "Element #1 of an hscroll",
-					"image_url": "http://messengerdemo.parseapp.com/img/rift.png",
-					"buttons": [{
-						"type": "web_url",
-						"url": "https://www.messenger.com",
-						"title": "web url"
-					}, {
-						"type": "postback",
-						"title": "Postback",
-						"payload": "Payload for first element in a generic bubble",
-					}],
-				}, {
-					"title": "Second card",
-					"subtitle": "Element #2 of an hscroll",
-					"image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
-					"buttons": [{
-						"type": "postback",
-						"title": "Postback",
-						"payload": "Payload for second element in a generic bubble",
-					}],
-				}]
-			}
-		}
-	}
+const buildCard = (title, subtitle) => {
+  return {
+  "attachment": {
+    "type": "template",
+    "payload": {
+      "template_type": "generic",
+      "elements": [{
+        "title": title,
+        "subtitle": subtitle,
+      }]
+    }
+  }
+}
+}
 
 const witMessage = (client, msg, context) => {
-  return client.message(msg, {context})
+  return client.message(msg, { context })
     .then((data) => {
       console.log('Yay, got Wit.ai response: ' + JSON.stringify(data));
       const { entities } = data;
       var word = firstEntityValue(entities, 'word');
 
-      fbSend(testMsg, context);
+      let msg = buildCard("test", "test sub title");
+
+      fbSend(msg, context);
       // return WordApi.getWords(word, function (error, words) {
       //   console.log("Get words is done.", words);
-        
+
       //   if(words && words.length){
       //     let w = words[0];
-          
+
       //     fbSend(w.definitions[w.groups[0]][0], context);
       //   }
 
@@ -163,7 +148,7 @@ const rlInteractive = (client) => {
   rl.setPrompt('> ');
   const prompt = () => {
     rl.prompt();
-    rl.write(null, {ctrl: true, name: 'e'});
+    rl.write(null, { ctrl: true, name: 'e' });
   };
   prompt();
   rl.on('line', (line) => {
@@ -183,5 +168,5 @@ if (require.main === module) {
   const client = getWit();
   // interactive(client);
   rlInteractive(client);
-  
+
 }
