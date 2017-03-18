@@ -31,6 +31,8 @@ const fbTextSend = (text, context) => {
 }
 
 const fbSend = (msg, context) => {
+  console.log('Sending msg to facebook.', msg);
+
   const recipientId = context._fbid_;
   if (recipientId) {
     // Yay, we found our recipient!
@@ -136,14 +138,16 @@ const witMessage = (client, msg, context) => {
   return client.message(msg, { context })
     .then((data) => {
       console.log('Yay, got Wit.ai response: ' + JSON.stringify(data));
-      const { intents, entities} = data;
-      let intent = intents[0].value;
+      const { entities } = data;
+      const { intent } = entities;
+
+      let intentValue = intent[0].value;
       let word = firstEntityValue(entities, 'word');
 
-      switch(word){
+      switch(intentValue){
         case 'word_meaning':
           // return onMeaning(word);
-          let w = testWord();
+          let w = testWord;
           let text = wordFormat(w);
 
           return fbSend(text, context);
@@ -159,7 +163,7 @@ const wordFormat = (word) => {
 
   for(var g=0; g<word.groups.length; g++){
     let group = word.groups[g];
-    let definitions = word[group].definitions;
+    let definitions = word.definitions[group];
 
     text+=group + '/n';
 
