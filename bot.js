@@ -122,9 +122,9 @@ const buildList = (elements) => {
   return {
     "attachment": {
       "type": "template",
-      "top_element_style": "compact",
       "payload": {
         "template_type": "list",
+        "top_element_style": "compact",
         "elements": elements
       }
     }
