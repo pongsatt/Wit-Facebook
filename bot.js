@@ -31,7 +31,7 @@ const fbTextSend = (text, context) => {
 }
 
 const fbSend = (msg, context) => {
-  console.log('Try sending msg to facebook.', msg);
+  console.log('Try sending msg to facebook.', JSON.stringify(msg));
 
   const recipientId = context._fbid_;
   if (recipientId) {
@@ -113,6 +113,18 @@ const buildCard = (title, subtitle) => {
           "title": title,
           "subtitle": subtitle,
         }]
+      }
+    }
+  }
+}
+
+const buildList = (elements) => {
+  return {
+    "attachment": {
+      "type": "template",
+      "payload": {
+        "template_type": "list",
+        "elements": elements
       }
     }
   }
@@ -209,18 +221,39 @@ const wordFormat = (word) => {
   return texts;
 }
 
+const formatDefs = (defs) => {
+  return defs.map(d => ` - ${d}`).join('\n');
+}
+
+const buildWordList = (word) => {
+  let fbList = [];
+  let defMap = word.definitions;
+
+  for (var key in defMap) {
+    if (defMap.hasOwnProperty(key)) {
+      let defs = defMap[key];
+
+      fbList.push({title: key, subtitle: formatDefs(defs)});
+    }
+  }
+
+  return buildList(fbList);
+}
+
 const onMeaning = (word, context) => {
   return fbTextSend(`Here is the meaning of word "${word.vocab}"`, context)
   .then(() => {
-    let texts = wordFormat(word);
+    let fbList = buildWordList(word);
+    return fbSend(fbList, context);
+    // let texts = wordFormat(word);
 
-    var promises = [];
+    // var promises = [];
 
-    texts.forEach((text) => {
-      promises.push(fbTextSend(text, context));
-    });
+    // texts.forEach((text) => {
+    //   promises.push(fbTextSend(text, context));
+    // });
 
-    return Promise.all(promises);
+    // return Promise.all(promises);
   });
 
   
