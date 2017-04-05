@@ -10,12 +10,11 @@ const bodyParser = require('body-parser');
 const express = require('express');
 
 // get Bot, const, and Facebook API
-const {getWit, onMessage} = require('./bot.js');
+const Bot = require('./bot.js');
 const Config = require('./const.js');
 const FB = require('./facebook.js');
 
-// Setting up our bot
-const wit = getWit();
+let bot = new Bot();
 
 // Webserver parameter
 const PORT = process.env.PORT || 8445;
@@ -109,7 +108,7 @@ app.post('/webhook', (req, res) => {
       // Let's forward the message to the Wit.ai Bot Engine
       // This will run all actions until our bot has nothing left to do
       var context = sessions[sessionId].context;
-      onMessage(wit, msg, context);
+      bot.message(msg, context);
 
       // wit.runActions(
       //   sessionId, // the user's current session

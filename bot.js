@@ -141,41 +141,7 @@ const onWitMessage = (intent, entities, context) => {
 
   console.log(`Found intent ${intent} and entities ${entitiesStr}`);
 
-  const { word } = entities;
 
-  if (!word) {
-    return fbTextSend("Which word do you mean exactly?", context);
-  }
-
-  return WordApi.getWords(word)
-    .then(words => {
-      if (words && words.length) {
-        let w = words[0];
-
-        console.log("Process word: ", w.vocab);
-
-        switch (intent) {
-          case 'word_meaning':
-            return onMeaning(w, context);
-          // let w = testWord;
-          // let texts = wordFormat(w);
-
-          // texts.forEach((text) => {
-          //   fbTextSend(text, context);
-          // });
-          // break;
-          case 'word_pronounce':
-            return onPronounce(w, context);
-          // let msg = buildAudio("http://dictionary.cambridge.org/media/english/us_pron/v/vul/vulne/vulnerable.mp3");
-
-          // fbSend(msg, context);
-          // break;
-        }
-
-        return Promise.resolve();
-      }
-
-    });
 
 }
 
@@ -186,7 +152,7 @@ const witMessage = (client, msg, context) => {
       const { intent } = entities;
 
       let intentValue;
-      if(intent && intent.length){
+      if (intent && intent.length) {
         intentValue = intent.length && intent[0].value;
       }
       let word = firstEntityValue(entities, 'word');
@@ -231,7 +197,7 @@ const buildWordList = (word) => {
     if (defMap.hasOwnProperty(key)) {
       let defs = defMap[key];
 
-      fbList.push({title: key, subtitle: formatDefs(defs)});
+      fbList.push({ title: key, subtitle: formatDefs(defs) });
     }
   }
 
@@ -240,39 +206,39 @@ const buildWordList = (word) => {
 
 const onMeaning = (word, context) => {
   return fbTextSend(`Here is the meaning of word "${word.vocab}"`, context)
-  .then(() => {
-    let fbList = buildWordList(word);
-    return fbSend(fbList, context);
-    // let texts = wordFormat(word);
+    .then(() => {
+      let fbList = buildWordList(word);
+      return fbSend(fbList, context);
+      // let texts = wordFormat(word);
 
-    // var promises = [];
+      // var promises = [];
 
-    // texts.forEach((text) => {
-    //   promises.push(fbTextSend(text, context));
-    // });
+      // texts.forEach((text) => {
+      //   promises.push(fbTextSend(text, context));
+      // });
 
-    // return Promise.all(promises);
-  });
+      // return Promise.all(promises);
+    });
 
-  
+
 }
 
 const pronounce = (word, context, country) => {
   return fbTextSend(`Here is how to pronounce "${word.vocab}" in ${country}`, context)
-  .then(() => {
-    let msg = buildAudio(word.pronunciationAudios[country]);
+    .then(() => {
+      let msg = buildAudio(word.pronunciationAudios[country]);
 
-    return fbSend(msg, context);
-  });
-  
+      return fbSend(msg, context);
+    });
+
 }
 
 const onPronounce = (word, context) => {
   if (word.pronunciationAudios) {
     return pronounce(word, context, "us")
-    .then(() => {
-      return pronounce(word, context, "uk");
-    });
+      .then(() => {
+        return pronounce(word, context, "uk");
+      });
   }
 
   return fbTextSend("Cannot find pronounciation for this word", context);
@@ -282,18 +248,92 @@ const onMessage = (client, msg, context) => {
   return witMessage(client, msg, context);
 }
 
-module.exports = {
-  getWit: getWit,
-  onMessage: onMessage
+class Bot {
+  constructor() {
+    this.witClient = new Wit({ accessToken, actions });
+  }
+
+  message(msg, context) {
+    return resolveIntent(msg, context, this.witClient)
+      .then((intentObj) => {
+        const { intent, entities } = intentObj;
+        return processResponse(intent, entities, context);
+      });
+  }
 }
+
+const processResponse = (intent, entities, context) => {
+  let entitiesStr = JSON.stringify(entities);
+
+  console.log(`Found intent ${intent} and entities ${entitiesStr}`);
+
+  const { word } = entities;
+
+  console.log('word: ', word);
+
+  if (!word) {
+    return fbTextSend("Which word do you mean exactly?", context);
+  }
+
+  return WordApi.getWords(word)
+    .then(words => {
+      if (words && words.length) {
+        let w = words[0];
+
+        console.log("Process word: ", w.vocab);
+
+        switch (intent) {
+          case 'word_meaning':
+            return onMeaning(w, context);
+          // let w = testWord;
+          // let texts = wordFormat(w);
+
+          // texts.forEach((text) => {
+          //   fbTextSend(text, context);
+          // });
+          // break;
+          case 'word_pronounce':
+            return onPronounce(w, context);
+          // let msg = buildAudio("http://dictionary.cambridge.org/media/english/us_pron/v/vul/vulne/vulnerable.mp3");
+
+          // fbSend(msg, context);
+          // break;
+        }
+
+      }
+      return Promise.resolve();
+
+    });
+}
+
+const resolveIntent = (msg, context, witClient) => {
+  return witClient.message(msg, { context })
+    .then((data) => {
+      const { entities } = data;
+      const { intent } = entities;
+
+      let intentValue;
+      if (intent && intent.length) {
+        intentValue = intent.length && intent[0].value;
+      }
+      let word = firstEntityValue(entities, 'word');
+
+
+      return { intent: intentValue, entities: {word} };
+    })
+    .catch(console.error);
+}
+
+module.exports = Bot;
 
 // bot testing mode
 // http://stackoverflow.com/questions/6398196
 if (require.main === module) {
   console.log("Bot testing mode.");
-  const client = getWit();
+  var bot = new Bot();
+
   interactive((command) => {
-    return onMessage(client, command, {});
+    return bot.message(command, {});
   });
 
 }
