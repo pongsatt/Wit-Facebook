@@ -1,17 +1,11 @@
 'use strict';
 
-// Weather Example
-// See https://wit.ai/sungkim/weather/stories and https://wit.ai/docs/quickstart
-const { Wit, interactive } = require('node-wit');
+const { Wit } = require('node-wit');
 const FB = require('./facebook.js');
 const Config = require('./const.js');
 const WordApi = require('./wordapi.js');
-const readline = require('readline');
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+const interactive = require('./interactive');
 
 const accessToken = Config.WIT_TOKEN;
 
@@ -191,7 +185,10 @@ const witMessage = (client, msg, context) => {
       const { entities } = data;
       const { intent } = entities;
 
-      let intentValue = intent[0].value;
+      let intentValue;
+      if(intent && intent.length){
+        intentValue = intent.length && intent[0].value;
+      }
       let word = firstEntityValue(entities, 'word');
 
       return onWitMessage(intentValue, { word }, context);
@@ -290,32 +287,13 @@ module.exports = {
   onMessage: onMessage
 }
 
-const rlInteractive = (client) => {
-  rl.setPrompt('> ');
-  const prompt = () => {
-    rl.prompt();
-    rl.write(null, { ctrl: true, name: 'e' });
-  };
-  prompt();
-  rl.on('line', (line) => {
-    line = line.trim();
-    if (!line) {
-      return prompt();
-    }
-    console.log("Executing sentence: ", line);
-    return witMessage(client, line, {})
-    .then(() => {
-      return prompt();
-    });
-  });
-}
-
 // bot testing mode
 // http://stackoverflow.com/questions/6398196
 if (require.main === module) {
   console.log("Bot testing mode.");
   const client = getWit();
-  // interactive(client);
-  rlInteractive(client);
+  interactive((command) => {
+    return onMessage(client, command, {});
+  });
 
 }
