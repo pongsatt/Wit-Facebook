@@ -25,9 +25,12 @@ const pickOne = () => {
 
             return search(opts, { from: r, size: 1, timeOfDay: '' })
                 .then(results => {
-                    let picked = results.hits.hits[0];
-                    console.log('Pick: ', picked)
-                    return picked;
+                    if (results && results.hits && results.hits.hits) {
+                        let picked = results.hits.hits[0];
+                        console.log('Pick: ', picked._source.name);
+                        return picked;
+                    }
+                    return Promise.resolve();
                 });
         })
 }
@@ -43,22 +46,22 @@ const search = (opts, moreOpts) => {
 
     let q = buildQuery(opts);
 
-    return find(client, q, opts);
+    return find(q, opts);
 }
 
 const find = (q, opts) => {
     return client.search(q)
         .then(
         (results) => {
-            console.log('Found:', results);
+            // console.log('Found:', results);
             return postProcess(results, opts);
         },
         (errors) => console.error(errors.body));
 }
 
 const postProcess = (results, opts) => {
-    if(results && results.hits && results.hits.hits && opts.location){
-        results.hits.hits = results.hits.hits.map( r => {
+    if (results && results.hits && results.hits.hits && opts.location) {
+        results.hits.hits = results.hits.hits.map(r => {
             let lat1 = opts.location.lat;
             let lon1 = opts.location.lon;
             let lat2 = r._source.geo.location[1];
@@ -131,7 +134,7 @@ const buildQuery = (opts) => {
     if (opts.from !== undefined) q.from = opts.from;
     if (opts.size !== undefined) q.size = opts.size;
 
-    // console.log('build q: ', JSON.stringify(q));
+    console.log('build q: ', JSON.stringify(q));
 
     return q;
 }
