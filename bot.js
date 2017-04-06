@@ -1,7 +1,5 @@
 'use strict';
 
-const Config = require('./const.js');
-
 const IntentResolver = require('./intentResolver');
 const ResponseResolver = require('./responseResolver');
 

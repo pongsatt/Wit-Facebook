@@ -19,9 +19,15 @@ if(!WORD_API_URL){
   WORD_API_URL = 'https://a7f465682d.execute-api.ap-southeast-1.amazonaws.com/prod';
 }
 
+var ESTAURANT_API_URL = process.env.ESTAURANT_API_URL;
+if(!ESTAURANT_API_URL){
+  ESTAURANT_API_URL = 'http://pongsatt.thddns.net:5651';
+}
+
 module.exports = {
-  WIT_TOKEN: WIT_TOKEN,
-  FB_PAGE_TOKEN: FB_PAGE_TOKEN,
-  FB_VERIFY_TOKEN: FB_VERIFY_TOKEN,
-  WORD_API_URL: WORD_API_URL
+  WIT_TOKEN,
+  FB_PAGE_TOKEN,
+  FB_VERIFY_TOKEN,
+  WORD_API_URL,
+  ESTAURANT_API_URL
 };

@@ -1,5 +1,8 @@
-const { Wit } = require('node-wit');
 const Config = require('./const.js');
+const cld = require('cld');
+const resolveIntentWit = require('./WitIntentResolver');
+const resolveIntentThai = require('./ThaiIntentResolver');
+const { Wit } = require('node-wit');
 
 class IntentResolver {
   constructor() {
@@ -7,36 +10,28 @@ class IntentResolver {
   }
 
   resolve(msg, context) {
-    return resolveIntentWit(msg, context, this.witClient);
-  }
-}
-
-const resolveIntentWit = (msg, context, witClient) => {
-  return witClient.message(msg, { context })
-    .then((data) => {
-      const { entities } = data;
-      const { intent } = entities;
-
-      let intentValue;
-      if (intent && intent.length) {
-        intentValue = intent.length && intent[0].value;
+    return getLang(msg)
+    .then(lang => {
+      if(lang == 'th'){
+        return resolveIntentThai(msg, context);
       }
-      let word = firstEntityValue(entities, 'word');
 
-      return { intent: intentValue, entities: {word} };
-    })
-    .catch(console.error);
+      return resolveIntentWit(msg, context, this.witClient);
+    });
+  }
 }
 
-const firstEntityValue = (entities, entity) => {
-  const val = entities && entities[entity] &&
-    Array.isArray(entities[entity]) &&
-    entities[entity].length > 0 &&
-    entities[entity][0].value;
-  if (!val) {
-    return null;
-  }
-  return typeof val === 'object' ? val.value : val;
-};
+const getLang = (msg) => {
+  return new Promise((resolve, reject) => {
+    cld.detect(msg, function (err, result) {
+      console.log('Msg lang: ', result);
+
+      if(result && result.languages && result.languages.length){
+        return resolve(result.languages[0].code);
+      }
+      return resolve('');
+    });
+  });
+}
 
 module.exports = IntentResolver;
