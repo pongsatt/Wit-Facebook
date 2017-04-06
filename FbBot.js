@@ -23,7 +23,10 @@ class FBBot {
                         return fbSend(response, context);
                     }
                 })
-            }, (error) => fbTextSend("Sorry, we did something wrong. Please try something else.", context));
+            }, (error) => {
+                console.error(error);
+                return fbTextSend("Sorry, we did something wrong. Please try something else.", context);
+            });
     }
 }
 
