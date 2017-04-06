@@ -23,6 +23,10 @@ if(!ESTAURANT_API_URL){
 
 var ESTAURANT_API_AUTH = process.env.ESTAURANT_API_AUTH;
 
+if(!ESTAURANT_API_AUTH){
+  throw new Error('ESTAURANT_API_AUTH is required');
+}
+
 const DEFAULT_LAT = process.env.LAT || 13.7329531;
 const DEFAULT_LON = process.env.LON || 100.5663767;
 const DEFAULT_DISTANCE = process.env.DISTANCE || '5km';
