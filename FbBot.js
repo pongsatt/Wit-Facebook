@@ -20,7 +20,7 @@ class FBBot {
                     } else if (response.audio) {
                         return fbSend(buildAudio(response.url), context);
                     } else {
-                        return fbSend(response, context);
+                        return fbSend(buildCard(response), context);
                     }
                 })
             }, (error) => {
