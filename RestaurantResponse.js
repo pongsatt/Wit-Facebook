@@ -1,31 +1,25 @@
 const api = require('./estaurantapi');
 
 const onAnyThing = (entities, context, response) => {
-    return response("ไม่รู้จะกินอะไรใช่มะ เดี๋ยวหาร้านแถวนี้ให้ รอแป๊บหนึ่งนะ")
-    .then(() => api.search({recommended:true, size:2}))
-    .then((ress) => {
-        return Promise.all(ress.map(r => {
-            return response(toCard(r._source));
-        }));
-    });
+    return onSearch("ไม่รู้จะกินอะไรใช่มะ เดี๋ยวหาร้านแถวนี้ให้ รอแป๊บหนึ่งนะ", 
+    {recommended:true, size: 2, timeOfDay: ''}, 
+    context, response);
 }
 
 const onFood = (entities, context, response) => {
     let { food } = entities;
 
-    return response(`อยากกิน ${food} เหรอ รอแป๊บหนึ่ง`)
-    .then(() => api.search({keyword:food, timeOfDay: ''}))
-    .then((ress) => {
-        return Promise.all(ress.map(r => {
-            return response(toCard(r._source));
-        }));
-    });
+    return onSearch(`อยากกิน ${food} เหรอ รอแป๊บหนึ่ง`, 
+    {food, timeOfDay: '', size: 2}, 
+    context, response);
 }
 
 const onSearch = (firstResponse, searchQ, context, response) => {
     return response(firstResponse)
     .then(() => api.search(searchQ))
     .then((ress) => {
+        if(!ress || !ress.length) return response(`ขอโทษที หาร้านที่ต้องการไม่เจอ ลองถามใหม่นะ`);
+
         return Promise.all(ress.map(r => {
             return response(toCard(r._source));
         }));
@@ -64,6 +58,7 @@ const toCard = (res) => {
 }
 
 module.exports = {
+    onSearch,        
     onAnyThing,
     onUnknown,
     onFood

@@ -8,11 +8,14 @@ const buildWildCardQ = (keyword) => {
     };
 }
 
-const buildMatchQ = (keyword) => {
+const buildMatchQ = (keyword, field) => {
+    let fieldQ = {};
+
+    if(field) fieldQ[field] = keyword;
+    else fieldQ._all = keyword;
+
     return {
-        "match": {
-            "_all": `${keyword}`
-        }
+        "match": fieldQ
     };
 }
 

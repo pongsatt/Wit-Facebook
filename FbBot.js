@@ -20,7 +20,7 @@ class FBBot {
                     } else if (response.audio) {
                         return fbSend(buildAudio(response.url), context);
                     } else {
-                        return fbSend(buildCard(response), context);
+                        return fbSend(buildACard(response), context);
                     }
                 })
             })
@@ -46,7 +46,13 @@ const fbSend = (msg, context) => {
     return Promise.resolve();
 }
 
-const buildCard = ({ title, subtitle, image_url, url, buttons }) => {
+const buildACard = (card) => {
+    let element = buildElement(card);
+
+    return buildGenericTemplate([element]);
+}
+
+const buildElement = ({ title, subtitle, image_url, url, buttons }) => {
     let element = {
         title,
         subtitle
@@ -70,17 +76,19 @@ const buildCard = ({ title, subtitle, image_url, url, buttons }) => {
         });
     }
 
+    return element;
+}
+
+const buildGenericTemplate = (elements) => {
     return {
         "attachment": {
             "type": "template",
             "payload": {
                 "template_type": "generic",
-                "elements": [
-                    element
-                ]
+                "elements": elements
             }
         }
-    }
+    };
 }
 
 const buildList = (elements) => {

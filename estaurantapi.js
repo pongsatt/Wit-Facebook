@@ -90,8 +90,13 @@ const buildQuery = (opts) => {
         filters.push(geoQ);
     }
 
-    if (opts.limitPrice) {
-        let priceQ = buildRangeQ("priceRange.high", "lte", opts.limitPrice);
+    if (opts.maxPrice) {
+        let priceQ = buildRangeQ("priceRange.high", "lte", opts.maxPrice);
+        filters.push(priceQ);
+    }
+
+    if (opts.minPrice) {
+        let priceQ = buildRangeQ("priceRange.low", "gte", opts.minPrice);
         filters.push(priceQ);
     }
 
@@ -127,6 +132,16 @@ const buildQuery = (opts) => {
             keywordQ = buildWildCardQ(opts.keyword);
         }
         mustQ.push(keywordQ);
+    }
+    
+    if(opts.type){
+        let typeQ = buildMatchQ(opts.type, 'cuisine');
+        mustQ.push(typeQ);
+    }
+
+    if(opts.food){
+        let foodQ = buildMatchQ(opts.food, 'menus');
+        mustQ.push(foodQ);
     }
 
     let q = {

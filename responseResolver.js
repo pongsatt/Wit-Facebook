@@ -26,6 +26,18 @@ const getResponse = (intent, entities, context) => {
                     return response('What word do you want to know meaning or pronunciation?');
                 case 'res_any':
                     return restaurantResponse.onAnyThing(entities, context, response);
+                case 'res_type':
+                    var { type } = entities;
+                    return restaurantResponse.onSearch(
+                        `อยากกินอาหาร${type}ใช่เปล่า รอเดี๋ยวนะ`, 
+                        {type, size:2, timeOfDay:''}, 
+                        context, response);
+                case 'res_near_type':
+                    var { type, near } = entities;
+                    return restaurantResponse.onSearch(
+                        `อยากกินอาหาร${type}ที่อยู่แถวนี้เหรอ รอเดี๋ยวนะ`, 
+                        {type, size:1, maxDistance:near, timeOfDay:''}, 
+                        context, response);
                 case 'res_food':
                     return restaurantResponse.onFood(entities, context, response);
                 case 'res_unknown':
