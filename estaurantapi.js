@@ -46,7 +46,7 @@ const search = (opts, moreOpts) => {
     return find(client, q, opts);
 }
 
-const find = (client, q, opts) => {
+const find = (q, opts) => {
     return client.search(q)
         .then(
         (results) => {

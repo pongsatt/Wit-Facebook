@@ -11,7 +11,7 @@ const onAnyThing = (entities, context, response) => {
 }
 
 const onUnknown = (context, response) => {
-    return response("ผมไม่แน่ใจว่าเข้าใจหรือเปล่า แต่ผมขอแนะนำร้านนี้")
+    return response("ผมไม่แน่ใจว่าเข้าใจหรือเปล่า แต่ผมขอแนะนำร้านนี้ รอสักครู่")
     .then(()=> {
         return api.pickOne().then(res => response(toCard(res._source)));
     });

@@ -23,7 +23,8 @@ class FBBot {
                         return fbSend(buildCard(response), context);
                     }
                 })
-            }, (error) => {
+            })
+            .catch(error => {
                 console.error(error);
                 return fbTextSend("Sorry, we did something wrong. Please try something else.", context);
             });
