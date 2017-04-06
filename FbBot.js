@@ -26,7 +26,7 @@ class FBBot {
             })
             .catch(error => {
                 console.error(error);
-                return fbTextSend("Sorry, we did something wrong. Please try something else.", context);
+                return fbTextSend("Sorry, something wrong from our side. Please try something else.", context);
             });
     }
 }
