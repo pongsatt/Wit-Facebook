@@ -1,7 +1,7 @@
 const Config = require('./const.js');
-const cld = require('cld');
 const WitIntentResolver = require('./WitIntentResolver');
 const RestaurantIntentResolver = require('./RestaurantIntentResolver');
+const cld = require('cld');
 
 class IntentResolver {
   constructor() {
