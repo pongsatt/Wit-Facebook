@@ -1,7 +1,7 @@
 'use strict';
 
-const IntentResolver = require('./intentResolver');
-const ResponseResolver = require('./responseResolver');
+const IntentResolver = require('./IntentResolver');
+const ResponseResolver = require('./ResponseResolver');
 
 class Bot {
   constructor() {
