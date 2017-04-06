@@ -25,8 +25,8 @@ const pickOne = () => {
 
             return search(opts, { from: r, size: 1, timeOfDay: '' })
                 .then(results => {
-                    if (results && results.hits && results.hits.hits) {
-                        let picked = results.hits.hits[0];
+                    if (results.length) {
+                        let picked = results[0];
                         console.log('Pick: ', picked._source.name);
                         return picked;
                     }
@@ -53,7 +53,7 @@ const find = (q, opts) => {
     return client.search(q)
         .then(
         (results) => {
-            // console.log('Found:', results);
+            console.log('Found:', results.hits.total);
             return postProcess(results, opts);
         },
         (errors) => console.error(errors.body));
@@ -70,9 +70,11 @@ const postProcess = (results, opts) => {
             r._distance = calculateDistance(lat1, lon1, lat2, lon2, 'K') * 1000;
             return r;
         });
+
+        return results.hits.hits;
     }
 
-    return results;
+    return [];
 }
 
 const buildQuery = (opts) => {
@@ -140,5 +142,6 @@ const buildQuery = (opts) => {
 }
 
 module.exports = {
-    pickOne
+    pickOne,
+    search
 }

@@ -14,11 +14,11 @@ const search = (query) => {
         body: query
     };
 
-    console.log('Request options: ', opts);
+    // console.log('Request options: ', opts);
 
     return request(opts)
         .then((data) => {
-            console.log('Found data: ', data);
+            // console.log('Found data: ', data);
             return data;
         });
 }

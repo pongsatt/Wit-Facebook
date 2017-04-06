@@ -1,17 +1,39 @@
 const api = require('./estaurantapi');
 
 const onAnyThing = (entities, context, response) => {
-    const { keyword } = entities;
+    return response("ไม่รู้จะกินอะไรใช่มะ เดี๋ยวหาร้านแถวนี้ให้ รอแป๊บหนึ่งนะ")
+    .then(() => api.search({recommended:true, size:2}))
+    .then((ress) => {
+        return Promise.all(ress.map(r => {
+            return response(toCard(r._source));
+        }));
+    });
+}
 
-    if(keyword){
-        return api.pickOne();
-    }
+const onFood = (entities, context, response) => {
+    let { food } = entities;
 
-    return response("ถ้าคุณไม่รู้จะกินอะไร เราจะแนะนำให้คุณเอง");
+    return response(`อยากกิน ${food} เหรอ รอแป๊บหนึ่ง`)
+    .then(() => api.search({keyword:food, timeOfDay: ''}))
+    .then((ress) => {
+        return Promise.all(ress.map(r => {
+            return response(toCard(r._source));
+        }));
+    });
+}
+
+const onSearch = (firstResponse, searchQ, context, response) => {
+    return response(firstResponse)
+    .then(() => api.search(searchQ))
+    .then((ress) => {
+        return Promise.all(ress.map(r => {
+            return response(toCard(r._source));
+        }));
+    });
 }
 
 const onUnknown = (context, response) => {
-    return response("ผมไม่แน่ใจว่าเข้าใจหรือเปล่า แต่ผมขอแนะนำร้านนี้ รอสักครู่")
+    return response("ผมไม่แน่ใจนะ แต่คุณอาจจะชอบร้านนี้ก็ได้ รอสักครู่")
     .then(()=> {
         return api.pickOne().then(res => response(toCard(res._source)));
     });
@@ -43,5 +65,6 @@ const toCard = (res) => {
 
 module.exports = {
     onAnyThing,
-    onUnknown
+    onUnknown,
+    onFood
 }

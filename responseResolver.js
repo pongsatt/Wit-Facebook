@@ -24,8 +24,10 @@ const getResponse = (intent, entities, context) => {
                     return wordResponse.onPronounce(entities, context, response);
                 case 'word_unknown':
                     return response('What word do you want to know meaning or pronunciation?');
-                case 'res_anything':
+                case 'res_any':
                     return restaurantResponse.onAnyThing(entities, context, response);
+                case 'res_food':
+                    return restaurantResponse.onFood(entities, context, response);
                 case 'res_unknown':
                     return restaurantResponse.onUnknown(context, response);
             }
