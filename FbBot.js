@@ -15,10 +15,10 @@ class FBBot {
                 return res.onResponse(response => {
                     if (typeof response == 'string') {
                         return fbTextSend(response, context);
-                    } else if(Array.isArray(response)){
+                    } else if (Array.isArray(response)) {
                         return fbSend(buildList(response), context);
-                    } else if(response.audio){
-                        return fbSend( buildAudio(response.url), context);
+                    } else if (response.audio) {
+                        return fbSend(buildAudio(response.url), context);
                     } else {
                         return fbSend(response, context);
                     }
@@ -42,16 +42,38 @@ const fbSend = (msg, context) => {
     return Promise.resolve();
 }
 
-const buildCard = (title, subtitle) => {
+const buildCard = ({ title, subtitle, image_url, url, buttons }) => {
+    let element = {
+        title,
+        subtitle
+    };
+
+    if(image_url) element.image_url = image_url;
+    if(url){
+        element.default_action = {
+            type: 'web_url',
+            url: url
+        }
+    }
+
+    if(buttons && buttons.length){
+        element.buttons = buttons.map( b => {
+            return {
+                type: 'web_url',
+                title: b.title,
+                url: b.url
+            };
+        });
+    }
+
     return {
         "attachment": {
             "type": "template",
             "payload": {
                 "template_type": "generic",
-                "elements": [{
-                    "title": title,
-                    "subtitle": subtitle,
-                }]
+                "elements": [
+                    element
+                ]
             }
         }
     }

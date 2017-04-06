@@ -25,7 +25,9 @@ const pickOne = () => {
 
             return search(opts, { from: r, size: 1, timeOfDay: '' })
                 .then(results => {
-                    return [results.hits.hits[0]];
+                    let picked = results.hits.hits[0];
+                    console.log('Pick: ', picked)
+                    return picked;
                 });
         })
 }
@@ -129,7 +131,7 @@ const buildQuery = (opts) => {
     if (opts.from !== undefined) q.from = opts.from;
     if (opts.size !== undefined) q.size = opts.size;
 
-    console.log('build q: ', JSON.stringify(q));
+    // console.log('build q: ', JSON.stringify(q));
 
     return q;
 }
