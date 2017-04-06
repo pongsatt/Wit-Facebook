@@ -1,3 +1,21 @@
+const { Wit } = require('node-wit');
+const Config = require('./const');
+
+class WitIntentResolver {
+    constructor(){
+        if(Config.WIT_TOKEN){
+            this.witClient = new Wit({ accessToken: Config.WIT_TOKEN });
+        }
+    }
+    resolve(msg, context){
+        if(!this.witClient){
+            throw new Error('missing WIT_TOKEN');
+        }
+
+        return resolveIntentWit(msg, context, this.witClient);
+    }
+}
+
 const resolveIntentWit = (msg, context, witClient) => {
     return witClient.message(msg, { context })
         .then((data) => {
@@ -26,4 +44,4 @@ const firstEntityValue = (entities, entity) => {
     return typeof val === 'object' ? val.value : val;
 };
 
-module.exports = resolveIntentWit;
+module.exports = WitIntentResolver;

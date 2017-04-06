@@ -2,9 +2,6 @@
 
 // Wit.ai parameters
 const WIT_TOKEN = process.env.WIT_TOKEN;
-if (!WIT_TOKEN) {
-  throw new Error('missing WIT_TOKEN');
-}
 
 // Messenger API parameters
 const FB_PAGE_TOKEN = process.env.FB_PAGE_TOKEN;
@@ -24,10 +21,28 @@ if(!ESTAURANT_API_URL){
   ESTAURANT_API_URL = 'http://pongsatt.thddns.net:5651';
 }
 
+var ESTAURANT_API_AUTH = process.env.ESTAURANT_API_AUTH;
+
+const DEFAULT_LAT = process.env.LAT || 13.7329531;
+const DEFAULT_LON = process.env.LON || 100.5663767;
+const DEFAULT_DISTANCE = process.env.DISTANCE || '5km';
+
+let DEFAULT_LOCATION = {}
+
+if (DEFAULT_LAT && DEFAULT_LON && DEFAULT_DISTANCE) {
+  DEFAULT_LOCATION = {
+    lat: parseFloat(DEFAULT_LAT),
+    lon: parseFloat(DEFAULT_LON),
+    maxDistance: DEFAULT_DISTANCE
+  }
+}
+
 module.exports = {
   WIT_TOKEN,
   FB_PAGE_TOKEN,
   FB_VERIFY_TOKEN,
   WORD_API_URL,
-  ESTAURANT_API_URL
+  ESTAURANT_API_URL,
+  ESTAURANT_API_AUTH,
+  DEFAULT_LOCATION
 };

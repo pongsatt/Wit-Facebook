@@ -26,6 +26,9 @@ const interactive = (fn) => {
         return fn(line)
             .then(() => {
                 return prompt();
+            }, (error) => {
+                console.error(error);
+                return prompt();
             });
     });
 }

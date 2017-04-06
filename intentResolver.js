@@ -1,22 +1,25 @@
 const Config = require('./const.js');
 const cld = require('cld');
-const resolveIntentWit = require('./WitIntentResolver');
-const resolveIntentThai = require('./ThaiIntentResolver');
-const { Wit } = require('node-wit');
+const WitIntentResolver = require('./WitIntentResolver');
+const RestaurantIntentResolver = require('./RestaurantIntentResolver');
 
 class IntentResolver {
   constructor() {
-    this.witClient = new Wit({ accessToken: Config.WIT_TOKEN });
+    this.witIntentResolver = new WitIntentResolver();
+    this.restaurantIntentResolver = new RestaurantIntentResolver();
   }
 
   resolve(msg, context) {
     return getLang(msg)
     .then(lang => {
+      context = context || {};
+      context.lang = context.lang || lang;
+
       if(lang == 'th'){
-        return resolveIntentThai(msg, context);
+        return this.restaurantIntentResolver.resolve(msg, context);
       }
 
-      return resolveIntentWit(msg, context, this.witClient);
+      return this.witIntentResolver.resolve(msg, context);
     });
   }
 }

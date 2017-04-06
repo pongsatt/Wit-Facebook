@@ -22,12 +22,16 @@ const getResponse = (intent, entities, context) => {
                     return wordResponse.onMeaning(entities, context, response);
                 case 'word_pronounce':
                     return wordResponse.onPronounce(entities, context, response);
+                case 'word_unknown':
+                    return response('What word do you want to know meaning or pronunciation?');
                 case 'res_anything':
                     return restaurantResponse.onAnyThing(entities, context, response);
+                case 'res_unknown':
+                    return restaurantResponse.onUnknown(context, response);
             }
 
             console.log('No handler of intent: ', intent);
-            return Promise.resolve();
+            return response(`Sorry, I don't understand. Please try another sentence.`);
         }
     }
 }
