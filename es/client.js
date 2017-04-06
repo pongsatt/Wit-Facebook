@@ -4,7 +4,6 @@ const Config = require('../const');
 const search_url = Config.ESTAURANT_API_URL + '/estaurant/_search';
 
 const search = (query) => {
-    throw new Error('test');
     let opts = {
         method: 'POST',
         url: search_url,
