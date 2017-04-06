@@ -22,7 +22,7 @@ const interactive = (fn) => {
             return prompt();
         }
 
-        console.log("Command: ", line);
+        console.log("Message: ", line);
         return fn(line)
             .then(() => {
                 return prompt();

@@ -7,11 +7,11 @@ class IntentResolver {
   }
 
   resolve(msg, context) {
-    return resolveIntent(msg, context, this.witClient);
+    return resolveIntentWit(msg, context, this.witClient);
   }
 }
 
-const resolveIntent = (msg, context, witClient) => {
+const resolveIntentWit = (msg, context, witClient) => {
   return witClient.message(msg, { context })
     .then((data) => {
       const { entities } = data;
