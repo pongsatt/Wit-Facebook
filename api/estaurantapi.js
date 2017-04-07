@@ -56,8 +56,7 @@ const find = (q, opts) => {
         (results) => {
             console.log('Found:', results.hits.total);
             return postProcess(results, opts);
-        },
-        (errors) => console.error(errors.body));
+        });
 }
 
 const postProcess = (results, opts) => {

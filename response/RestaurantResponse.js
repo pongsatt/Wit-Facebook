@@ -1,13 +1,38 @@
 const api = require('../api/estaurantapi');
 
-const onAnyThing = (entities, context, response) => {
-    return onPick(
-        "ไม่รู้จะกินอะไรใช่มะ เดี๋ยวหาร้านแถวนี้ให้ รอแป๊บหนึ่งนะ",
-        { recommended: true, size: 2, timeOfDay: '' },
-        context, response,
-        "ลองดูร้านนี้เป็นยังไง",
-        "ขอโทษที ไม่พบร้านแถวนี้เลย",
-        );
+const onResponse = (intent, entities, context, response) => {
+    switch (intent) {
+        case 'res_any':
+            return onPick(
+                "ไม่รู้จะกินอะไรใช่มะ เดี๋ยวหาร้านแถวนี้ให้ รอแป๊บหนึ่งนะ",
+                { recommended: true, size: 2, timeOfDay: '' },
+                context, response,
+                "ลองดูร้านนี้เป็นยังไง",
+                "ขอโทษที ไม่พบร้านแถวนี้เลย");
+        case 'res_any_again':
+            return onPick(
+                "โอเค งั้นลองร้านใหม่ รอแป๊บหนึ่งนะ",
+                { recommended: true, size: 2, timeOfDay: '' },
+                context, response,
+                "ลองดูร้านนี้เป็นยังไง",
+                "ขอโทษที ไม่พบร้านแถวนี้เลย");
+        case 'res_type':
+            var { type } = entities;
+            return onSearch(
+                `อยากกินอาหาร${type}ใช่เปล่า รอเดี๋ยวนะ`,
+                { type, size: 2, timeOfDay: '' },
+                context, response);
+        case 'res_near_type':
+            var { type, near } = entities;
+            return onSearch(
+                `อยากกินอาหาร${type}ที่อยู่แถวนี้เหรอ รอเดี๋ยวนะ`,
+                { type, size: 1, maxDistance: near, timeOfDay: '' },
+                context, response);
+        case 'res_food':
+            return onFood(entities, context, response);
+    }
+
+    return onUnknown(context, response);
 }
 
 const onFood = (entities, context, response) => {
@@ -22,9 +47,9 @@ const onPick = (firstResponse, searchQ, context, response, lastResponse, errorRe
     return response(firstResponse)
         .then(() => api.pickOne(searchQ))
         .then((ress) => {
-            if(lastResponse){
+            if (lastResponse) {
                 return response(lastResponse)
-                .then(() => ress);
+                    .then(() => ress);
             }
             return ress;
         })
@@ -41,9 +66,9 @@ const onSearch = (firstResponse, searchQ, context, response, lastResponse, error
     return response(firstResponse)
         .then(() => api.search(searchQ))
         .then((ress) => {
-            if(lastResponse){
+            if (lastResponse) {
                 return response(lastResponse)
-                .then(() => ress);
+                    .then(() => ress);
             }
             return ress;
         })
@@ -57,9 +82,10 @@ const onSearch = (firstResponse, searchQ, context, response, lastResponse, error
 }
 
 const onUnknown = (context, response) => {
+    console.log('Unknown intent');
     return response("ผมไม่แน่ใจนะ แต่คุณอาจจะชอบร้านนี้ก็ได้ รอสักครู่")
         .then(() => {
-            return api.pickOne().then(res => response(toCard(res._source)));
+            return api.pickOne().then(res => response(toCard(res.hits.hits[0]._source)));
         });
 }
 
@@ -88,8 +114,8 @@ const toCard = (res) => {
 }
 
 module.exports = {
+    onResponse,
     onSearch,
-    onAnyThing,
     onUnknown,
     onFood
 }

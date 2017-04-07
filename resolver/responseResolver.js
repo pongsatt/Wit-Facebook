@@ -17,6 +17,10 @@ const getResponse = (intent, entities, context) => {
 
     return {
         onResponse(response) {
+            if(intent && intent.startsWith('res_')){
+                return restaurantResponse.onResponse(intent, entities, context, response)
+            }
+
             switch (intent) {
                 case 'word_meaning':
                     return wordResponse.onMeaning(entities, context, response);
@@ -24,24 +28,6 @@ const getResponse = (intent, entities, context) => {
                     return wordResponse.onPronounce(entities, context, response);
                 case 'word_unknown':
                     return response('What word do you want to know meaning or pronunciation?');
-                case 'res_any':
-                    return restaurantResponse.onAnyThing(entities, context, response);
-                case 'res_type':
-                    var { type } = entities;
-                    return restaurantResponse.onSearch(
-                        `อยากกินอาหาร${type}ใช่เปล่า รอเดี๋ยวนะ`, 
-                        {type, size:2, timeOfDay:''}, 
-                        context, response);
-                case 'res_near_type':
-                    var { type, near } = entities;
-                    return restaurantResponse.onSearch(
-                        `อยากกินอาหาร${type}ที่อยู่แถวนี้เหรอ รอเดี๋ยวนะ`, 
-                        {type, size:1, maxDistance:near, timeOfDay:''}, 
-                        context, response);
-                case 'res_food':
-                    return restaurantResponse.onFood(entities, context, response);
-                case 'res_unknown':
-                    return restaurantResponse.onUnknown(context, response);
             }
 
             console.log('No handler of intent: ', intent);

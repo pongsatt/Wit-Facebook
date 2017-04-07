@@ -13,7 +13,12 @@ const resolveIntent = (msg, context) => {
     let { intentList, entities } = detectIntent(msg, context);
 
     if (intentList.length > 0) {
-        let intent = 'res_' + intentList.join('_');
+
+        let intent = intentList.join('_');
+
+        if(!intent.startsWith('res_')){
+            intent = 'res_' + intent;
+        }
         return { intent, entities }
     }
 
@@ -31,7 +36,13 @@ const detectIntent = (msg, context) => {
     }
 
     if (isAgain(msg)) {
-        if(context.lastMsg) return detectIntent(context.lastMsg, context);
+        if(context.lastIntent){
+            const { intent, entities } = context.lastIntent;
+
+            intentList.push(intent);
+            intentList.push('again');
+            return {intentList, entities}
+        }
     }
 
     if (r = getNear(msg)) {
