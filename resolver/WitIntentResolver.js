@@ -1,5 +1,5 @@
 const { Wit } = require('node-wit');
-const Config = require('./const');
+const Config = require('../config/const');
 
 class WitIntentResolver {
     constructor(){

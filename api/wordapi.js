@@ -1,7 +1,7 @@
 'use strict';
 
 var request = require('request-promise');
-var Config = require('./const.js');
+var Config = require('../config/const.js');
 
 const getWords = (word, fn) => {
     console.log('Getting word:', word)

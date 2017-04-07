@@ -1,6 +1,6 @@
 'use strict';
 const request = require('request-promise');
-const Config = require('../const');
+const Config = require('../config/const');
 const search_url = Config.ESTAURANT_API_URL + '/estaurant/_search';
 
 const search = (query) => {

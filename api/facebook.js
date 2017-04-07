@@ -4,7 +4,7 @@
 // https://developers.facebook.com/docs/messenger-platform/send-api-reference
 const request = require('request-promise');
 
-const Config = require('./const.js');
+const Config = require('../config/const.js');
 
 const options = {
   uri: 'https://graph.facebook.com/me/messages',

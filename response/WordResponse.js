@@ -1,4 +1,4 @@
-const WordApi = require('./wordapi.js');
+const WordApi = require('../api/wordapi.js');
 
 const getWord = (entities) => {
     const { word } = entities;

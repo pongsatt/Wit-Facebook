@@ -1,7 +1,7 @@
 'use strict';
 
-const Config = require('./const');
-const client = require('./es/client');
+const Config = require('../config/const');
+const client = require('../es/client');
 const { buildBoolQ,
     buildGeoQ,
     buildMatchQ,
@@ -9,12 +9,14 @@ const { buildBoolQ,
     buildNestedQ,
     buildRangeQ,
     buildExistQ,
-    buildWildCardQ } = require('./es/query');
-const { calculateDistance } = require('./utils/geo_util');
-const { getDayOfWeek, getTime } = require('./utils/date_util');
+    buildWildCardQ } = require('../es/query');
+const { calculateDistance } = require('../utils/geo_util');
+const { getDayOfWeek, getTime } = require('../utils/date_util');
 
-const pickOne = () => {
-    let opts = {};
+const pickOne = (opts, moreOpts) => {
+    opts = Object.assign({}, {
+        location: Config.DEFAULT_LOCATION
+    }, opts, moreOpts);
 
     return search(opts, { size: 0, timeOfDay: '' })
         .then(results => {
@@ -25,12 +27,11 @@ const pickOne = () => {
 
             return search(opts, { from: r, size: 1, timeOfDay: '' })
                 .then(results => {
-                    if (results.length) {
-                        let picked = results[0];
+                    if (results.hits.total) {
+                        let picked = results.hits.hits[0];
                         console.log('Pick: ', picked._source.name);
-                        return picked;
                     }
-                    return Promise.resolve();
+                    return results;
                 });
         })
 }
@@ -71,10 +72,9 @@ const postProcess = (results, opts) => {
             return r;
         });
 
-        return results.hits.hits;
     }
 
-    return [];
+    return results;
 }
 
 const buildQuery = (opts) => {
@@ -133,13 +133,13 @@ const buildQuery = (opts) => {
         }
         mustQ.push(keywordQ);
     }
-    
-    if(opts.type){
+
+    if (opts.type) {
         let typeQ = buildMatchQ(opts.type, 'cuisine');
         mustQ.push(typeQ);
     }
 
-    if(opts.food){
+    if (opts.food) {
         let foodQ = buildMatchQ(opts.food, 'menus');
         mustQ.push(foodQ);
     }

@@ -1,8 +1,8 @@
 'use strict';
 
-const FB = require('./facebook.js');
-const Config = require('./const.js');
-const Bot = require('./bot');
+const FB = require('../api/facebook.js');
+const Config = require('../config/const.js');
+const Bot = require('../bot/bot');
 
 class FBBot {
     constructor() {
@@ -120,7 +120,7 @@ module.exports = FBBot;
 // bot testing mode
 // http://stackoverflow.com/questions/6398196
 if (require.main === module) {
-    const interactive = require('./interactive');
+    const interactive = require('../utils/interactive');
 
     console.log("FBBot testing mode.");
     var bot = new FBBot();

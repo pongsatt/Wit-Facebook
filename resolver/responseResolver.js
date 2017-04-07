@@ -1,5 +1,5 @@
-const wordResponse = require('./WordResponse');
-const restaurantResponse = require('./RestaurantResponse');
+const wordResponse = require('../response/WordResponse');
+const restaurantResponse = require('../response/RestaurantResponse');
 
 class ResponseResolver {
     constructor() {

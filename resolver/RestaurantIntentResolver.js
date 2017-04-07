@@ -10,7 +10,7 @@ class RestaurantIntentResolver {
 const resolveIntent = (msg, context) => {
     msg = msg || '';
 
-    let { intentList, entities } = detectIntent(msg);
+    let { intentList, entities } = detectIntent(msg, context);
 
     if (intentList.length > 0) {
         let intent = 'res_' + intentList.join('_');
@@ -21,13 +21,17 @@ const resolveIntent = (msg, context) => {
     return { intent: 'res_unknown', entities: {} };
 }
 
-const detectIntent = (msg) => {
+const detectIntent = (msg, context) => {
     let intentList = [];
     let entities = {};
 
     if (isAnyThing(msg)) {
         intentList.push('any');
         return {intentList, entities};
+    }
+
+    if (isAgain(msg)) {
+        if(context.lastMsg) return detectIntent(context.lastMsg, context);
     }
 
     if (r = getNear(msg)) {
@@ -51,6 +55,12 @@ const detectIntent = (msg) => {
 
 const isAnyThing = (msg) => {
     let one = getOne(msg, ['ไรดี']);
+
+    return one && one.length;
+}
+
+const isAgain = (msg) => {
+    let one = getOne(msg, ['ไม่เอา', 'ไม่ชอบ', 'เอาใหม่', 'เปลี่ยน']);
 
     return one && one.length;
 }

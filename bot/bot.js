@@ -1,7 +1,7 @@
 'use strict';
 
-const IntentResolver = require('./intentResolver');
-const ResponseResolver = require('./responseResolver');
+const IntentResolver = require('../resolver/intentResolver');
+const ResponseResolver = require('../resolver/responseResolver');
 
 class Bot {
   constructor() {
@@ -23,7 +23,7 @@ module.exports = Bot;
 // bot testing mode
 // http://stackoverflow.com/questions/6398196
 if (require.main === module) {
-  const interactive = require('./interactive');
+  const interactive = require('../utils/interactive');
 
   console.log("Bot testing mode.");
   var bot = new Bot();
