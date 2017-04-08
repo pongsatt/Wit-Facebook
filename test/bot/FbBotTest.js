@@ -2,7 +2,7 @@ const FBBot = require('../../bot/FbBot');
 const Bot = require('../../bot/botwrapper');
 var assert = require('assert');
 
-var bot = new Bot();
+var bot = new FBBot();
 
 describe('FbBot', function () {
   describe('restaurant', function () {
