@@ -5,7 +5,7 @@ const Config = require('../config/const');
 const search = (query) => {
     let opts = {
         method: 'POST',
-        url: Config.ESTAURANT_API_URL + '/estaurant/_search',
+        uri: Config.ESTAURANT_API_URL + '/estaurant/_search',
         json: true,
         headers : {
             "Authorization" : "Basic " + new Buffer(Config.ESTAURANT_API_AUTH).toString("base64")
@@ -13,7 +13,7 @@ const search = (query) => {
         body: query
     };
 
-    // console.log('Request options: ', opts);
+    console.log('Request options: ', opts);
 
     return request(opts)
         .then((data) => {
