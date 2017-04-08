@@ -71,6 +71,15 @@ const doAction = (intent, context, response) => {
         context.location = Config.DEFAULT_LOCATION;
     }
 
+    if (!p && intent == 'res_location') {
+        context.where = null;
+        context.location = {lat: parseFloat(context.lat), lon: parseFloat(context.lon), maxDistance: Config.DEFAULT_DISTANCE};
+    }
+
+    if (!p && intent && intent.includes('where')) {
+        context.location = null;
+    }
+
     //end preparation
 
     let { status, food, minPrice, maxPrice, where, location } = context;
@@ -110,14 +119,18 @@ const buildFirstMsg = (intent, context) => {
     let { status, food, minPrice, maxPrice, where, location } = context;
     let msg = ``;
 
-    if(food && where && minPrice && maxPrice){
-        msg = `เดี๋ยวหาร้านที่ขาย${food}ที่${where} ราคาอยู่ระหว่าง ${minPrice} และ ${maxPrice}`;
-    }else if(food && where && minPrice){
-        msg = `เดี๋ยวหาร้านที่ขาย${food}ที่${where} ราคาไม่เกิน ${minPrice}`;
-    }else if(food && where){
-        msg = `เดี๋ยวหาร้านที่ขาย${food}ที่${where}`;
-    }else if(where){
-        msg = `เดี๋ยวหาร้านที่${where}`;
+    let locText;
+    if(where) locText = `ที่${where}`;
+    else if(location) locText = `บริเวณนี้`;
+
+    if(food && locText && minPrice && maxPrice){
+        msg = `เดี๋ยวหาร้านที่ขาย${food}${locText} ราคาอยู่ระหว่าง ${minPrice} และ ${maxPrice}`;
+    }else if(food && locText && minPrice){
+        msg = `เดี๋ยวหาร้านที่ขาย${food}${locText} ราคาไม่เกิน ${minPrice}`;
+    }else if(food && locText){
+        msg = `เดี๋ยวหาร้านที่ขาย${food}${locText}`;
+    }else if(locText){
+        msg = `เดี๋ยวหาร้าน${locText}`;
     }
 
     return msg + 'ให้ รอแป๊บนะ';
@@ -127,14 +140,18 @@ const buildLastMsg = (intent, context) => {
     let { status, food, minPrice, maxPrice, where, location } = context;
     let msg = ``;
 
-    if(food && where && minPrice && maxPrice){
-        msg = `ได้ละร้านที่ขาย${food}ที่${where} ราคาอยู่ระหว่าง ${minPrice} และ ${maxPrice}`;
-    }else if(food && where && minPrice){
-        msg = `ได้ละร้านที่ขาย${food}ที่${where} ราคาไม่เกิน ${minPrice}`;
-    }else if(food && where){
-        msg = `ได้ละร้านที่ขาย${food}ที่${where}`;
-    }else if(where){
-        msg = `ได้ละร้านที่${where}`;
+    let locText;
+    if(where) locText = `ที่${where}`;
+    else if(location) locText = `บริเวณนี้`;
+
+    if(food && locText && minPrice && maxPrice){
+        msg = `ได้ละร้านที่ขาย${food}${locText} ราคาอยู่ระหว่าง ${minPrice} และ ${maxPrice}`;
+    }else if(food && locText && minPrice){
+        msg = `ได้ละร้านที่ขาย${food}${locText} ราคาไม่เกิน ${minPrice}`;
+    }else if(food && locText){
+        msg = `ได้ละร้านที่ขาย${food}${where}`;
+    }else if(locText){
+        msg = `ได้ละร้าน${locText}`;
     }
 
     return msg;
@@ -144,14 +161,18 @@ const buildErrorMsg = (intent, context) => {
     let { status, food, minPrice, maxPrice, where, location } = context;
     let msg = `หาร้านที่`;
 
-    if(food && where && minPrice && maxPrice){
-        msg += `ขาย${food}ที่${where} ราคาอยู่ระหว่าง ${minPrice} และ ${maxPrice}`;
-    }else if(food && where && minPrice){
-        msg += `ขาย${food}ที่${where} ราคาไม่เกิน ${minPrice}`;
-    }else if(food && where){
-        msg += `ขาย${food}ที่${where}`;
-    }else if(where){
-        msg = `${where}`;
+    let locText;
+    if(where) locText = `ที่${where}`;
+    else if(location) locText = `บริเวณนี้`;
+
+    if(food && locText && minPrice && maxPrice){
+        msg += `ขาย${food}${locText} ราคาอยู่ระหว่าง ${minPrice} และ ${maxPrice}`;
+    }else if(food && locText && minPrice){
+        msg += `ขาย${food}${locText} ราคาไม่เกิน ${minPrice}`;
+    }else if(food && locText){
+        msg += `ขาย${food}${locText}`;
+    }else if(locText){
+        msg = `${locText}`;
     }
 
     return msg + `ไม่เจอเลย`;

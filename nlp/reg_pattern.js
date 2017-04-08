@@ -1,4 +1,6 @@
 module.exports = [
+    {lang: 'en', intent: 'res_location',  p:'.*lat (?<lat>.*) lon (?<lon>.*).*'},
+
     {lang: 'en', intent: 'greet_normal',  p:'(hi|hello)(?<obj>.*)*'},
     {lang: 'th', intent: 'greet_normal',  p:'(สวัสดี|หวัดดี|ว่าไง)(?<obj>.*)*'},
 

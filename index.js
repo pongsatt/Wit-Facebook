@@ -93,7 +93,8 @@ app.post('/webhook', (req, res) => {
     // We retrieve the message content
     const msg = messaging.message.text;
     const atts = messaging.message.attachments;
-    const location;
+    var context = sessions[sessionId].context;
+    context.sessionId = sessionId;
 
     if (atts) {
       // We received an attachment
@@ -101,25 +102,17 @@ app.post('/webhook', (req, res) => {
 
       location = getFBLocation(attrs);
 
-      if (!location) {
-        // Let's reply with an automatic message
+      if(location){
+        bot.message(`My location is lat ${location.lat} lon ${location.lon}`, context);
+      }else{
         FB.fbMessage(
           sender,
           { text: 'Sorry I can only process text messages for now.' }
         );
-
       }
-    }
 
-    if (msg) {
+    }else if (msg) {
       // We received a text message
-
-      // Let's forward the message to the Wit.ai Bot Engine
-      // This will run all actions until our bot has nothing left to do
-      var context = sessions[sessionId].context;
-      context.sessionId = sessionId;
-      if(location) context.location = location;
-      
       bot.message(msg, context);
     }
   }

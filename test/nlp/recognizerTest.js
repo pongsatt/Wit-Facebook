@@ -165,6 +165,15 @@ describe('Recognizer', function () {
 
     });
 
+    describe('Location', function () {
+        it('should get my location', function () {
+            let intent = r.intent('My location is lat 13.688668 lon 100.607515', 'en');
+            assert.propertyVal(intent, 'intent', 'res_location', intent);
+        });
+
+
+    });
+
     describe('Word', function () {
         it('should be meaning', function () {
             let intent = r.intent('test means', 'en');
