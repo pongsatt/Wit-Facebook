@@ -1,17 +1,34 @@
 const FBBot = require('../../bot/FbBot');
-
-var bot = new FBBot();
-
+const Bot = require('../../bot/botwrapper');
 var assert = require('assert');
+
+var bot = new Bot();
+
 describe('FbBot', function () {
-  describe('res_any', function () {
-    it('should pick recommended', function () {
+  describe('restaurant', function () {
+    it('should start recommend dialog', function () {
       let context = { sessionId: 1 };
 
       let p = bot.message('กินไรดี', context);
-      p = p.then(results => bot.message('ไม่เอา', context));
+      p = p.then(response => {
+        return bot.message('ไม่เอา', context);
+      });
 
       return p;
     });
   });
+
+  // describe('greeting', function () {
+  //   it('should start greeting dialog', function () {
+  //     let context = { sessionId: 1 };
+
+  //     let p = bot.message('สวัสดี', context)
+  //     .then( (s) => {
+  //       return bot.message('พงศ์', context)
+  //     });
+
+  //     return p;
+  //   });
+  // });
+
 });

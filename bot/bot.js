@@ -1,21 +1,58 @@
 'use strict';
 
 const IntentResolver = require('../resolver/intentResolver');
-const ResponseResolver = require('../resolver/responseResolver');
+const Recognizer = require('../nlp/recognizer');
+const GreetConversation = require('../conversation/greeting');
+const RestaurantConversation = require('../conversation/restaurant');
+const NotUnderstand = require('../conversation/notunderstand');
 
 class Bot {
   constructor() {
     this.intentResolver = new IntentResolver();
-    this.responseResolver = new ResponseResolver();
+    this.recognizer = new Recognizer();
+    this.conversations = {};
+    this.contexts = {};
   }
 
   message(msg, context) {
-    return this.intentResolver.resolve(msg, context)
-      .then((intentObj) => {
-        const { intent, entities } = intentObj;
-        return this.responseResolver.resolve(intent, entities, context)
+    return this.recognizer.recognize(msg)
+      .then(({ intent, entities }) => {
+        console.log('Found intent: ', JSON.stringify({ intent, entities }));
+        let conv = this.getOrCreateConversation(intent, context);
+
+        return {
+          onResponse(response) {
+            return conv.response(intent, entities, response);
+          }
+        }
       });
   }
+
+  getOrCreateConversation(intent, context) {
+    const { sessionId } = context;
+
+    if (!sessionId) {
+      throw new Error('No sessionId found');
+    }
+
+    let existingConv = this.conversations[sessionId];
+    if (!existingConv || existingConv.ended) {
+      context = Object.assign({}, context, this.contexts[sessionId]);
+      this.conversations[sessionId] = buildConversation(intent, context);
+    }
+
+    return this.conversations[sessionId];
+  }
+}
+
+const buildConversation = (intent, context) => {
+  if (intent.startsWith('greet_')) {
+    return new Greet(context);
+  } else if (intent.startsWith('res_')) {
+    return new RestaurantConversation(context);
+  }
+
+  return new NotUnderstand(context);
 }
 
 module.exports = Bot;
@@ -29,13 +66,14 @@ if (require.main === module) {
   var bot = new Bot();
 
   interactive((command) => {
-    return bot.message(command, {})
-    .then(res => {
-      return res.onResponse(response => {
-        console.log('Response: ', response);
-        return Promise.resolve();
+    let context = { sessionId: 1 };
+    return bot.message(command, context)
+      .then(res => {
+        return res.onResponse(response => {
+          console.log('Response: ', response);
+          return Promise.resolve();
+        });
       });
-    });
   });
 
 }

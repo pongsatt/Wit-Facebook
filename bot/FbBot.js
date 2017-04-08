@@ -126,7 +126,7 @@ if (require.main === module) {
     var bot = new FBBot();
 
     interactive((command) => {
-        return bot.message(command, {});
+        return bot.message(command, {sessionId:1});
     });
 
 }
