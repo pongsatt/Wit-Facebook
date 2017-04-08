@@ -1,12 +1,11 @@
 'use strict';
 const request = require('request-promise');
 const Config = require('../config/const');
-const search_url = Config.ESTAURANT_API_URL + '/estaurant/_search';
 
 const search = (query) => {
     let opts = {
         method: 'POST',
-        url: search_url,
+        url: Config.ESTAURANT_API_URL + '/estaurant/_search',
         json: true,
         headers : {
             "Authorization" : "Basic " + new Buffer(Config.ESTAURANT_API_AUTH).toString("base64")
