@@ -15,7 +15,7 @@ const { getDayOfWeek, getTime } = require('../utils/date_util');
 
 const pickOne = (opts, moreOpts) => {
     opts = Object.assign({}, {
-        location: Config.DEFAULT_LOCATION
+        // location: Config.DEFAULT_LOCATION
     }, opts, moreOpts);
 
     return search(opts, { size: 0, timeOfDay: '' })
@@ -42,7 +42,7 @@ function getRandomInt(min, max) {
 
 const search = (opts, moreOpts) => {
     opts = Object.assign({}, {
-        location: Config.DEFAULT_LOCATION
+        // location: Config.DEFAULT_LOCATION
     }, opts, moreOpts);
 
     let q = buildQuery(opts);
@@ -51,12 +51,18 @@ const search = (opts, moreOpts) => {
 }
 
 const find = (q, opts) => {
-    return client.search(q)
-        .then(
-        (results) => {
-            console.log('Found:', results.hits.total);
-            return postProcess(results, opts);
-        });
+    return new Promise((resolve, reject) => {
+        return client.search(q)
+            .then(results => {
+                console.log('Found:', results.hits.total);
+
+                if(results && results.hits && results.hits.total){
+                    return resolve(postProcess(results, opts));
+                }
+
+                return reject({code:'not_found', msg: 'Result not found.'});
+            })
+    });
 }
 
 const postProcess = (results, opts) => {
@@ -141,6 +147,11 @@ const buildQuery = (opts) => {
     if (opts.food) {
         let foodQ = buildMatchQ(opts.food, 'menus');
         mustQ.push(foodQ);
+    }
+
+    if (opts.where) {
+        let whereQ = buildMatchQ(opts.where, 'address.addressLocality');
+        mustQ.push(whereQ);
     }
 
     let q = {

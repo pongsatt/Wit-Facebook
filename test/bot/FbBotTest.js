@@ -6,17 +6,73 @@ var bot = new Bot();
 
 describe('FbBot', function () {
   describe('restaurant', function () {
+    // it('should start recommend dialog', function () {
+    //   let context = { sessionId: 1 };
+
+    //   let p = bot.message('กินไรดี', context);
+    //   p = p.then(response => {
+    //     return bot.message('ไม่เอา', context);
+    //   });
+
+    //   return p;
+    // });
+
+    // it('should start recommend dialog', function () {
+    //   let context = { sessionId: 1 };
+
+    //   let p = bot.message('อยากกินอะไรก็ได้', context);
+
+    //   return p;
+    // });
+
+    // it('should start recommend dialog', function () {
+    //   let context = { sessionId: 1 };
+
+    //   let p = bot.message('หิว', context);
+    //   p = p.then(() => bot.message('อยากกินส้มตำ', context));
+
+    //   return p;
+    // });
+
+    // it('should start recommend dialog', function () {
+    //   let context = { sessionId: 1 };
+
+    //   let p = bot.message('อยู่แถวพร้อมพงษ์กินอะไรดี', context);
+    //   p = p.then(() => bot.message('ไม่เอา อยากกินอย่างอื่น', context))
+
+    //   return p;
+    // });
+
     it('should start recommend dialog', function () {
       let context = { sessionId: 1 };
 
-      let p = bot.message('กินไรดี', context);
-      p = p.then(response => {
-        return bot.message('ไม่เอา', context);
-      });
+      let p = bot.message('อยู่เอ็มโพเรียมกินอะไรดี', context);
+      p = p.then(() => bot.message('อยากกินเค้ก', context));
+      p = p.then(() => bot.message('แล้วมีส้มตำมะ', context));
+      p = p.then(() => bot.message('ไม่กินและ', context));
 
       return p;
     });
+
   });
+
+  // describe('word', function () {
+  //   it('should response word meaning', function () {
+  //     let context = { sessionId: 1 };
+
+  //     let p = bot.message('test means', context);
+
+  //     return p;
+  //   });
+
+  //   it('should response word pronunciation', function () {
+  //     let context = { sessionId: 1 };
+
+  //     let p = bot.message('say test', context);
+
+  //     return p;
+  //   });
+  // });
 
   // describe('greeting', function () {
   //   it('should start greeting dialog', function () {

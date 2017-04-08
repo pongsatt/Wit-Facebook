@@ -4,6 +4,7 @@ const IntentResolver = require('../resolver/intentResolver');
 const Recognizer = require('../nlp/recognizer');
 const GreetConversation = require('../conversation/greeting');
 const RestaurantConversation = require('../conversation/restaurant');
+const WordConversation = require('../conversation/word');
 const NotUnderstand = require('../conversation/notunderstand');
 
 class Bot {
@@ -19,6 +20,7 @@ class Bot {
       .then(({ intent, entities }) => {
         console.log('Found intent: ', JSON.stringify({ intent, entities }));
         let conv = this.getOrCreateConversation(intent, context);
+        // console.log('Got Conversion: ', conv);
 
         return {
           onResponse(response) {
@@ -47,9 +49,11 @@ class Bot {
 
 const buildConversation = (intent, context) => {
   if (intent.startsWith('greet_')) {
-    return new Greet(context);
+    return new GreetConversation(context);
   } else if (intent.startsWith('res_')) {
     return new RestaurantConversation(context);
+  } else if (intent.startsWith('word_')) {
+    return new WordConversation(context);
   }
 
   return new NotUnderstand(context);
