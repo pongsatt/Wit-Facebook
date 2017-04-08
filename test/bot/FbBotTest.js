@@ -54,10 +54,19 @@ describe('FbBot', function () {
     //   return p;
     // });
 
+    // it('should start pick by location', function () {
+    //   let context = { sessionId: 1 };
+
+    //   let p = bot.message('My location is lat 13.688668 lon 100.607515', context);
+    //   // p = p.then(() => bot.message('อยากกินเค้ก', context));
+
+    //   return p;
+    // });
+
     it('should start pick by location', function () {
       let context = { sessionId: 1 };
 
-      let p = bot.message('My location is lat 13.688668 lon 100.607515', context);
+      let p = bot.message('อยากกินเค้กแถวบางนา', context);
       // p = p.then(() => bot.message('อยากกินเค้ก', context));
 
       return p;

@@ -21,8 +21,8 @@ if(!ESTAURANT_API_URL){
   ESTAURANT_API_URL = 'http://pongsatt.thddns.net:5651';
 }
 
-ESTAURANT_API_HOST = 'pongsatt.thddns.net';
-ESTAURANT_API_PORT = 5651;
+const ESTAURANT_API_HOST = 'pongsatt.thddns.net';
+const ESTAURANT_API_PORT = 5651;
 
 var ESTAURANT_API_AUTH = process.env.ESTAURANT_API_AUTH;
 
