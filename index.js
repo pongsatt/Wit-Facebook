@@ -100,7 +100,7 @@ app.post('/webhook', (req, res) => {
       // We received an attachment
       console.log('atts:', JSON.stringify(atts));
 
-      location = getFBLocation(attrs);
+      location = getFBLocation(atts);
 
       if(location){
         bot.message(`My location is lat ${location.lat} lon ${location.lon}`, context);

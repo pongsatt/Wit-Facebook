@@ -116,9 +116,9 @@ const buildQuery = (opts) => {
 
     if (opts.recommended === true) {
         let ratingExist = buildExistQ("rating");
-        let ratingValue = buildRangeQ("rating.ratingValue", "gte", 3);
-        let ratingCount = buildRangeQ("rating.ratingCount", "gte", 3);
-        let reviewCount = buildRangeQ("rating.reviewCount", "gte", 3);
+        let ratingValue = buildRangeQ("rating.ratingValue", "gte", 1);
+        let ratingCount = buildRangeQ("rating.ratingCount", "gte", 1);
+        let reviewCount = buildRangeQ("rating.reviewCount", "gte", 1);
 
         filters.push(ratingExist);
         filters.push(ratingValue);
