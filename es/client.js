@@ -5,8 +5,10 @@ const search_url = Config.ESTAURANT_API_URL + '/estaurant/_search';
 
 const search = (query) => {
     let opts = {
+        host: Config.ESTAURANT_API_HOST,
+        port: Config.ESTAURANT_API_PORT,
+        path: '/estaurant/_search',
         method: 'POST',
-        url: search_url,
         json: true,
         timeout: 20000,
         headers : {
