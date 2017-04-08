@@ -2,16 +2,18 @@
 const request = require('request-promise');
 const Config = require('../config/const');
 
+const options = {
+  uri: Config.ESTAURANT_API_URL + '/estaurant/_search',
+  method: 'POST',
+  json: true,
+  headers: {
+    'Content-Type': 'application/json',
+    "Authorization" : "Basic " + new Buffer(Config.ESTAURANT_API_AUTH).toString("base64")
+  },
+};
+
 const search = (query) => {
-    let opts = {
-        method: 'POST',
-        uri: Config.ESTAURANT_API_URL + '/estaurant/_search',
-        json: true,
-        headers : {
-            "Authorization" : "Basic " + new Buffer(Config.ESTAURANT_API_AUTH).toString("base64")
-        },
-        body: query
-    };
+    let opts = Object.assign({}, options, {body: query});
 
     console.log('Request options: ', opts);
 
