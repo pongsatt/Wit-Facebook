@@ -43,16 +43,16 @@ describe('FbBot', function () {
     //   return p;
     // });
 
-    // it('should start recommend dialog', function () {
-    //   let context = { sessionId: 1 };
+    it('should start recommend dialog', function () {
+      let context = { sessionId: 1 };
 
-    //   let p = bot.message('อยู่เอ็มโพเรียมกินอะไรดี', context);
-    //   p = p.then(() => bot.message('อยากกินเค้ก', context));
-    //   p = p.then(() => bot.message('แล้วมีส้มตำมะ', context));
-    //   p = p.then(() => bot.message('ไม่กินและ', context));
+      let p = bot.message('อยู่เอ็มโพเรียมกินอะไรดี', context);
+      p = p.then(() => bot.message('อยากกินเค้ก', context));
+      p = p.then(() => bot.message('แล้วมีส้มตำมะ', context));
+      p = p.then(() => bot.message('ไม่กินและ', context));
 
-    //   return p;
-    // });
+      return p;
+    });
 
     // it('should start pick by location', function () {
     //   let context = { sessionId: 1 };
@@ -63,14 +63,14 @@ describe('FbBot', function () {
     //   return p;
     // });
 
-    it('should start pick by location', function () {
-      let context = { sessionId: 1 };
+    // it('should start pick by location', function () {
+    //   let context = { sessionId: 1 };
 
-      let p = bot.message('อยากกินเค้กแถวบางนา', context);
-      // p = p.then(() => bot.message('อยากกินเค้ก', context));
+    //   let p = bot.message('อยากกินเค้กแถวบางนา', context);
+    //   // p = p.then(() => bot.message('อยากกินเค้ก', context));
 
-      return p;
-    });
+    //   return p;
+    // });
 
   });
 

@@ -18,7 +18,7 @@ if(!WORD_API_URL){
 
 var ESTAURANT_API_URL = process.env.ESTAURANT_API_URL;
 if(!ESTAURANT_API_URL){
-  ESTAURANT_API_URL = 'http://pongsatt.thddns.net:5651';
+  ESTAURANT_API_URL = 'http://ec2-52-221-212-168.ap-southeast-1.compute.amazonaws.com:9200';
 }
 
 var ESTAURANT_API_AUTH = process.env.ESTAURANT_API_AUTH;
