@@ -8,6 +8,7 @@ const search = (query) => {
         method: 'POST',
         url: search_url,
         json: true,
+        timeout: 20000,
         headers : {
             "Authorization" : "Basic " + new Buffer(Config.ESTAURANT_API_AUTH).toString("base64")
         },
