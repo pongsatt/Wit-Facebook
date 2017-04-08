@@ -149,7 +149,7 @@ const buildLastMsg = (intent, context) => {
     }else if(food && locText && minPrice){
         msg = `ได้ละร้านที่ขาย${food}${locText} ราคาไม่เกิน ${minPrice}`;
     }else if(food && locText){
-        msg = `ได้ละร้านที่ขาย${food}${where}`;
+        msg = `ได้ละร้านที่ขาย${food}${locText}`;
     }else if(locText){
         msg = `ได้ละร้าน${locText}`;
     }
