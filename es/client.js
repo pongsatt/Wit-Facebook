@@ -4,12 +4,12 @@ const Config = require('../config/const');
 var unirest = require('unirest');
 
 const options = {
-    uri: Config.ESTAURANT_API_URL + '/estaurant/_search',
+    uri: 'https://site:9ba59ac512ad38d86747aea0ca255596@nori-us-east-1.searchly.com',
     method: 'POST',
     json: true,
     headers: {
         'Content-Type': 'application/json',
-        "Authorization": "Basic " + new Buffer(Config.ESTAURANT_API_AUTH).toString("base64")
+        // "Authorization": "Basic " + new Buffer(Config.ESTAURANT_API_AUTH).toString("base64")
     },
 };
 
