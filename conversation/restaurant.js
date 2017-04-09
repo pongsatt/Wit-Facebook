@@ -54,7 +54,7 @@ const doAction = (intent, context, response) => {
         context.status = 'ended'
     }
 
-    if (!p && intent == 'res_cancel') {
+    if (!p && intent == 'res_cancel' && intent == 'common_ok') {
         p = response('ขอบคุณครับ');
         context.status = 'ended'
     }
