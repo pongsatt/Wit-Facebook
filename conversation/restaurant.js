@@ -235,7 +235,7 @@ const buildLastMsg = (intent, context) => {
 
 const buildErrorMsg = (intent, context) => {
     let { status, food, foodtype, minPrice, maxPrice, where, location } = context;
-    let msg = `หาร้านที่`;
+    let msg = `ไม่มีร้าน`;
 
     foodtype = foodtype && `อาหาร${foodtype}`;
     let foodText = food || foodtype;
@@ -254,7 +254,7 @@ const buildErrorMsg = (intent, context) => {
         msg = `${locText}`;
     }
 
-    return msg + `ไม่เจอเลย`;
+    return msg + `เลย`;
 }
 
 const newContext = (intent, entities, context) => {
