@@ -13,6 +13,7 @@ class WordConversation {
             .then(() => {
                 this.status = nextStatus(action, this.status);
                 this.ended = !this.status;
+                return this.context;
             });
     }
 

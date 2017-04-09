@@ -4,7 +4,8 @@ class NotUnderstand {
     }
 
     response(intent, entities, response) {
-        return response(`Sorry, sometimes, it's hard to understand you.`);
+        return response(`Sorry, sometimes, it's hard to understand you.`)
+        .then(() => this.context);
     }
 }
 

@@ -4,9 +4,17 @@ var assert = require('chai').assert;
 
 var bot = new Bot();
 
-const assertContext = (p, expStatus) => {
+const assertContext = (p, expContext) => {
   return p.then((context) => {
-        assert.propertyVal(context, 'status', expStatus);
+
+        if(expContext){
+          assert.isObject(context);
+
+          for(let k in expContext){
+            let v = expContext[k];
+            assert.propertyVal(context, k, v);
+          }
+        }
         return Promise.resolve(context);
       });
 }
@@ -65,23 +73,23 @@ describe('FbBot', function () {
     //   let context = { sessionId: 1 };
 
     //   let p = bot.message('กินไรดี', context);
-    //   p = assertContext(p, 'wait_location');
+    //   p = assertContext(p, {status:'wait_location'});
 
     //   p = p.then(() => bot.message('สยาม', context));
-    //   p = assertContext(p, 'wait_next');
+    //   p = assertContext(p, {status:'wait_next'});
     //   return p;
     // });
-    it('should start recommend dialog', function () {
-      let context = { sessionId: 1 };
+    // it('should start recommend dialog', function () {
+    //   let context = { sessionId: 1 };
 
-      let p = bot.message('อยากกินอาหารญี่ปุ่นแถวบางนา', context);
-      p = assertContext(p, 'wait_next');
+    //   let p = bot.message('อยากกินอาหารญี่ปุ่นแถวบางนา', context);
+    //   p = assertContext(p, {status:'wait_next'});
 
-      p = p.then(() => bot.message('แพงไป', context));
-      p = p.then(() => bot.message('ไม่สนราคา', context));
-      p = p.then(() => bot.message('แล้วถ้าเป็นอาหารจีนละ', context));
-      return p;
-    });
+    //   p = p.then(() => bot.message('แพงไป', context));
+    //   p = p.then(() => bot.message('ไม่สนราคา', context));
+    //   p = p.then(() => bot.message('แล้วถ้าเป็นอาหารจีนละ', context));
+    //   return p;
+    // });
 
     // it('should start pick by location', function () {
     //   let context = { sessionId: 1 };
@@ -133,5 +141,25 @@ describe('FbBot', function () {
   //     return p;
   //   });
   // });
+
+  describe('change topic', function () {
+    it('should change topic', function () {
+      let context = { sessionId: 1 };
+
+      let p = bot.message('สวัสดี', context);
+      p = assertContext(p, {topic:'greeting'});
+
+      p = p.then(() => bot.message('อยากกินเค้ก', context));
+      p = assertContext(p, {topic:'restaurant_search'});
+
+      p = p.then(() => bot.message('สยาม', context));
+      p = assertContext(p, {topic:'restaurant_search'});
+
+      p = p.then(() => bot.message('say test', context));
+      p = assertContext(p, {topic:'word_search'});
+
+      return p;
+    });
+  });
 
 });

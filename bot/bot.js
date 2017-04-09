@@ -13,6 +13,7 @@ class Bot {
     this.recognizer = new Recognizer();
     this.conversations = {};
     this.contexts = {};
+    this.topic = '';
   }
 
   message(msg, context) {
@@ -37,26 +38,46 @@ class Bot {
       throw new Error('No sessionId found');
     }
 
+    let topic = getTopic(intent, context, this.topic);
+    let topicChanged = this.topic != topic;
+    this.topic = topic;
+
+    console.log('Topic: ', topic, ' Changed: ', topicChanged);
+
     let existingConv = this.conversations[sessionId];
-    if (!existingConv || existingConv.ended) {
-      context = Object.assign({}, context, this.contexts[sessionId]);
-      this.conversations[sessionId] = buildConversation(intent, context);
+    if (!existingConv || existingConv.ended || topicChanged) {
+      context = Object.assign({}, context, this.contexts[sessionId], {topic});
+      this.conversations[sessionId] = buildConversation(topic, intent, context);
     }
 
     return this.conversations[sessionId];
   }
 }
 
-const buildConversation = (intent, context) => {
+const buildConversation = (topic, intent, context) => {
+  switch (topic) {
+    case 'greeting':
+      return new GreetConversation(context);
+    case 'restaurant_search':
+      return new RestaurantConversation(context);
+    case 'word_search':
+      return new WordConversation(context);
+    default:
+      return new NotUnderstand(context);
+
+  }
+}
+
+const getTopic = (intent, context, previousTopic) => {
   if (intent.startsWith('greet_')) {
-    return new GreetConversation(context);
+    return 'greeting';
   } else if (intent.startsWith('res_')) {
-    return new RestaurantConversation(context);
+    return 'restaurant_search';
   } else if (intent.startsWith('word_')) {
-    return new WordConversation(context);
+    return 'word_search';
   }
 
-  return new NotUnderstand(context);
+  return previousTopic || 'unknown';
 }
 
 module.exports = Bot;
