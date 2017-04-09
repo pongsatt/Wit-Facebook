@@ -9,8 +9,8 @@ const assertRes = (intentObj, expIntent, expEntities) => {
     let { intent, entities } = intentObj;
     assert.equal(intent, expIntent);
 
-    if(expEntities){
-        for(k in expEntities){
+    if (expEntities) {
+        for (k in expEntities) {
             let v = expEntities[k];
             assert.propertyVal(entities, k, v);
         }
@@ -91,6 +91,11 @@ describe('Recognizer', function () {
         });
 
         it('should res_food1', function () {
+            let intentObj = r.intent('แล้วถ้าเป็นของหวานละ');
+            assertRes(intentObj, 'res_food', {food: 'ของหวาน'})
+        });
+
+        it('should res_food1', function () {
             let intent = r.intent('แล้วมีส้มตำมะ');
             assert.propertyVal(intent, 'intent', 'res_food', intent);
         });
@@ -103,13 +108,13 @@ describe('Recognizer', function () {
         it('should res_food3', function () {
             let intentObj = r.intent('อยากกินสุกี้');
 
-            assertRes(intentObj, 'res_food', {food: 'สุกี้'});
+            assertRes(intentObj, 'res_food', { food: 'สุกี้' });
         });
 
         it('should res_food4', function () {
             let intentObj = r.intent('กินสุกี้');
 
-            assertRes(intentObj, 'res_food', {food: 'สุกี้'});
+            assertRes(intentObj, 'res_food', { food: 'สุกี้' });
         });
 
         it('should res_food_recommend', function () {
@@ -159,20 +164,25 @@ describe('Recognizer', function () {
 
         it('should res_any_where5', function () {
             let intentObj = r.intent('มีอะไรกินแถวเอ็มโพเรียม');
-            
-            assertRes(intentObj, 'res_any_where', {where: 'เอ็มโพเรียม'});
+
+            assertRes(intentObj, 'res_any_where', { where: 'เอ็มโพเรียม' });
         });
 
         it('should res_any_where6', function () {
             let intentObj = r.intent('มีอะไรกินในเอ็มโพเรียม');
-            
-            assertRes(intentObj, 'res_any_where', {where: 'เอ็มโพเรียม'});
+
+            assertRes(intentObj, 'res_any_where', { where: 'เอ็มโพเรียม' });
         });
 
-        it('should res_any_where6', function () {
+        it('should res_any_where7', function () {
             let intentObj = r.intent('มีไรกินในเอ็มโพเรียม');
-            
-            assertRes(intentObj, 'res_any_where', {where: 'เอ็มโพเรียม'});
+
+            assertRes(intentObj, 'res_any_where', { where: 'เอ็มโพเรียม' });
+        });
+
+        it('should res_any_where8', function () {
+            let intentObj = r.intent('แล้วถ้าเป็นที่บางซื่อ');
+            assertRes(intentObj, 'res_any_where', { where: 'บางซื่อ' });
         });
 
         it('should res_food_where4', function () {
@@ -182,22 +192,27 @@ describe('Recognizer', function () {
 
         it('should res_foodtype1', function () {
             let intentObj = r.intent('อยากกินอาหารญี่ปุ่น');
-            assertRes(intentObj, 'res_foodtype', {foodtype: 'ญี่ปุ่น'});
+            assertRes(intentObj, 'res_foodtype', { foodtype: 'ญี่ปุ่น' });
         });
 
         it('should res_foodtype1', function () {
             let intentObj = r.intent('อาหารจีน');
-            assertRes(intentObj, 'res_foodtype', {foodtype: 'จีน'});
+            assertRes(intentObj, 'res_foodtype', { foodtype: 'จีน' });
+        });
+
+        it('should res_foodtype2', function () {
+            let intentObj = r.intent('แล้วถ้าเป็นอาหารจีนละ');
+            assertRes(intentObj, 'res_foodtype', { foodtype: 'จีน' });
         });
 
         it('should res_foodtype_where1', function () {
             let intentObj = r.intent('อยากกินอาหารญี่ปุ่นแถวบางนา');
-            assertRes(intentObj, 'res_foodtype_where', {foodtype: 'ญี่ปุ่น', where: 'บางนา'});
+            assertRes(intentObj, 'res_foodtype_where', { foodtype: 'ญี่ปุ่น', where: 'บางนา' });
         });
 
         it('should res_foodtype_where2', function () {
             let intentObj = r.intent('อยู่อโศกอยากกินอาหารไทย');
-            assertRes(intentObj, 'res_foodtype_where', {foodtype: 'ไทย', where: 'อโศก'});
+            assertRes(intentObj, 'res_foodtype_where', { foodtype: 'ไทย', where: 'อโศก' });
         });
 
 
@@ -245,12 +260,12 @@ describe('Recognizer', function () {
 
         it('should change th1', function () {
             let intentObj = r.intent('เปลี่ยนเป็นข้าว', 'th');
-            assertRes(intentObj, 'common_change', {obj:'ข้าว'})
+            assertRes(intentObj, 'common_change', { obj: 'ข้าว' })
         });
 
         it('should where th1', function () {
             let intentObj = r.intent('แถวบางซื่อ', 'th');
-            assertRes(intentObj, 'common_where', {where:'บางซื่อ'})
+            assertRes(intentObj, 'common_where', { where: 'บางซื่อ' })
         });
 
     });

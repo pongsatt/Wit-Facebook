@@ -79,6 +79,7 @@ describe('FbBot', function () {
 
       p = p.then(() => bot.message('แพงไป', context));
       p = p.then(() => bot.message('ไม่สนราคา', context));
+      p = p.then(() => bot.message('แล้วถ้าเป็นอาหารจีนละ', context));
       return p;
     });
 
