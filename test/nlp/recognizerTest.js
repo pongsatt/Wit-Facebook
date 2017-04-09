@@ -291,18 +291,18 @@ describe('Recognizer', function () {
     });
 
     describe('About me', function () {
-        it('should get my name', function () {
+        it('should get my name1', function () {
             let intentObj = r.intent(Config.BOT_NAME, 'en');
             assertIntent(intentObj, 'greet_me', {botname: Config.BOT_NAME})
         });
 
-        it('should get my name', function () {
-            let intentObj = r.intent('Hi Tony', 'en');
+        it('should get my name2', function () {
+            let intentObj = r.intent(`Hi ${Config.BOT_NAME}`, 'en');
             assertIntent(intentObj, 'greet_me', {botname: Config.BOT_NAME})
         });
 
-        it('should get my name', function () {
-            let intentObj = r.intent('สวัสดี Tony', 'en');
+        it('should get my name3', function () {
+            let intentObj = r.intent(`สวัสดี ${Config.BOT_NAME}`, 'th');
             assertIntent(intentObj, 'greet_me', {botname: Config.BOT_NAME})
         });
 

@@ -7,8 +7,8 @@ module.exports = [
 
     {lang: 'en', intent: 'greet_me',  p:`(hi|hello)(?<botname>${Config.BOT_NAME})`},
     {lang: 'th', intent: 'greet_me',  p:`(สวัสดี|หวัดดี|ว่าไง)(?<botname>${Config.BOT_NAME})`},
-    {lang: 'en', intent: 'greet_normal',  p:'(hi|hello)(?<name>.*)*'},
-    {lang: 'th', intent: 'greet_normal',  p:'(สวัสดี|หวัดดี|ว่าไง)(?<name>.*)*'},
+    {lang: 'en', intent: 'greet_normal',  p:'(hi|hello)'},
+    {lang: 'th', intent: 'greet_normal',  p:'(สวัสดี|หวัดดี|ว่าไง)'},
 
     {lang: 'th', intent: 'common_reject',  p:'ไม่เอา.*'},
     {lang: 'th', intent: 'common_ok',  p:'(โอเค|ขอบคุณ)'},
@@ -35,9 +35,9 @@ module.exports = [
     {lang: 'th', intent: 'res_food_recommend',  p:'^อยากกิน(?<food>.*).*แนะนำ.*'},
     {lang: 'th', intent: 'res_foodtype',  p:'^อยากกินอาหาร(?<foodtype>.*)$'},
     {lang: 'th', intent: 'res_foodtype',  p:'^อาหาร(?<foodtype>.*)$'},
-    {lang: 'th', intent: 'res_foodtype',  p:'^แล้วถ้า.*อาหาร(?<foodtype>.*)$'},
-    {lang: 'th', intent: 'res_any_where',  p:'^แล้วถ้า.*(ที่|ใน|แถว|ใกล้)(?<where>.*)$'},
-    {lang: 'th', intent: 'res_food',  p:'^แล้วถ้า(?:เป็น)?(?<food>.*)$'},
+    {lang: 'th', intent: 'res_foodtype',  p:'^.*ถ้า.*อาหาร(?<foodtype>.*)$'},
+    {lang: 'th', intent: 'res_any_where',  p:'^.*ถ้า.*(ที่|ใน|แถว|ใกล้)(?<where>.*)$'},
+    {lang: 'th', intent: 'res_food',  p:'^.*ถ้า(เป็น)?(?<food>.*)$'},
     {lang: 'th', intent: 'res_food',  p:'^อยากกิน(?<food>.*)$'},
     {lang: 'th', intent: 'res_food',  p:'^กิน(?<food>.*)$'},
     {lang: 'th', intent: 'res_food',  p:'^.*มี(?<food>.*?)(?:ขาย)*?(?:มะ|ไหม)$'},
