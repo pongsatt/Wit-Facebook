@@ -124,7 +124,7 @@ const doAction = (intent, context, response) => {
             }
         } else if (status == 'wait_next') {
             if (intent == 'unknown') {
-                p = response('ช่วยบอกให้ชัดเจนกว่านี้หน่อย ได้เปล่า');
+                p = response('ลองเปลี่ยนอาหาร สถานที่ หรือถ้าแพงไปหรือถูกไป ก็บอกได้นะ');
             }
         }
     }
