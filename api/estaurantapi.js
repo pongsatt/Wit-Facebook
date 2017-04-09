@@ -139,23 +139,21 @@ const buildQuery = (opts) => {
         mustQ.push(keywordQ);
     }
 
-    if (opts.type) {
-        let typeQ = buildMatchQ(opts.type, 'cuisine');
+    if (opts.food) {
+        let foodQ = buildWildCardQ(opts.food, 'menus');
+        mustQ.push(foodQ);
+
+        let typeQ = buildWildCardQ(opts.type, 'cuisine');
         mustQ.push(typeQ);
     }
 
-    if (opts.food) {
-        let foodQ = buildMatchQ(opts.food, 'menus');
-        mustQ.push(foodQ);
-    }
-
     if (opts.where) {
-        let whereQ = buildMatchQ(opts.where, 'address.addressLocality');
+        let whereQ = buildWildCardQ(opts.where, 'address.addressLocality');
         mustQ.push(whereQ);
     }
 
     let q = {
-        "query": buildBoolQ({ must: mustQ, filter: filters })
+        "query": buildBoolQ({ should: mustQ, filter: filters })
     };
 
     if (opts.from !== undefined) q.from = opts.from;
