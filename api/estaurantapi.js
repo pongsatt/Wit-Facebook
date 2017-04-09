@@ -52,18 +52,11 @@ const search = (opts, moreOpts) => {
 }
 
 const find = (q, opts) => {
-    return new Promise((resolve, reject) => {
-        return client.search(q)
-            .then(results => {
-                console.log('Found:', results.hits.total);
-
-                if(results && results.hits && results.hits.total){
-                    return resolve(postProcess(results, opts));
-                }
-
-                return reject({code:'not_found', msg: 'Result not found.'});
-            })
-    });
+    return client.search(q)
+        .then(results => {
+            console.log('Found:', results.hits && results.hits.total);
+            return postProcess(results, opts);
+        });
 }
 
 const postProcess = (results, opts) => {
@@ -130,7 +123,7 @@ const buildQuery = (opts) => {
         filters.push(reviewCount);
     }
 
-    if(opts.exclude_ids && opts.exclude_ids.length){
+    if (opts.exclude_ids && opts.exclude_ids.length) {
         let idsQ = buildIdsQ(opts.exclude_ids);
         must_not.push(idsQ);
     }

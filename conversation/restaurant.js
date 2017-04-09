@@ -44,7 +44,7 @@ class RestaurantConversation {
 }
 
 const doAction = (intent, context, response) => {
-    var { status, food, foodtype, minPrice, maxPrice, where, location, msg } = context;
+    var { status, food, foodtype, minPrice, maxPrice, where, location, msg, lastTotal } = context;
 
     //start preparation
     let p;
@@ -100,12 +100,17 @@ const doAction = (intent, context, response) => {
 
     if (!p && intent.includes('foodtype')) {
         context.food = null;
-    }else if (!p && intent && intent.includes('food')) {
+    } else if (!p && intent && intent.includes('food')) {
         context.foodtype = null;
     }
 
-    if(!p && intent != 'res_change' && intent != 'common_reject'){
+    if (!p && intent != 'res_change' && intent != 'common_reject') {
         context.result_ids = null;
+    }
+
+    if (!p && (intent == 'res_change' || intent == 'common_reject') && lastTotal <= 1) {
+        p = response(`ไม่มีร้านอื่นแล้วครับ ลองเงื่อนไขดูนะ`);
+        context.status = 'ended';
     }
 
     //this should be last
@@ -149,10 +154,11 @@ const doAction = (intent, context, response) => {
             query,
             response)
             .then((results) => {
-                if(results && results.length){
-                    for(let r of results){
+                if (results && results.hits) {
+                    context.lastTotal = results.hits.total;
+                    for (let r of results.hits.hits) {
                         context.result_ids = context.result_ids || [];
-                        context.result_ids.push(r.id);
+                        context.result_ids.push(r._id);
                     }
                 }
                 return results;
@@ -161,13 +167,13 @@ const doAction = (intent, context, response) => {
     }
 
     return p.then(() => context, error => {
-        context.status = 'ended';
-        return context;
-    });
+            return response(`มี error เดี๋ยวลองดูใหม่อีกทีนะ`)
+                .then(() => context);
+        });
 }
 
 const buildQuery = (intent, context) => {
-    let { status, food, foodtype, minPrice, maxPrice, where, location, result_ids} = context;
+    let { status, food, foodtype, minPrice, maxPrice, where, location, result_ids } = context;
     let q = { food, foodtype, minPrice, maxPrice, where, location, exclude_ids: result_ids, result_ids, size: 1 };
 
     return q;
@@ -319,9 +325,10 @@ const processAction = (action, context, response) => {
             p = response(`ไม่เข้าใจอะ ไม่รู้จะหาร้านอะไรให้ดี`);
     }
 
-    return p.then(result => status, error => {
-        return error.code || 'unknown_error';
-    });
+    return p.then(result => status)
+        .cache(error => {
+            return response(`มี error เดี๋ยวลองดูใหม่อีกทีนะ`);
+        });
 }
 
 const onPick = (responses, query, response) => {
@@ -329,17 +336,19 @@ const onPick = (responses, query, response) => {
         .then(() => api.pickOne(query))
         .then((ress) => {
             if (responses.last) {
-                return response(responses.last).then(() => ress);
+                return response(responses.last)
+                    .then(() => ress);
             }
             return ress;
         })
         .then((ress) => {
+            if (!ress.hits || !ress.hits.hits || !ress.hits.total) {
+                return response(responses.error || `ขอโทษที หาร้านที่ต้องการไม่เจอ ลองถามใหม่นะ`);
+            }
+
             return Promise.all(ress.hits.hits.map(r => {
                 return response(toCard(r));
-            }));
-        }, error => {
-            console.error('Error while picking restaurant. ', error);
-            return response(responses.error || `ขอโทษที หาร้านที่ต้องการไม่เจอ ลองถามใหม่นะ`);
+            })).then(() => ress);
         });
 }
 

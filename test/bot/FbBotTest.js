@@ -92,20 +92,32 @@ describe('FbBot', function () {
     //   return p;
     // });
 
-    it('should be able to store doc id when user change', function () {
+    // it('should be able to store doc id when user change', function () {
+    //   let context = { sessionId: 1 };
+
+    //   let p = bot.message('อยากกินอาหารญี่ปุ่นแถวสุขุมวิท', context);
+    //   p = assertContext(p, {status:'wait_next'});
+
+    //   p = p.then(() => bot.message('ไม่เอา', context));
+    //   p = assertContext(p, {status:'wait_next'});
+
+    //   p = p.then(() => bot.message('เปลี่ยนร้าน', context));
+    //   p = assertContext(p, {status:'wait_next'});
+
+    //   p = p.then(() => bot.message('อยากกินอาหารญี่ปุ่นแถวสุขุมวิท', context));
+    //   p = assertContext(p, {status:'wait_next'});
+
+    //   return p;
+    // });
+
+    it('should not be able change when no res left', function () {
       let context = { sessionId: 1 };
 
-      let p = bot.message('อยากกินอาหารญี่ปุ่นแถวสุขุมวิท', context);
+      let p = bot.message('อยากกินอาหารฝรั่งเศสที่โรงแรมดุสิต', context);
       p = assertContext(p, {status:'wait_next'});
 
       p = p.then(() => bot.message('ไม่เอา', context));
-      p = assertContext(p, {status:'wait_next'});
-
-      p = p.then(() => bot.message('เปลี่ยนร้าน', context));
-      p = assertContext(p, {status:'wait_next'});
-
-      p = p.then(() => bot.message('อยากกินอาหารญี่ปุ่นแถวสุขุมวิท', context));
-      p = assertContext(p, {status:'wait_next'});
+      p = assertContext(p, {status:'ended'});
 
       return p;
     });
