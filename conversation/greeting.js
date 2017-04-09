@@ -1,3 +1,5 @@
+'use strict';
+
 const Config = require('../config/const');
 const myname = Config.BOT_NAME;
 
@@ -8,7 +10,7 @@ class GreetConversation {
     }
 
     response(intent, entities, response) {
-        this.context = Object.assign({}, context, entities);
+        this.context = Object.assign({}, this.context, entities);
 
         return doAction(intent, this.context, response)
             .then((newContext) => {
