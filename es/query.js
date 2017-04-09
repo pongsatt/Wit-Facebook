@@ -1,10 +1,14 @@
 'use strict';
 
-const buildWildCardQ = (keyword) => {
+const buildWildCardQ = (keyword, field) => {
+    let fieldQ = {};
+    keyword = `*${keyword}*`;
+
+    if(field) fieldQ[field] = keyword;
+    else fieldQ._all = keyword;
+
     return {
-        "wildcard": {
-            "_all": `*${keyword}*`
-        }
+        "wildcard": fieldQ
     };
 }
 
@@ -65,6 +69,10 @@ const buildBoolQ = (q) => {
     let boolQ = { bool: {} };
     if (q.must && q.must.length) {
         boolQ.bool.must = q.must;
+    }
+
+    if (q.should && q.should.length) {
+        boolQ.bool.should = q.should;
     }
 
     if (q.filter && q.filter.length) {

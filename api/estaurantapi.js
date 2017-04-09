@@ -88,6 +88,8 @@ const buildQuery = (opts) => {
         timeOfDay: getTime(),
     }, opts);
 
+    let must = [];
+    let should = [];
     let filters = [];
 
     if (opts.location) {
@@ -126,8 +128,6 @@ const buildQuery = (opts) => {
         filters.push(reviewCount);
     }
 
-    let mustQ = [];
-
     if (opts.keyword) {
         let keywordQ;
 
@@ -136,24 +136,30 @@ const buildQuery = (opts) => {
         } else {
             keywordQ = buildWildCardQ(opts.keyword);
         }
-        mustQ.push(keywordQ);
+        must.push(keywordQ);
     }
 
     if (opts.food) {
         let foodQ = buildWildCardQ(opts.food, 'menus');
-        mustQ.push(foodQ);
+        must.push(foodQ);
 
-        let typeQ = buildWildCardQ(opts.type, 'cuisine');
-        mustQ.push(typeQ);
+        let typeQ = buildWildCardQ(opts.food, 'cuisine');
+        should.push(typeQ);
+
+        let nameFoodQ = buildWildCardQ(opts.food, 'name');
+        should.push(nameFoodQ);
     }
 
     if (opts.where) {
         let whereQ = buildWildCardQ(opts.where, 'address.addressLocality');
-        mustQ.push(whereQ);
+        must.push(whereQ);
+
+        let nameWhereQ = buildWildCardQ(opts.where, 'name');
+        should.push(nameWhereQ);
     }
 
     let q = {
-        "query": buildBoolQ({ should: mustQ, filter: filters })
+        "query": buildBoolQ({ must, should, filter: filters })
     };
 
     if (opts.from !== undefined) q.from = opts.from;

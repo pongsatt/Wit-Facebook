@@ -2,7 +2,7 @@ const FBBot = require('../../bot/FbBot');
 const Bot = require('../../bot/botwrapper');
 var assert = require('assert');
 
-var bot = new FBBot();
+var bot = new Bot();
 
 describe('FbBot', function () {
   describe('restaurant', function () {
@@ -43,13 +43,21 @@ describe('FbBot', function () {
     //   return p;
     // });
 
+    // it('should start recommend dialog', function () {
+    //   let context = { sessionId: 1 };
+
+    //   let p = bot.message('อยู่เอ็มโพเรียมกินอะไรดี', context);
+    //   p = p.then(() => bot.message('อยากกินเค้ก', context));
+    //   p = p.then(() => bot.message('แล้วมีส้มตำมะ', context));
+    //   p = p.then(() => bot.message('ไม่กินและ', context));
+
+    //   return p;
+    // });
+
     it('should start recommend dialog', function () {
       let context = { sessionId: 1 };
 
       let p = bot.message('อยู่เอ็มโพเรียมกินอะไรดี', context);
-      p = p.then(() => bot.message('อยากกินเค้ก', context));
-      p = p.then(() => bot.message('แล้วมีส้มตำมะ', context));
-      p = p.then(() => bot.message('ไม่กินและ', context));
 
       return p;
     });
