@@ -29,7 +29,7 @@ module.exports = [
     {lang: 'th', intent: 'res_cancel',  p:'.*ไม่(:?กิน)?.*'},
     {lang: 'th', intent: 'res_cheap',  p:'(ราคา)*?แพง(ไป)*?'},
     {lang: 'th', intent: 'res_exp',  p:'(ราคา)*?ถูก(ไป)*?'},
-    {lang: 'th', intent: 'res_any',  p:'^กิน(อะ)?ไรดี$'},
+    {lang: 'th', intent: 'res_any',  p:'^กิน(อะ)?ไรดี.*$'},
     {lang: 'th', intent: 'res_any',  p:'^อยากกิน(?<any>อะไร).*'},
     {lang: 'th', intent: 'res_any',  p:'^เบื่อ.*(?<any>อะไร).*'},
     {lang: 'th', intent: 'res_food_recommend',  p:'^อยากกิน(?<food>.*).*แนะนำ.*'},

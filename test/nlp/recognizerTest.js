@@ -56,6 +56,11 @@ describe('Recognizer', function () {
             assertIntent(intentObj, 'res_any')
         });
 
+        it('should res_any6', function () {
+            let intentObj = r.intent('กินไรดีวันนี้', 'th');
+            assertIntent(intentObj, 'res_any')
+        });
+
         it('should res_greet', function () {
             let intent = r.intent('หิว');
             assert.propertyVal(intent, 'intent', 'res_greet', intent);
