@@ -92,12 +92,17 @@ describe('Recognizer', function () {
 
         it('should res_food1', function () {
             let intentObj = r.intent('แล้วถ้าเป็นของหวานละ');
-            assertRes(intentObj, 'res_food', {food: 'ของหวาน'})
+            assertRes(intentObj, 'res_food', { food: 'ของหวาน' })
         });
 
-        it('should res_food1', function () {
-            let intent = r.intent('แล้วมีส้มตำมะ');
-            assert.propertyVal(intent, 'intent', 'res_food', intent);
+        it('should res_food2', function () {
+            let intentObj = r.intent('แล้วมีส้มตำมะ');
+            assertRes(intentObj, 'res_food', { food: 'ส้มตำ' })
+        });
+
+        it('should res_food3', function () {
+            let intentObj = r.intent('แล้วถ้าขนมจีนละ');
+            assertRes(intentObj, 'res_food', { food: 'ขนมจีน' })
         });
 
         it('should res_food2', function () {
@@ -183,6 +188,11 @@ describe('Recognizer', function () {
         it('should res_any_where8', function () {
             let intentObj = r.intent('แล้วถ้าเป็นที่บางซื่อ');
             assertRes(intentObj, 'res_any_where', { where: 'บางซื่อ' });
+        });
+
+        it('should res_any_where9', function () {
+            let intentObj = r.intent('แล้วถ้าที่สยามละ');
+            assertRes(intentObj, 'res_any_where', { where: 'สยาม' });
         });
 
         it('should res_food_where4', function () {

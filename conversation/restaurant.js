@@ -94,12 +94,12 @@ const doAction = (intent, context, response) => {
         context.location = { lat: parseFloat(context.lat), lon: parseFloat(context.lon), maxDistance: Config.DEFAULT_DISTANCE };
     }
 
-    if (!p && intent == 'res_any') {
-        context.where = null;
+    if (!p && intent && intent.includes('where')) {
         context.location = null;
     }
 
-    if (!p && intent && intent.includes('where')) {
+    if (!p && intent == 'res_any') {
+        context.where = null;
         context.location = null;
     }
 
