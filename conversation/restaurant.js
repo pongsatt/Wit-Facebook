@@ -98,6 +98,13 @@ const doAction = (intent, context, response) => {
         context.location = null;
     }
 
+    if (!p && intent && intent.includes('foodtype')) {
+        context.food = null;
+    }else if (!p && intent && intent.includes('food')) {
+        context.foodtype = null;
+    }
+
+    //this should be last
     if (!p && intent == 'res_any') {
         context.where = null;
         context.location = null;
