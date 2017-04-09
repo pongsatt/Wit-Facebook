@@ -200,7 +200,13 @@ const buildFirstMsg = (intent, context) => {
         msg = `เดี๋ยวหาร้าน${locText}`;
     }
 
-    return msg + 'ให้ รอแป๊บนะ';
+    msg = msg + 'ให้ รอแป๊บนะ';
+
+    if(intent == 'res_change' || intent == 'common_reject'){
+        msg = 'งั้นเอาใหม่ ' + msg;
+    }
+
+    return msg;
 }
 
 const buildLastMsg = (intent, context) => {
