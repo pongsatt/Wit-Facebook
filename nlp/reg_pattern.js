@@ -23,6 +23,7 @@ module.exports = [
     {lang: 'en', intent: 'word_meaning',  p:'^(?<word>.*)mean.*'},
     {lang: 'en', intent: 'word_pronounce',  p:'say(?<word>.*)'},
 
+    {lang: 'th', intent: 'res_change',  p:'(เปลี่ยนร้าน|ร้านอื่น|ร้านใหม่)'},
     {lang: 'th', intent: 'res_any_near', p:'^อยากกิน(?<any>อะไร)?.*(?<near>แถวนี้|ใกล้)$'},
     {lang: 'th', intent: 'res_food_near',  p:'^อยากกิน(?<food>.*)(?<near>แถวนี้|ใกล้)$'},
     {lang: 'th', intent: 'res_foodtype_where',  p:'^อยากกินอาหาร(?<foodtype>.*)(ที่|ใน|แถว|ใกล้)(?<where>.*)$'},
@@ -37,7 +38,9 @@ module.exports = [
     {lang: 'th', intent: 'res_any',  p:'^อยากกิน(?<any>อะไร).*'},
     {lang: 'th', intent: 'res_any',  p:'^เบื่อ.*(?<any>อะไร).*'},
     {lang: 'th', intent: 'res_food_recommend',  p:'^อยากกิน(?<food>.*).*แนะนำ.*'},
+    {lang: 'th', intent: 'res_foodtype',  p:'^ร้านอาหาร(?<foodtype>.*?)(แถวนี้)?(ให้)?(หน่อย)?$'}, 
     {lang: 'th', intent: 'res_foodtype',  p:'^แนะนำ(ร้าน)?อาหาร(?<foodtype>.*?)(แถวนี้)?(ให้)?(หน่อย)?$'},
+    {lang: 'th', intent: 'res_food',  p:'^ร้านที่ขาย(?<food>.*?)(แถวนี้)?(ให้)?(หน่อย)?$'},
     {lang: 'th', intent: 'res_food',  p:'^แนะนำ(?!ร้าน|อาหาร)(?<food>.*?)(แถวนี้)?(ให้)?(หน่อย)?$'},
     {lang: 'th', intent: 'res_any',  p:'^แนะนำ?.*$'},
     {lang: 'th', intent: 'res_foodtype',  p:'^อยากกินอาหาร(?<foodtype>.*)$'},

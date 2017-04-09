@@ -139,6 +139,12 @@ describe('Recognizer', function () {
             assertIntent(intentObj, 'res_food', { food: 'ซูชิ' });
         });
 
+        it('should res_food8', function () {
+            let intentObj = r.intent('ร้านที่ขายน้ำพริก');
+
+            assertIntent(intentObj, 'res_food', { food: 'น้ำพริก' });
+        });
+
         it('should res_food_recommend', function () {
             let intent = r.intent('อยากกินส้มตำแนะนำด้วย');
             assert.propertyVal(intent, 'intent', 'res_food_recommend', intent);
@@ -247,9 +253,19 @@ describe('Recognizer', function () {
             assertIntent(intentObj, 'res_foodtype', { foodtype: 'ญี่ปุ่น' });
         });
 
-        it('should res_foodtype3', function () {
+        it('should res_foodtype6', function () {
             let intentObj = r.intent('แนะนำร้านอาหารญี่ปุ่น');
             assertIntent(intentObj, 'res_foodtype', { foodtype: 'ญี่ปุ่น' });
+        });
+
+        it('should res_foodtype7', function () {
+            let intentObj = r.intent('ร้านอาหารไทยแถวนี้');
+            assertIntent(intentObj, 'res_foodtype', { foodtype: 'ไทย' });
+        });
+
+        it('should res_foodtype8', function () {
+            let intentObj = r.intent('ร้านอาหารไทย');
+            assertIntent(intentObj, 'res_foodtype', { foodtype: 'ไทย' });
         });
 
         it('should res_foodtype_where1', function () {
@@ -260,6 +276,21 @@ describe('Recognizer', function () {
         it('should res_foodtype_where2', function () {
             let intentObj = r.intent('อยู่อโศกอยากกินอาหารไทย');
             assertIntent(intentObj, 'res_foodtype_where', { foodtype: 'ไทย', where: 'อโศก' });
+        });
+
+        it('should res_change', function () {
+            let intentObj = r.intent('เปลี่ยนร้าน');
+            assertIntent(intentObj, 'res_change');
+        });
+
+        it('should res_change1', function () {
+            let intentObj = r.intent('ร้านอื่น');
+            assertIntent(intentObj, 'res_change');
+        });
+
+        it('should res_change2', function () {
+            let intentObj = r.intent('ร้านใหม่');
+            assertIntent(intentObj, 'res_change');
         });
 
 

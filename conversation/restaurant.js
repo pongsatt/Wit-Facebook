@@ -94,14 +94,18 @@ const doAction = (intent, context, response) => {
         context.location = { lat: parseFloat(context.lat), lon: parseFloat(context.lon), maxDistance: Config.DEFAULT_DISTANCE };
     }
 
-    if (!p && intent && intent.includes('where')) {
+    if (!p && intent.includes('where')) {
         context.location = null;
     }
 
-    if (!p && intent && intent.includes('foodtype')) {
+    if (!p && intent.includes('foodtype')) {
         context.food = null;
     }else if (!p && intent && intent.includes('food')) {
         context.foodtype = null;
+    }
+
+    if(!p && intent != 'res_change' && intent != 'common_reject'){
+        context.result_ids = null;
     }
 
     //this should be last
@@ -127,7 +131,7 @@ const doAction = (intent, context, response) => {
     //end status handler
 
     //end preparation
-    var { status, food, foodtype, minPrice, maxPrice, where, location, msg } = context;
+    var { status, food, foodtype, minPrice, maxPrice, where, location, msg, result_ids } = context;
 
     if (!p && !location && !where) {
         p = response('แถวไหนเหรอ หรือจะ share location ก็ได้นะ');
@@ -143,7 +147,16 @@ const doAction = (intent, context, response) => {
         p = onPick(
             { first, last, error },
             query,
-            response);
+            response)
+            .then((results) => {
+                if(results && results.length){
+                    for(let r of results){
+                        context.result_ids = context.result_ids || [];
+                        context.result_ids.push(r.id);
+                    }
+                }
+                return results;
+            });
         context.status = 'wait_next';
     }
 
@@ -154,8 +167,8 @@ const doAction = (intent, context, response) => {
 }
 
 const buildQuery = (intent, context) => {
-    let { status, food, foodtype, minPrice, maxPrice, where, location } = context;
-    let q = { food, foodtype, minPrice, maxPrice, where, location, size: 1 };
+    let { status, food, foodtype, minPrice, maxPrice, where, location, result_ids} = context;
+    let q = { food, foodtype, minPrice, maxPrice, where, location, exclude_ids: result_ids, result_ids, size: 1 };
 
     return q;
 }
@@ -322,9 +335,10 @@ const onPick = (responses, query, response) => {
         })
         .then((ress) => {
             return Promise.all(ress.hits.hits.map(r => {
-                return response(toCard(r._source));
+                return response(toCard(r));
             }));
         }, error => {
+            console.error('Error while picking restaurant. ', error);
             return response(responses.error || `ขอโทษที หาร้านที่ต้องการไม่เจอ ลองถามใหม่นะ`);
         });
 }
@@ -343,14 +357,16 @@ const onSearch = (responses, query, response) => {
             if (!ress.hits.total) return response(responses.error || `ขอโทษที หาร้านที่ต้องการไม่เจอ ลองถามใหม่นะ`);
 
             return Promise.all(ress.hits.hits.map(r => {
-                return response(toCard(r._source));
+                return response(toCard(r));
             }));
         }, error => {
             return response(responses.error || `ขอโทษที หาร้านที่ต้องการไม่เจอ ลองถามใหม่นะ`);
         });
 }
 
-const toCard = (res) => {
+const toCard = (doc) => {
+    let res = doc._source;
+
     let desc = `${res.cuisine}`
     let menus = res.menus && res.menus.join(',');
     if (menus) desc += ` เมนูแนะนำ ${menus}`;
@@ -361,6 +377,7 @@ const toCard = (res) => {
     let url = `https://www.wongnai.com/${res.original_id}`;
     let map = `http://maps.google.com/maps?q=${lat},${lon}`;
     let card = {
+        id: doc._id,
         title: res.name,
         subtitle: desc,
         image_url: res.image,

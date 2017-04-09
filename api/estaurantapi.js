@@ -9,6 +9,7 @@ const { buildBoolQ,
     buildNestedQ,
     buildRangeQ,
     buildExistQ,
+    buildIdsQ,
     buildWildCardQ } = require('../es/query');
 const { calculateDistance } = require('../utils/geo_util');
 const { getDayOfWeek, getTime } = require('../utils/date_util');
@@ -89,6 +90,7 @@ const buildQuery = (opts) => {
     }, opts);
 
     let must = [];
+    let must_not = [];
     let should = [];
     let filters = [];
 
@@ -128,6 +130,11 @@ const buildQuery = (opts) => {
         filters.push(reviewCount);
     }
 
+    if(opts.exclude_ids && opts.exclude_ids.length){
+        let idsQ = buildIdsQ(opts.exclude_ids);
+        must_not.push(idsQ);
+    }
+
     if (opts.keyword) {
         let keywordQ;
 
@@ -164,7 +171,7 @@ const buildQuery = (opts) => {
     }
 
     let q = {
-        "query": buildBoolQ({ must, should, filter: filters })
+        "query": buildBoolQ({ must, must_not, should, filter: filters })
     };
 
     if (opts.from !== undefined) q.from = opts.from;

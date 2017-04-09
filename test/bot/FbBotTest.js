@@ -69,7 +69,7 @@ describe('FbBot', function () {
     //   return p;
     // });
 
-    // it('should start recommend dialog', function () {
+    // it('should start recommend dialog1', function () {
     //   let context = { sessionId: 1 };
 
     //   let p = bot.message('กินไรดี', context);
@@ -79,7 +79,8 @@ describe('FbBot', function () {
     //   p = assertContext(p, {status:'wait_next'});
     //   return p;
     // });
-    // it('should start recommend dialog', function () {
+
+    // it('should start recommend dialog2', function () {
     //   let context = { sessionId: 1 };
 
     //   let p = bot.message('อยากกินอาหารญี่ปุ่นแถวบางนา', context);
@@ -90,6 +91,24 @@ describe('FbBot', function () {
     //   p = p.then(() => bot.message('แล้วถ้าเป็นอาหารจีนละ', context));
     //   return p;
     // });
+
+    it('should be able to store doc id when user change', function () {
+      let context = { sessionId: 1 };
+
+      let p = bot.message('อยากกินอาหารญี่ปุ่นแถวสุขุมวิท', context);
+      p = assertContext(p, {status:'wait_next'});
+
+      p = p.then(() => bot.message('ไม่เอา', context));
+      p = assertContext(p, {status:'wait_next'});
+
+      p = p.then(() => bot.message('เปลี่ยนร้าน', context));
+      p = assertContext(p, {status:'wait_next'});
+
+      p = p.then(() => bot.message('อยากกินอาหารญี่ปุ่นแถวสุขุมวิท', context));
+      p = assertContext(p, {status:'wait_next'});
+
+      return p;
+    });
 
     // it('should start pick by location', function () {
     //   let context = { sessionId: 1 };
@@ -129,21 +148,21 @@ describe('FbBot', function () {
   //   });
   // });
 
-  describe('greeting', function () {
-    it('greeting in th', function () {
-      let context = { sessionId: 1 };
+  // describe('greeting', function () {
+  //   it('greeting in th', function () {
+  //     let context = { sessionId: 1 };
 
-      let p = bot.message('สวัสดี', context);
-      return p;
-    });
+  //     let p = bot.message('สวัสดี', context);
+  //     return p;
+  //   });
 
-    it('greeting in en', function () {
-      let context = { sessionId: 1 };
+  //   it('greeting in en', function () {
+  //     let context = { sessionId: 1 };
 
-      let p = bot.message('Hi', context);
-      return p;
-    });
-  });
+  //     let p = bot.message('Hi', context);
+  //     return p;
+  //   });
+  // });
 
   // describe('change topic', function () {
   //   it('should change topic', function () {

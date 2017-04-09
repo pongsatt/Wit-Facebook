@@ -1,5 +1,13 @@
 'use strict';
 
+const buildIdsQ = (ids) => {
+    return {
+        "ids": {
+            values: ids
+        }
+    };
+}
+
 const buildWildCardQ = (keyword, field) => {
     let fieldQ = {};
     keyword = `*${keyword}*`;
@@ -71,6 +79,10 @@ const buildBoolQ = (q) => {
         boolQ.bool.must = q.must;
     }
 
+    if (q.must_not && q.must_not.length) {
+        boolQ.bool.must_not = q.must_not;
+    }
+
     if (q.should && q.should.length) {
         boolQ.bool.should = q.should;
     }
@@ -90,5 +102,6 @@ module.exports = {
     buildNestedQ,
     buildRangeQ,
     buildExistQ,
-    buildWildCardQ
+    buildWildCardQ,
+    buildIdsQ
 }
