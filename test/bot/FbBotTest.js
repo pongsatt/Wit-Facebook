@@ -119,6 +119,12 @@ describe('FbBot', function () {
       p = p.then(() => bot.message('บางนา', context));
       p = assertContext(p, {status:'wait_next'});
 
+      p = p.then(() => bot.message('แถวบางซื่อละ', context));
+      p = assertContext(p, {status:'wait_next'});
+
+      p = p.then(() => bot.message('ที่ทองหล่อละ', context));
+      p = assertContext(p, {status:'wait_next'});
+
       return p;
     });
 

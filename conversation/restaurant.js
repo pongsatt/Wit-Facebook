@@ -129,7 +129,7 @@ const doAction = (intent, context, response) => {
             }
         } else if (status == 'wait_next') {
             if (intent == 'unknown') {
-                p = response('ลองเปลี่ยนอาหาร สถานที่ หรือถ้าแพงไปหรือถูกไป ก็บอกได้นะ');
+                p = response('โทษที ไม่เข้าใจอะ ลองเปลี่ยนอาหาร สถานที่ หรือถ้าแพงไปหรือถูกไป ก็บอกได้นะ');
             }
         }
     }

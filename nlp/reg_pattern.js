@@ -18,7 +18,7 @@ module.exports = [
     {lang: 'th', intent: 'common_ok',  p:'(โอเค|ขอบคุณ)'},
     {lang: 'en', intent: 'common_ok',  p:'(thanks|ok)'},
     {lang: 'th', intent: 'common_change',  p:'เปลี่ยนเป็น(?<obj>.*)'},
-    {lang: 'th', intent: 'common_where',  p:'^แถว(?<where>.*)'},
+    {lang: 'th', intent: 'common_where',  p:'^(ที่|ใน|แถว|ใกล้)(?<where>.*)'},
 
     {lang: 'en', intent: 'word_meaning',  p:'^(?<word>.*)mean.*'},
     {lang: 'en', intent: 'word_pronounce',  p:'say(?<word>.*)'},

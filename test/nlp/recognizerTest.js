@@ -372,6 +372,21 @@ describe('Recognizer', function () {
             assertIntent(intentObj, 'common_where', { where: 'บางซื่อ' })
         });
 
+        it('should where th2', function () {
+            let intentObj = r.intent('ที่ทองหล่อละ', 'th');
+            assertIntent(intentObj, 'common_where', { where: 'ทองหล่อ' })
+        });
+
+        it('should where th3', function () {
+            let intentObj = r.intent('แถวพระโขนง', 'th');
+            assertIntent(intentObj, 'common_where', { where: 'พระโขนง' })
+        });
+
+        it('should where th4', function () {
+            let intentObj = r.intent('ในห้างเซ็ลทรัลบางนา', 'th');
+            assertIntent(intentObj, 'common_where', { where: 'ห้างเซ็ลทรัลบางนา' })
+        });
+
     });
 
     describe('Location', function () {
