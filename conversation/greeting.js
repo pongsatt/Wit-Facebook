@@ -1,20 +1,49 @@
+const Config = require('../config/const');
+const myname = Config.BOT_NAME;
+
 class GreetConversation {
     constructor(context) {
         this.context = context;
-        this.status = '';
+        this.context.status = '';
     }
 
     response(intent, entities, response) {
-        let action = nextAction(intent, this.status);
+        this.context = Object.assign({}, context, entities);
 
-        return processAction(action, entities, response)
-            .then(() => {
-                this.status = nextStatus(action, this.status);
-                this.ended = !this.status;
-                return this.context;
+        return doAction(intent, this.context, response)
+            .then((newContext) => {
+                this.context = newContext;
+                let status = this.context.status;
+
+                console.log('New status: ', newContext.status);
+                this.ended = !status || status == 'ended';
+                return Promise.resolve(this.context);
             });
     }
 
+}
+
+const doAction = (intent, context, response) => {
+    let { name, lang, msg, status } = context;
+
+    let p;
+
+    if(intent == 'greet_normal' || intent == 'greet_me'){
+        if(lang == 'th'){
+            p = response(`สวัสดีครับ ผมชื่อ ${myname}`)
+            .then(() => response(`ผมสามารถ ค้นหาร้านอาหารให้ได้นะ อยากกินอะไรละ`));
+        }else{
+            p = response(`Hi, my name is ${myname}`)
+            .then(() => response(`I can help you search for restaurant or find meaning of word and pronunciation.`));
+        }
+
+        context.status = 'ended';
+    }
+
+    return p.then(() => context, error => {
+        context.status = 'ended';
+        return context;
+    });
 }
 
 const processAction = (action, entities, response) => {

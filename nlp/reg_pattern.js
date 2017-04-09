@@ -1,12 +1,14 @@
 const Config = require('../config/const');
 
 module.exports = [
-    {lang: 'en', intent: 'greet_normal',  p:`(${Config.BOT_NAME})`},
+    {lang: 'en', intent: 'greet_me',  p:`(?<botname>${Config.BOT_NAME})`},
     
     {lang: 'en', intent: 'res_location',  p:'.*lat (?<lat>.*) lon (?<lon>.*).*'},
 
-    {lang: 'en', intent: 'greet_normal',  p:'(hi|hello)(?<obj>.*)*'},
-    {lang: 'th', intent: 'greet_normal',  p:'(สวัสดี|หวัดดี|ว่าไง)(?<obj>.*)*'},
+    {lang: 'en', intent: 'greet_me',  p:`(hi|hello)(?<botname>${Config.BOT_NAME})`},
+    {lang: 'th', intent: 'greet_me',  p:`(สวัสดี|หวัดดี|ว่าไง)(?<botname>${Config.BOT_NAME})`},
+    {lang: 'en', intent: 'greet_normal',  p:'(hi|hello)(?<name>.*)*'},
+    {lang: 'th', intent: 'greet_normal',  p:'(สวัสดี|หวัดดี|ว่าไง)(?<name>.*)*'},
 
     {lang: 'th', intent: 'common_reject',  p:'ไม่เอา.*'},
     {lang: 'th', intent: 'common_ok',  p:'(โอเค|ขอบคุณ)'},

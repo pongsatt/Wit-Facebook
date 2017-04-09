@@ -129,37 +129,40 @@ describe('FbBot', function () {
   //   });
   // });
 
-  // describe('greeting', function () {
-  //   it('should start greeting dialog', function () {
+  describe('greeting', function () {
+    it('greeting in th', function () {
+      let context = { sessionId: 1 };
+
+      let p = bot.message('สวัสดี', context);
+      return p;
+    });
+
+    it('greeting in en', function () {
+      let context = { sessionId: 1 };
+
+      let p = bot.message('Hi', context);
+      return p;
+    });
+  });
+
+  // describe('change topic', function () {
+  //   it('should change topic', function () {
   //     let context = { sessionId: 1 };
 
-  //     let p = bot.message('สวัสดี', context)
-  //     .then( (s) => {
-  //       return bot.message('พงศ์', context)
-  //     });
+  //     let p = bot.message('สวัสดี', context);
+  //     p = assertContext(p, {topic:'greeting'});
+
+  //     p = p.then(() => bot.message('อยากกินเค้ก', context));
+  //     p = assertContext(p, {topic:'restaurant_search'});
+
+  //     p = p.then(() => bot.message('สยาม', context));
+  //     p = assertContext(p, {topic:'restaurant_search'});
+
+  //     p = p.then(() => bot.message('say test', context));
+  //     p = assertContext(p, {topic:'word_search'});
 
   //     return p;
   //   });
   // });
-
-  describe('change topic', function () {
-    it('should change topic', function () {
-      let context = { sessionId: 1 };
-
-      let p = bot.message('สวัสดี', context);
-      p = assertContext(p, {topic:'greeting'});
-
-      p = p.then(() => bot.message('อยากกินเค้ก', context));
-      p = assertContext(p, {topic:'restaurant_search'});
-
-      p = p.then(() => bot.message('สยาม', context));
-      p = assertContext(p, {topic:'restaurant_search'});
-
-      p = p.then(() => bot.message('say test', context));
-      p = assertContext(p, {topic:'word_search'});
-
-      return p;
-    });
-  });
 
 });

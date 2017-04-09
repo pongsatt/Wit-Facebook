@@ -41,7 +41,7 @@ if (DEFAULT_LAT && DEFAULT_LON && DEFAULT_DISTANCE) {
   }
 }
 
-const BOT_NAME = 'Tony';
+const BOT_NAME = 'Pang';
 
 module.exports = {
   WIT_TOKEN,
