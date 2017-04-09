@@ -51,6 +51,11 @@ describe('Recognizer', function () {
             assertIntent(intentObj, 'res_any')
         });
 
+        it('should res_any5', function () {
+            let intentObj = r.intent('แนะนำร้านแถวนี้หน่อย', 'th');
+            assertIntent(intentObj, 'res_any')
+        });
+
         it('should res_greet', function () {
             let intent = r.intent('หิว');
             assert.propertyVal(intent, 'intent', 'res_greet', intent);
@@ -106,21 +111,27 @@ describe('Recognizer', function () {
             assertIntent(intentObj, 'res_food', { food: 'ขนมจีน' })
         });
 
-        it('should res_food2', function () {
+        it('should res_food4', function () {
             let intent = r.intent('แล้วมีส้มตำขายมะ');
             assert.propertyVal(intent, 'intent', 'res_food', intent);
         });
 
-        it('should res_food3', function () {
+        it('should res_food5', function () {
             let intentObj = r.intent('อยากกินสุกี้');
 
             assertIntent(intentObj, 'res_food', { food: 'สุกี้' });
         });
 
-        it('should res_food4', function () {
+        it('should res_food6', function () {
             let intentObj = r.intent('กินสุกี้');
 
             assertIntent(intentObj, 'res_food', { food: 'สุกี้' });
+        });
+
+        it('should res_food7', function () {
+            let intentObj = r.intent('แนะนำซูชิแถวนี้หน่อย');
+
+            assertIntent(intentObj, 'res_food', { food: 'ซูชิ' });
         });
 
         it('should res_food_recommend', function () {
@@ -214,6 +225,26 @@ describe('Recognizer', function () {
         it('should res_foodtype2', function () {
             let intentObj = r.intent('แล้วถ้าเป็นอาหารจีนละ');
             assertIntent(intentObj, 'res_foodtype', { foodtype: 'จีน' });
+        });
+
+        it('should res_foodtype3', function () {
+            let intentObj = r.intent('แนะนำร้านอาหารญี่ปุ่นแถวนี้ให้หน่อย');
+            assertIntent(intentObj, 'res_foodtype', { foodtype: 'ญี่ปุ่น' });
+        });
+
+        it('should res_foodtype4', function () {
+            let intentObj = r.intent('แนะนำร้านอาหารญี่ปุ่นหน่อย');
+            assertIntent(intentObj, 'res_foodtype', { foodtype: 'ญี่ปุ่น' });
+        });
+
+        it('should res_foodtype5', function () {
+            let intentObj = r.intent('แนะนำอาหารญี่ปุ่นหน่อย');
+            assertIntent(intentObj, 'res_foodtype', { foodtype: 'ญี่ปุ่น' });
+        });
+
+        it('should res_foodtype3', function () {
+            let intentObj = r.intent('แนะนำร้านอาหารญี่ปุ่น');
+            assertIntent(intentObj, 'res_foodtype', { foodtype: 'ญี่ปุ่น' });
         });
 
         it('should res_foodtype_where1', function () {
