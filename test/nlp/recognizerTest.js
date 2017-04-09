@@ -145,6 +145,12 @@ describe('Recognizer', function () {
             assertIntent(intentObj, 'res_food', { food: 'น้ำพริก' });
         });
 
+        it('should res_food9', function () {
+            let intentObj = r.intent('วันนี้อยากกินส้มตำ');
+
+            assertIntent(intentObj, 'res_food', { food: 'ส้มตำ' });
+        });
+
         it('should res_food_recommend', function () {
             let intent = r.intent('อยากกินส้มตำแนะนำด้วย');
             assert.propertyVal(intent, 'intent', 'res_food_recommend', intent);
