@@ -41,6 +41,8 @@ if (DEFAULT_LAT && DEFAULT_LON && DEFAULT_DISTANCE) {
   }
 }
 
+const BOT_NAME = 'Tony';
+
 module.exports = {
   WIT_TOKEN,
   FB_PAGE_TOKEN,
@@ -49,5 +51,6 @@ module.exports = {
   ESTAURANT_API_URL,
   ESTAURANT_API_AUTH,
   DEFAULT_LOCATION,
-  DEFAULT_DISTANCE
+  DEFAULT_DISTANCE,
+  BOT_NAME
 };

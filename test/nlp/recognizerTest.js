@@ -3,6 +3,21 @@ var assert = require('chai').assert;
 
 var r = new Recognizer();
 
+const assertRes = (intentObj, expIntent, expEntities) => {
+    assert.isObject(intentObj);
+
+    let { intent, entities } = intentObj;
+    assert.equal(intent, expIntent);
+
+    if(expEntities){
+        for(k in expEntities){
+            let v = expEntities[k];
+            assert.propertyVal(entities, k, v);
+        }
+    }
+
+}
+
 describe('Recognizer', function () {
     describe('Restaurant Recognizer', function () {
         it('should res_any_near1', function () {
@@ -25,13 +40,18 @@ describe('Recognizer', function () {
             assert.propertyVal(intent, 'intent', 'res_any', intent);
         });
 
-        it('should res_greet', function () {
-            let intent = r.intent('หิว');
-            assert.propertyVal(intent, 'intent', 'res_greet', intent);
+        it('should res_any3', function () {
+            let intentObj = r.intent('กินไรดี', 'th');
+            assertRes(intentObj, 'res_any')
         });
 
-        it('should res_greet1', function () {
-            let intent = r.intent('หิวกินไรดี');
+        it('should res_any4', function () {
+            let intentObj = r.intent('กินอะไรดี', 'th');
+            assertRes(intentObj, 'res_any')
+        });
+
+        it('should res_greet', function () {
+            let intent = r.intent('หิว');
             assert.propertyVal(intent, 'intent', 'res_greet', intent);
         });
 
@@ -75,6 +95,18 @@ describe('Recognizer', function () {
             assert.propertyVal(intent, 'intent', 'res_food', intent);
         });
 
+        it('should res_food3', function () {
+            let intentObj = r.intent('อยากกินสุกี้');
+
+            assertRes(intentObj, 'res_food', {food: 'สุกี้'});
+        });
+
+        it('should res_food4', function () {
+            let intentObj = r.intent('กินสุกี้');
+
+            assertRes(intentObj, 'res_food', {food: 'สุกี้'});
+        });
+
         it('should res_food_recommend', function () {
             let intent = r.intent('อยากกินส้มตำแนะนำด้วย');
             assert.propertyVal(intent, 'intent', 'res_food_recommend', intent);
@@ -115,6 +147,24 @@ describe('Recognizer', function () {
             assert.propertyVal(intent, 'intent', 'res_any_where', intent);
         });
 
+        it('should res_any_where5', function () {
+            let intentObj = r.intent('มีอะไรกินแถวเอ็มโพเรียม');
+            
+            assertRes(intentObj, 'res_any_where', {where: 'เอ็มโพเรียม'});
+        });
+
+        it('should res_any_where6', function () {
+            let intentObj = r.intent('มีอะไรกินในเอ็มโพเรียม');
+            
+            assertRes(intentObj, 'res_any_where', {where: 'เอ็มโพเรียม'});
+        });
+
+        it('should res_any_where6', function () {
+            let intentObj = r.intent('มีไรกินในเอ็มโพเรียม');
+            
+            assertRes(intentObj, 'res_any_where', {where: 'เอ็มโพเรียม'});
+        });
+
         it('should res_food_where4', function () {
             let intent = r.intent('อยู่แถวอ่อนนุชอยากกินส้มตำ');
             assert.propertyVal(intent, 'intent', 'res_food_where', intent);
@@ -145,22 +195,32 @@ describe('Recognizer', function () {
     describe('Common sentence', function () {
         it('should ok en', function () {
             let intent = r.intent('ok', 'en');
-            assert.propertyVal(intent, 'intent', 'ok', intent);
+            assert.propertyVal(intent, 'intent', 'common_ok', intent);
         });
 
         it('should ok th', function () {
             let intent = r.intent('โอเค', 'th');
-            assert.propertyVal(intent, 'intent', 'ok', intent);
+            assert.propertyVal(intent, 'intent', 'common_ok', intent);
         });
 
         it('should reject th', function () {
             let intent = r.intent('ไม่เอา', 'th');
-            assert.propertyVal(intent, 'intent', 'reject', intent);
+            assert.propertyVal(intent, 'intent', 'common_reject', intent);
         });
 
         it('should reject th1', function () {
             let intent = r.intent('ไม่เอา อยากกินอย่างอื่น', 'th');
-            assert.propertyVal(intent, 'intent', 'reject', intent);
+            assert.propertyVal(intent, 'intent', 'common_reject', intent);
+        });
+
+        it('should change th1', function () {
+            let intentObj = r.intent('เปลี่ยนเป็นข้าว', 'th');
+            assertRes(intentObj, 'common_change', {obj:'ข้าว'})
+        });
+
+        it('should where th1', function () {
+            let intentObj = r.intent('แถวบางซื่อ', 'th');
+            assertRes(intentObj, 'common_where', {where:'บางซื่อ'})
         });
 
     });
@@ -169,6 +229,15 @@ describe('Recognizer', function () {
         it('should get my location', function () {
             let intent = r.intent('My location is lat 13.688668 lon 100.607515', 'en');
             assert.propertyVal(intent, 'intent', 'res_location', intent);
+        });
+
+
+    });
+
+    describe('About me', function () {
+        it('should get my name', function () {
+            let intent = r.intent('Tony', 'en');
+            assert.propertyVal(intent, 'intent', 'greet_normal', intent);
         });
 
 

@@ -1,8 +1,15 @@
 const FBBot = require('../../bot/FbBot');
 const Bot = require('../../bot/botwrapper');
-var assert = require('assert');
+var assert = require('chai').assert;
 
 var bot = new Bot();
+
+const assertContext = (p, expStatus) => {
+  return p.then((context) => {
+        assert.propertyVal(context, 'status', expStatus);
+        return Promise.resolve(context);
+      });
+}
 
 describe('FbBot', function () {
   describe('restaurant', function () {
@@ -57,8 +64,14 @@ describe('FbBot', function () {
     it('should start recommend dialog', function () {
       let context = { sessionId: 1 };
 
-      let p = bot.message('อยู่เอ็มโพเรียมกินอะไรดี', context);
+      let p = bot.message('กินไรดี', context);
+      p = assertContext(p, 'wait_location');
 
+      p = p.then(() => bot.message('สยาม', context));
+      p = assertContext(p, 'wait_next');
+
+      p = p.then((context) => bot.message('มีเค้กปะ', context));
+      p = assertContext(p, 'wait_next');
       return p;
     });
 

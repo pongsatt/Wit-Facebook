@@ -1,5 +1,6 @@
 const api = require('../api/estaurantapi');
 const Config = require('../config/const');
+const myname = Config.BOT_NAME;
 
 class RestaurantConversation {
     constructor(context) {
@@ -43,6 +44,8 @@ class RestaurantConversation {
 }
 
 const doAction = (intent, context, response) => {
+    var { status, food, minPrice, maxPrice, where, location, msg } = context;
+
     //start preparation
     let p;
 
@@ -73,16 +76,36 @@ const doAction = (intent, context, response) => {
 
     if (!p && intent == 'res_location') {
         context.where = null;
-        context.location = {lat: parseFloat(context.lat), lon: parseFloat(context.lon), maxDistance: Config.DEFAULT_DISTANCE};
+        context.location = { lat: parseFloat(context.lat), lon: parseFloat(context.lon), maxDistance: Config.DEFAULT_DISTANCE };
+    }
+
+    if (!p && intent == 'res_any') {
+        context.where = null;
+        context.location = null;
     }
 
     if (!p && intent && intent.includes('where')) {
         context.location = null;
     }
 
-    //end preparation
+    //status handler
+    if (!p) {
+        if (status == 'wait_location') {
+            if (intent == 'unknown') {
+                if (!location && !where) {
+                    context.where = context.msg;
+                }
+            }
+        } else if (status == 'wait_next') {
+            if (intent == 'unknown') {
+                p = response('ช่วยบอกให้ชัดเจนกว่านี้หน่อย ได้เปล่า');
+            }
+        }
+    }
+    //end status handler
 
-    let { status, food, minPrice, maxPrice, where, location } = context;
+    //end preparation
+    var { status, food, minPrice, maxPrice, where, location, msg } = context;
 
     if (!p && !location && !where) {
         p = response('แถวไหนเหรอ หรือจะ share location ก็ได้นะ');
@@ -96,7 +119,7 @@ const doAction = (intent, context, response) => {
         let query = buildQuery(intent, context);
 
         p = onPick(
-            { first, last, error},
+            { first, last, error },
             query,
             response);
         context.status = 'wait_next';
@@ -110,7 +133,7 @@ const doAction = (intent, context, response) => {
 
 const buildQuery = (intent, context) => {
     let { status, food, minPrice, maxPrice, where, location } = context;
-    let q = {food, minPrice, maxPrice, where, location, size: 1};
+    let q = { food, minPrice, maxPrice, where, location, size: 1 };
 
     return q;
 }
@@ -120,16 +143,16 @@ const buildFirstMsg = (intent, context) => {
     let msg = ``;
 
     let locText;
-    if(where) locText = `ที่${where}`;
-    else if(location) locText = `บริเวณนี้`;
+    if (where) locText = `ที่${where}`;
+    else if (location) locText = `บริเวณนี้`;
 
-    if(food && locText && minPrice && maxPrice){
+    if (food && locText && minPrice && maxPrice) {
         msg = `เดี๋ยวหาร้านที่ขาย${food}${locText} ราคาอยู่ระหว่าง ${minPrice} และ ${maxPrice}`;
-    }else if(food && locText && minPrice){
+    } else if (food && locText && minPrice) {
         msg = `เดี๋ยวหาร้านที่ขาย${food}${locText} ราคาไม่เกิน ${minPrice}`;
-    }else if(food && locText){
+    } else if (food && locText) {
         msg = `เดี๋ยวหาร้านที่ขาย${food}${locText}`;
-    }else if(locText){
+    } else if (locText) {
         msg = `เดี๋ยวหาร้าน${locText}`;
     }
 
@@ -141,16 +164,16 @@ const buildLastMsg = (intent, context) => {
     let msg = ``;
 
     let locText;
-    if(where) locText = `ที่${where}`;
-    else if(location) locText = `บริเวณนี้`;
+    if (where) locText = `ที่${where}`;
+    else if (location) locText = `บริเวณนี้`;
 
-    if(food && locText && minPrice && maxPrice){
+    if (food && locText && minPrice && maxPrice) {
         msg = `ได้ละร้านที่ขาย${food}${locText} ราคาอยู่ระหว่าง ${minPrice} และ ${maxPrice}`;
-    }else if(food && locText && minPrice){
+    } else if (food && locText && minPrice) {
         msg = `ได้ละร้านที่ขาย${food}${locText} ราคาไม่เกิน ${minPrice}`;
-    }else if(food && locText){
+    } else if (food && locText) {
         msg = `ได้ละร้านที่ขาย${food}${locText}`;
-    }else if(locText){
+    } else if (locText) {
         msg = `ได้ละร้าน${locText}`;
     }
 
@@ -162,16 +185,16 @@ const buildErrorMsg = (intent, context) => {
     let msg = `หาร้านที่`;
 
     let locText;
-    if(where) locText = `ที่${where}`;
-    else if(location) locText = `บริเวณนี้`;
+    if (where) locText = `ที่${where}`;
+    else if (location) locText = `บริเวณนี้`;
 
-    if(food && locText && minPrice && maxPrice){
+    if (food && locText && minPrice && maxPrice) {
         msg += `ขาย${food}${locText} ราคาอยู่ระหว่าง ${minPrice} และ ${maxPrice}`;
-    }else if(food && locText && minPrice){
+    } else if (food && locText && minPrice) {
         msg += `ขาย${food}${locText} ราคาไม่เกิน ${minPrice}`;
-    }else if(food && locText){
+    } else if (food && locText) {
         msg += `ขาย${food}${locText}`;
-    }else if(locText){
+    } else if (locText) {
         msg = `${locText}`;
     }
 
@@ -325,11 +348,11 @@ const nextAction = (intent, context) => {
 
     if (status == 'wait_answer') {
         switch (intent) {
-            case 'reject':
+            case 'common_reject':
                 action = 'picknewone';
                 break;
             case 'res_cancel':
-            case 'ok':
+            case 'common_ok':
                 action = 'bye';
                 break;
             case 'res_exp':
