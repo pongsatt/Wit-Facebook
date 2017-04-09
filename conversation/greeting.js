@@ -40,6 +40,18 @@ const doAction = (intent, context, response) => {
         }
 
         context.status = 'ended';
+    }else if(intent == 'greet_pos'){
+        if(lang == 'th'){
+            p = response(`ขอบคุณครับ ที่ชม`)
+        }else{
+            p = response(`Thanks for your kindness`)
+        }
+    }else if(intent == 'greet_neg'){
+        if(lang == 'th'){
+            p = response(`เสียใจอะ`)
+        }else{
+            p = response(`Sorry, so sad`)
+        }
     }
 
     return p.then(() => context, error => {

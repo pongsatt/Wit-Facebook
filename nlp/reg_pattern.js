@@ -9,6 +9,10 @@ module.exports = [
     {lang: 'th', intent: 'greet_me',  p:`(สวัสดี|หวัดดี|ว่าไง)(?<botname>${Config.BOT_NAME})`},
     {lang: 'en', intent: 'greet_normal',  p:'(hi|hello)'},
     {lang: 'th', intent: 'greet_normal',  p:'(สวัสดี|หวัดดี|ว่าไง)'},
+    {lang: 'th', intent: 'greet_pos',  p:'^(เจ๋ง|เยี่ยม|ดี|เก่ง*?)'},
+    {lang: 'th', intent: 'greet_neg',  p:'^(โง่|แย่|ไม่ได้เรื่อง|ห่วย*?)'},
+    {lang: 'en', intent: 'greet_pos',  p:'^(good|great*?)'},
+    {lang: 'en', intent: 'greet_neg',  p:'^(stupid|bad*?)'},
 
     {lang: 'th', intent: 'common_reject',  p:'ไม่เอา.*'},
     {lang: 'th', intent: 'common_ok',  p:'(โอเค|ขอบคุณ)'},

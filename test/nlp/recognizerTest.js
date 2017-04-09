@@ -282,6 +282,26 @@ describe('Recognizer', function () {
             assert.propertyVal(intent, 'intent', 'greet_normal', intent);
         });
 
+        it('should greet_neg th', function () {
+            let intent = r.intent('แย่มาก', 'th');
+            assert.propertyVal(intent, 'intent', 'greet_neg', intent);
+        });
+
+        it('should greet_pos th', function () {
+            let intent = r.intent('เจ๋ง', 'th');
+            assert.propertyVal(intent, 'intent', 'greet_pos', intent);
+        });
+
+        it('should greet_neg en', function () {
+            let intent = r.intent('bad', 'en');
+            assert.propertyVal(intent, 'intent', 'greet_neg', intent);
+        });
+
+        it('should greet_pos en', function () {
+            let intent = r.intent('great', 'en');
+            assert.propertyVal(intent, 'intent', 'greet_pos', intent);
+        });
+
     });
 
     describe('Common sentence', function () {
