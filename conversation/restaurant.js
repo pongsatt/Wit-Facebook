@@ -341,7 +341,7 @@ const onPick = (responses, query, response) => {
     return response(responses.first)
         .then(() => api.pickOne(query))
         .then((ress) => {
-            if (responses.last) {
+            if (ress.hits && ress.hits.total && responses.last) {
                 return response(responses.last)
                     .then(() => ress);
             }
