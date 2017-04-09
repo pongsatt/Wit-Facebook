@@ -60,19 +60,24 @@ describe('Recognizer', function () {
             assert.propertyVal(intent, 'intent', 'res_cancel', intent);
         });
 
-        it('should res_exp', function () {
+        it('should res_cheap', function () {
             let intent = r.intent('แพงไป');
-            assert.propertyVal(intent, 'intent', 'res_exp', intent);
+            assert.propertyVal(intent, 'intent', 'res_cheap', intent);
+        });
+
+        it('should res_cheap1', function () {
+            let intent = r.intent('ราคาแพงไป');
+            assert.propertyVal(intent, 'intent', 'res_cheap', intent);
         });
 
         it('should res_exp1', function () {
-            let intent = r.intent('ราคาแพงไป');
+            let intent = r.intent('ถูกไป');
             assert.propertyVal(intent, 'intent', 'res_exp', intent);
         });
 
-        it('should res_cheap', function () {
-            let intent = r.intent('ถูกไป');
-            assert.propertyVal(intent, 'intent', 'res_cheap', intent);
+        it('should res_ig_price', function () {
+            let intent = r.intent('ไม่สนราคา');
+            assert.propertyVal(intent, 'intent', 'res_ig_price', intent);
         });
 
         it('should res_any_recommend', function () {
@@ -127,6 +132,11 @@ describe('Recognizer', function () {
             assert.propertyVal(intent, 'intent', 'res_food_where', intent);
         });
 
+        it('should res_food_where3', function () {
+            let intent = r.intent('อยากกินส้มตำในห้าง');
+            assert.propertyVal(intent, 'intent', 'res_food_where', intent);
+        });
+
         it('should res_any_where1', function () {
             let intent = r.intent('อยู่แถวลาดพร้าวกินอะไรดี');
             assert.propertyVal(intent, 'intent', 'res_any_where', intent);
@@ -168,6 +178,26 @@ describe('Recognizer', function () {
         it('should res_food_where4', function () {
             let intent = r.intent('อยู่แถวอ่อนนุชอยากกินส้มตำ');
             assert.propertyVal(intent, 'intent', 'res_food_where', intent);
+        });
+
+        it('should res_foodtype1', function () {
+            let intentObj = r.intent('อยากกินอาหารญี่ปุ่น');
+            assertRes(intentObj, 'res_foodtype', {foodtype: 'ญี่ปุ่น'});
+        });
+
+        it('should res_foodtype1', function () {
+            let intentObj = r.intent('อาหารจีน');
+            assertRes(intentObj, 'res_foodtype', {foodtype: 'จีน'});
+        });
+
+        it('should res_foodtype_where1', function () {
+            let intentObj = r.intent('อยากกินอาหารญี่ปุ่นแถวบางนา');
+            assertRes(intentObj, 'res_foodtype_where', {foodtype: 'ญี่ปุ่น', where: 'บางนา'});
+        });
+
+        it('should res_foodtype_where2', function () {
+            let intentObj = r.intent('อยู่อโศกอยากกินอาหารไทย');
+            assertRes(intentObj, 'res_foodtype_where', {foodtype: 'ไทย', where: 'อโศก'});
         });
 
 

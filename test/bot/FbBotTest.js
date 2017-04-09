@@ -61,17 +61,24 @@ describe('FbBot', function () {
     //   return p;
     // });
 
+    // it('should start recommend dialog', function () {
+    //   let context = { sessionId: 1 };
+
+    //   let p = bot.message('กินไรดี', context);
+    //   p = assertContext(p, 'wait_location');
+
+    //   p = p.then(() => bot.message('สยาม', context));
+    //   p = assertContext(p, 'wait_next');
+    //   return p;
+    // });
     it('should start recommend dialog', function () {
       let context = { sessionId: 1 };
 
-      let p = bot.message('กินไรดี', context);
-      p = assertContext(p, 'wait_location');
-
-      p = p.then(() => bot.message('สยาม', context));
+      let p = bot.message('อยากกินอาหารญี่ปุ่นแถวบางนา', context);
       p = assertContext(p, 'wait_next');
 
-      p = p.then((context) => bot.message('มีเค้กปะ', context));
-      p = assertContext(p, 'wait_next');
+      p = p.then(() => bot.message('แพงไป', context));
+      p = p.then(() => bot.message('ไม่สนราคา', context));
       return p;
     });
 

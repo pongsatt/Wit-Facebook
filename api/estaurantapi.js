@@ -139,12 +139,17 @@ const buildQuery = (opts) => {
         must.push(keywordQ);
     }
 
+    if (opts.foodtype) {
+        let typeQ = buildWildCardQ(opts.foodtype, 'cuisine');
+        must.push(typeQ);
+
+        let nameTypeQ = buildWildCardQ(opts.foodtype, 'name');
+        should.push(nameTypeQ);
+    }
+
     if (opts.food) {
         let foodQ = buildWildCardQ(opts.food, 'menus');
         must.push(foodQ);
-
-        let typeQ = buildWildCardQ(opts.food, 'cuisine');
-        should.push(typeQ);
 
         let nameFoodQ = buildWildCardQ(opts.food, 'name');
         should.push(nameFoodQ);
