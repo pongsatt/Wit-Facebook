@@ -145,6 +145,8 @@ describe('FbBot', function () {
 
       let p = bot.message('อยากกินข้าวแถวอโศก', context);
       p = assertContext(p, {status:'wait_next'});
+      p = p.then(() => bot.message('ไม่เอา', context));
+      p = p.then(() => bot.message('ราคาไม่เกิน 100', context));
       return p;
     });
 

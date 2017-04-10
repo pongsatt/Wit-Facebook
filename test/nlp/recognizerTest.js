@@ -8,12 +8,12 @@ const assertIntent = (intentObj, expIntent, expEntities) => {
     assert.isObject(intentObj);
 
     let { intent, entities } = intentObj;
-    assert.equal(intent, expIntent);
+    assert.equal(intent, expIntent, intentObj);
 
     if (expEntities) {
         for (k in expEntities) {
             let v = expEntities[k];
-            assert.propertyVal(entities, k, v);
+            assert.propertyVal(entities, k, v, intentObj);
         }
     }
 
@@ -81,13 +81,38 @@ describe('Recognizer', function () {
             assert.propertyVal(intent, 'intent', 'res_cheap', intent);
         });
 
+        it('should res_cheap2', function () {
+            let intent = r.intent('ราคาไม่เกิน 100');
+            assertIntent(intent, 'res_cheap', {maxPrice: '100'});
+        });
+
+        it('should res_cheap2', function () {
+            let intent = r.intent('ราคาต่ำกว่า 100');
+            assertIntent(intent, 'res_cheap', {maxPrice: '100'});
+        });
+
         it('should res_exp1', function () {
             let intent = r.intent('ถูกไป');
             assert.propertyVal(intent, 'intent', 'res_exp', intent);
         });
 
+        it('should res_exp2', function () {
+            let intent = r.intent('ราคาสูงกว่า 100');
+            assertIntent(intent, 'res_exp', {minPrice: '100'});
+        });
+
         it('should res_ig_price', function () {
             let intent = r.intent('ไม่สนราคา');
+            assert.propertyVal(intent, 'intent', 'res_ig_price', intent);
+        });
+
+        it('should res_ig_price1', function () {
+            let intent = r.intent('ราคาเท่าไหร่ก็ได้');
+            assert.propertyVal(intent, 'intent', 'res_ig_price', intent);
+        });
+
+        it('should res_ig_price2', function () {
+            let intent = r.intent('ไม่เอาราคา');
             assert.propertyVal(intent, 'intent', 'res_ig_price', intent);
         });
 
@@ -357,11 +382,6 @@ describe('Recognizer', function () {
             assert.propertyVal(intent, 'intent', 'common_reject', intent);
         });
 
-        it('should reject th1', function () {
-            let intent = r.intent('ไม่เอา อยากกินอย่างอื่น', 'th');
-            assert.propertyVal(intent, 'intent', 'common_reject', intent);
-        });
-
         it('should change th1', function () {
             let intentObj = r.intent('เปลี่ยนเป็นข้าว', 'th');
             assertIntent(intentObj, 'common_change', { obj: 'ข้าว' })
@@ -420,12 +440,12 @@ describe('Recognizer', function () {
     describe('Word', function () {
         it('should be meaning', function () {
             let intent = r.intent('test means', 'en');
-            assert.propertyVal(intent, 'intent', 'word_meaning', intent);
+            assertIntent(intent, 'word_meaning', {word: 'test'});
         });
 
         it('should be pronounce', function () {
             let intent = r.intent('say test', 'en');
-            assert.propertyVal(intent, 'intent', 'word_pronounce', intent);
+            assertIntent(intent, 'word_pronounce', {word: 'test'});
         });
 
     });

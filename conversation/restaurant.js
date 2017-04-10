@@ -117,6 +117,10 @@ const doAction = (intent, context, response) => {
     if (!p && intent == 'res_any') {
         context.where = null;
         context.location = null;
+        context.food = null;
+        context.foodtype = null;
+        context.minPrice = null;
+        context.maxPrice = null;
     }
 
     //status handler
