@@ -102,6 +102,11 @@ const buildQuery = (opts) => {
         filters.push(priceQ);
     }
 
+    if (opts.maxPrice || opts.minPrice) {
+        let priceExist = buildExistQ("priceRange");
+        filters.push(priceExist);
+    }
+
     if (opts.timeOfDay && opts.dayOfWeek) {
         let mustTimesQ = [
             buildRangeQ(`times.${opts.dayOfWeek}.open`, "lte", opts.timeOfDay),
