@@ -20,8 +20,8 @@ module.exports = [
     {lang: 'th', intent: 'common_change',  p:'เปลี่ยนเป็น(?<obj>.*)'},
     {lang: 'th', intent: 'common_where',  p:'^(ที่|ใน|แถว|ใกล้)(?<where>.*)'},
 
-    {lang: 'en', intent: 'word_meaning',  p:'^(?<word>.*)mean.*'},
-    {lang: 'en', intent: 'word_pronounce',  p:'say(?<word>.*)'},
+    {lang: 'en', intent: 'word_meaning',  p:'^.*(?<word>.*) mean.*'},
+    {lang: 'en', intent: 'word_pronounce',  p:'^.*say (?<word>.*)'},
 
     {lang: 'th', intent: 'res_change',  p:'(เปลี่ยนร้าน|ร้านอื่น|ร้านใหม่)'},
     {lang: 'th', intent: 'res_any_near', p:'^อยากกิน(?<any>อะไร)?.*(?<near>แถวนี้|ใกล้)$'},

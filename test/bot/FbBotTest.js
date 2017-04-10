@@ -2,7 +2,7 @@ const FBBot = require('../../bot/FbBot');
 const Bot = require('../../bot/botwrapper');
 var assert = require('chai').assert;
 
-var bot = new Bot();
+var bot = new FBBot();
 
 const assertContext = (p, expContext) => {
   return p.then((context) => {
@@ -110,23 +110,23 @@ describe('FbBot', function () {
     //   return p;
     // });
 
-    it('should be able to store doc id when user change', function () {
-      let context = { sessionId: 1 };
+    // it('should be able to store doc id when user change', function () {
+    //   let context = { sessionId: 1 };
 
-      let p = bot.message('วันนี้อยากกินส้มตำ', context);
-      p = assertContext(p, {status:'wait_location'});
+    //   let p = bot.message('วันนี้อยากกินส้มตำ', context);
+    //   p = assertContext(p, {status:'wait_location'});
 
-      p = p.then(() => bot.message('บางนา', context));
-      p = assertContext(p, {status:'wait_next'});
+    //   p = p.then(() => bot.message('บางนา', context));
+    //   p = assertContext(p, {status:'wait_next'});
 
-      p = p.then(() => bot.message('แถวบางซื่อละ', context));
-      p = assertContext(p, {status:'wait_next'});
+    //   p = p.then(() => bot.message('แถวบางซื่อละ', context));
+    //   p = assertContext(p, {status:'wait_next'});
 
-      p = p.then(() => bot.message('ที่ทองหล่อละ', context));
-      p = assertContext(p, {status:'wait_next'});
+    //   p = p.then(() => bot.message('ที่ทองหล่อละ', context));
+    //   p = assertContext(p, {status:'wait_next'});
 
-      return p;
-    });
+    //   return p;
+    // });
 
     // it('should not be able change when no res left', function () {
     //   let context = { sessionId: 1 };
@@ -139,6 +139,14 @@ describe('FbBot', function () {
 
     //   return p;
     // });
+
+    it('should not be able change when no res left', function () {
+      let context = { sessionId: 1 };
+
+      let p = bot.message('อยากกินข้าวแถวอโศก', context);
+      p = assertContext(p, {status:'wait_next'});
+      return p;
+    });
 
     // it('should start pick by location', function () {
     //   let context = { sessionId: 1 };

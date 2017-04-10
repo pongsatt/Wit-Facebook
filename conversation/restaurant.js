@@ -167,14 +167,15 @@ const doAction = (intent, context, response) => {
     }
 
     return p.then(() => context, error => {
-            return response(`มี error เดี๋ยวลองดูใหม่อีกทีนะ`)
-                .then(() => context);
-        });
+        console.error(error);
+        return response(`มี error เดี๋ยวลองดูใหม่อีกทีนะ`)
+            .then(() => context);
+    });
 }
 
 const buildQuery = (intent, context) => {
     let { status, food, foodtype, minPrice, maxPrice, where, location, result_ids } = context;
-    let q = { food, foodtype, minPrice, maxPrice, where, location, exclude_ids: result_ids, result_ids, size: 1 };
+    let q = { food, foodtype, minPrice, maxPrice, where, location, exclude_ids: result_ids, result_ids, size: 3, timeOfDay: ''};
 
     return q;
 }
@@ -202,7 +203,7 @@ const buildFirstMsg = (intent, context) => {
 
     msg = msg + 'ให้ รอแป๊บนะ';
 
-    if(intent == 'res_change' || intent == 'common_reject'){
+    if (intent == 'res_change' || intent == 'common_reject') {
         msg = 'งั้นเอาใหม่ ' + msg;
     }
 
@@ -339,7 +340,7 @@ const processAction = (action, context, response) => {
 
 const onPick = (responses, query, response) => {
     return response(responses.first)
-        .then(() => api.pickOne(query))
+        .then(() => api.search(query))
         .then((ress) => {
             if (ress.hits && ress.hits.total && responses.last) {
                 return response(responses.last)
@@ -352,9 +353,11 @@ const onPick = (responses, query, response) => {
                 return response(responses.error || `ขอโทษที หาร้านที่ต้องการไม่เจอ ลองถามใหม่นะ`);
             }
 
-            return Promise.all(ress.hits.hits.map(r => {
-                return response(toCard(r));
-            })).then(() => ress);
+            let cards = ress.hits.hits.map(r => {
+                return toCard(r);
+            });
+
+            return response(cards).then(() => ress);
         });
 }
 

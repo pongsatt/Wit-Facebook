@@ -13,16 +13,16 @@ class FBBot {
         return this.bot.message(msg, context)
             .then(res => {
                 return res.onResponse(response => {
-                        if (typeof response == 'string') {
-                            return fbTextSend(response, context);
-                        } else if (Array.isArray(response)) {
-                            return fbSend(buildList(response), context);
-                        } else if (response.audio) {
-                            return fbSend(buildAudio(response.url), context);
-                        } else {
-                            return fbSend(buildACard(response), context);
-                        }
-                    });
+                    if (typeof response == 'string') {
+                        return fbTextSend(response, context);
+                    } else if (Array.isArray(response)) {
+                        return fbSend(buildList(response), context);
+                    } else if (response.audio) {
+                        return fbSend(buildAudio(response.url), context);
+                    } else {
+                        return fbSend(buildACard(response), context);
+                    }
+                });
             })
             .catch(error => {
                 console.error(error);
@@ -46,37 +46,45 @@ const fbSend = (msg, context) => {
     return Promise.resolve();
 }
 
-const buildACard = (card) => {
-    let element = buildElement(card);
+const buildACard = (cards) => {
+    let elements = buildElement(cards);
 
-    return buildGenericTemplate([element]);
+    return buildGenericTemplate(elements);
 }
 
-const buildElement = ({ title, subtitle, image_url, url, buttons }) => {
-    let element = {
-        title,
-        subtitle
-    };
+const buildElement = (cards) => {
+    let elements = [];
 
-    if (image_url) element.image_url = image_url;
-    if (url) {
-        element.default_action = {
-            type: 'web_url',
-            url: url
-        }
-    }
+    for (let card of cards) {
+        let { title, subtitle, image_url, url, buttons } = card;
 
-    if (buttons && buttons.length) {
-        element.buttons = buttons.map(b => {
-            return {
+        let element = {
+            title,
+            subtitle
+        };
+
+        if (image_url) element.image_url = image_url;
+        if (url) {
+            element.default_action = {
                 type: 'web_url',
-                title: b.title,
-                url: b.url
-            };
-        });
+                url: url
+            }
+        }
+
+        if (buttons && buttons.length) {
+            element.buttons = buttons.map(b => {
+                return {
+                    type: 'web_url',
+                    title: b.title,
+                    url: b.url
+                };
+            });
+        }
+
+        elements.push(element);
     }
 
-    return element;
+    return elements;
 }
 
 const buildGenericTemplate = (elements) => {
@@ -126,7 +134,7 @@ if (require.main === module) {
     var bot = new FBBot();
 
     interactive((command) => {
-        return bot.message(command, {sessionId:1});
+        return bot.message(command, { sessionId: 1 });
     });
 
 }
