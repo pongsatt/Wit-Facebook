@@ -22,9 +22,9 @@ class WordConversation {
 const processAction = (action, entities, response) => {
     switch (action) {
         case 'word_meaning':
-            return onMeaning(entities, context, response);
+            return onMeaning(entities, response);
         case 'word_pronounce':
-            return onPronounce(entities, context, response);
+            return onPronounce(entities, response);
     }
 
     return response('What word do you want to know meaning or pronunciation?');
@@ -96,7 +96,7 @@ const buildWordList = (word) => {
     return list;
 }
 
-const onMeaning = (entities, context, response) => {
+const onMeaning = (entities, response) => {
     return getWord(entities)
         .then(word => {
             if (word) {
@@ -111,7 +111,7 @@ const onMeaning = (entities, context, response) => {
         });
 }
 
-const pronounce = (word, context, country, response) => {
+const pronounce = (word, country, response) => {
     return response(`Here is how to pronounce "${word.vocab}" in ${country}`)
         .then(() => {
             let url = word.pronunciationAudios[country];
