@@ -8,7 +8,7 @@ const assertIntent = (intentObj, expIntent, expEntities) => {
     assert.isObject(intentObj);
 
     let { intent, entities } = intentObj;
-    assert.equal(intent, expIntent, intentObj);
+    assert.equal(intent, expIntent, JSON.stringify(intentObj));
 
     if (expEntities) {
         for (k in expEntities) {
@@ -259,43 +259,48 @@ describe('Recognizer', function () {
             assertIntent(intentObj, 'res_foodtype', { foodtype: 'ญี่ปุ่น' });
         });
 
-        it('should res_foodtype1', function () {
+        it('should res_foodtype2', function () {
             let intentObj = r.intent('อาหารจีน');
             assertIntent(intentObj, 'res_foodtype', { foodtype: 'จีน' });
         });
 
-        it('should res_foodtype2', function () {
+        it('should res_foodtype3', function () {
             let intentObj = r.intent('แล้วถ้าเป็นอาหารจีนละ');
             assertIntent(intentObj, 'res_foodtype', { foodtype: 'จีน' });
         });
 
-        it('should res_foodtype3', function () {
+        it('should res_foodtype4', function () {
             let intentObj = r.intent('แนะนำร้านอาหารญี่ปุ่นแถวนี้ให้หน่อย');
             assertIntent(intentObj, 'res_foodtype', { foodtype: 'ญี่ปุ่น' });
         });
 
-        it('should res_foodtype4', function () {
+        it('should res_foodtype5', function () {
             let intentObj = r.intent('แนะนำร้านอาหารญี่ปุ่นหน่อย');
             assertIntent(intentObj, 'res_foodtype', { foodtype: 'ญี่ปุ่น' });
         });
 
-        it('should res_foodtype5', function () {
+        it('should res_foodtype6', function () {
             let intentObj = r.intent('แนะนำอาหารญี่ปุ่นหน่อย');
             assertIntent(intentObj, 'res_foodtype', { foodtype: 'ญี่ปุ่น' });
         });
 
-        it('should res_foodtype6', function () {
+        it('should res_foodtype7', function () {
             let intentObj = r.intent('แนะนำร้านอาหารญี่ปุ่น');
             assertIntent(intentObj, 'res_foodtype', { foodtype: 'ญี่ปุ่น' });
         });
 
-        it('should res_foodtype7', function () {
+        it('should res_foodtype8', function () {
             let intentObj = r.intent('ร้านอาหารไทยแถวนี้');
             assertIntent(intentObj, 'res_foodtype', { foodtype: 'ไทย' });
         });
 
-        it('should res_foodtype8', function () {
+        it('should res_foodtype9', function () {
             let intentObj = r.intent('ร้านอาหารไทย');
+            assertIntent(intentObj, 'res_foodtype', { foodtype: 'ไทย' });
+        });
+
+         it('should res_foodtype10', function () {
+            let intentObj = r.intent('ร้านที่ขายอาหารไทย');
             assertIntent(intentObj, 'res_foodtype', { foodtype: 'ไทย' });
         });
 
@@ -322,6 +327,36 @@ describe('Recognizer', function () {
         it('should res_change2', function () {
             let intentObj = r.intent('ร้านใหม่');
             assertIntent(intentObj, 'res_change');
+        });
+
+        it('should res_name', function () {
+            let intentObj = r.intent('ร้าน torinada');
+            assertIntent(intentObj, 'res_name', {resname: 'torinada'});
+        });
+
+        it('should res_name1', function () {
+            let intentObj = r.intent('ข้อมูลร้าน torinada');
+            assertIntent(intentObj, 'res_name', {resname: 'torinada'});
+        });
+
+        it('should res_any_near', function () {
+            let intentObj = r.intent('อยากกินอะไรก็ได้แถวนี้');
+            assertIntent(intentObj, 'res_any_near');
+        });
+
+        it('should res_any_near', function () {
+            let intentObj = r.intent('อยากกินอะไรอร่อยๆ แถวนี้');
+            assertIntent(intentObj, 'res_any_near');
+        });
+
+        it('should res_food_near', function () {
+            let intentObj = r.intent('อยากกินขนมปังแถวนี้');
+            assertIntent(intentObj, 'res_food_near', {food: 'ขนมปัง'});
+        });
+
+        it('should res_foodtype_near', function () {
+            let intentObj = r.intent('อยากกินอาหารไทยแถวนี้');
+            assertIntent(intentObj, 'res_foodtype_near', {foodtype: 'ไทย'});
         });
 
 

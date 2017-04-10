@@ -44,7 +44,7 @@ class RestaurantConversation {
 }
 
 const doAction = (intent, context, response) => {
-    var { status, food, foodtype, minPrice, maxPrice, where, location, msg, lastTotal } = context;
+    var { status, food, foodtype, minPrice, maxPrice, where, location, msg, lastTotal, resname } = context;
 
     //start preparation
     let p;
@@ -74,7 +74,7 @@ const doAction = (intent, context, response) => {
         context.minPrice = undefined;
     }
 
-    if (!p && intent == 'res_near') {
+    if (!p && intent.includes('near')) {
         context.where = null;
         context.location = Config.DEFAULT_LOCATION;
     }
@@ -123,6 +123,13 @@ const doAction = (intent, context, response) => {
         context.maxPrice = null;
     }
 
+    if (!p && intent == 'res_name') {
+        context.food = null;
+        context.foodtype = null;
+        context.minPrice = null;
+        context.maxPrice = null;
+    }
+
     //status handler
     if (!p) {
         if (status == 'wait_location') {
@@ -142,9 +149,13 @@ const doAction = (intent, context, response) => {
     //end preparation
     var { status, food, foodtype, minPrice, maxPrice, where, location, msg, result_ids } = context;
 
-    if (!p && !location && !where) {
+    if (!p && !location && !where && !resname) {
         p = response('แถวไหนเหรอ หรือจะ share location ก็ได้นะ');
         context.status = 'wait_location';
+    }
+
+    if(!p && resname){
+        context.status = 'ended';
     }
 
     if (!p) {
@@ -178,14 +189,15 @@ const doAction = (intent, context, response) => {
 }
 
 const buildQuery = (intent, context) => {
-    let { status, food, foodtype, minPrice, maxPrice, where, location, result_ids } = context;
-    let q = { food, foodtype, minPrice, maxPrice, where, location, exclude_ids: result_ids, result_ids, size: 3, timeOfDay: ''};
+    let { status, food, foodtype, minPrice, maxPrice, where, location, result_ids, resname } = context;
+    let q = { food, foodtype, minPrice, maxPrice, where, location, 
+        exclude_ids: result_ids, result_ids, size: 3, name: resname, timeOfDay: ''};
 
     return q;
 }
 
 const buildFirstMsg = (intent, context) => {
-    let { status, food, foodtype, minPrice, maxPrice, where, location } = context;
+    let { status, food, foodtype, minPrice, maxPrice, where, location, resname } = context;
     let msg = ``;
 
     foodtype = foodtype && `อาหาร${foodtype}`;
@@ -201,8 +213,12 @@ const buildFirstMsg = (intent, context) => {
         msg = `เดี๋ยวหาร้านที่ขาย${foodText}${locText} ราคาไม่เกิน ${minPrice}`;
     } else if (foodText && locText) {
         msg = `เดี๋ยวหาร้านที่ขาย${foodText}${locText}`;
+    } else if (locText && resname) {
+        msg = `เดี๋ยวหาร้าน ${resname} ${locText}`;
     } else if (locText) {
         msg = `เดี๋ยวหาร้าน${locText}`;
+    } else if (resname) {
+        msg = `เดี๋ยวหาร้าน ${resname} `;
     }
 
     msg = msg + 'ให้ รอแป๊บนะ';
@@ -215,7 +231,7 @@ const buildFirstMsg = (intent, context) => {
 }
 
 const buildLastMsg = (intent, context) => {
-    let { status, food, foodtype, minPrice, maxPrice, where, location } = context;
+    let { status, food, foodtype, minPrice, maxPrice, where, location, resname } = context;
     let msg = ``;
 
     foodtype = foodtype && `อาหาร${foodtype}`;
@@ -231,15 +247,19 @@ const buildLastMsg = (intent, context) => {
         msg = `ได้ละร้านที่ขาย${foodText}${locText} ราคาไม่เกิน ${minPrice}`;
     } else if (foodText && locText) {
         msg = `ได้ละร้านที่ขาย${foodText}${locText}`;
+    } else if (locText && resname) {
+        msg = `ได้ละร้าน ${resname} ${locText}`;
     } else if (locText) {
         msg = `ได้ละร้าน${locText}`;
-    }
+    } else if (resname) {
+        msg = `ได้ละร้าน ${resname} `;
+    } 
 
     return msg;
 }
 
 const buildErrorMsg = (intent, context) => {
-    let { status, food, foodtype, minPrice, maxPrice, where, location } = context;
+    let { status, food, foodtype, minPrice, maxPrice, where, location, resname } = context;
     let msg = `ไม่มีร้าน`;
 
     foodtype = foodtype && `อาหาร${foodtype}`;
@@ -255,8 +275,12 @@ const buildErrorMsg = (intent, context) => {
         msg += `ขาย${foodText}${locText} ราคาไม่เกิน ${minPrice}`;
     } else if (foodText && locText) {
         msg += `ขาย${foodText}${locText}`;
+    } else if (locText && resname) {
+        msg += `${resname} ${locText}`;
     } else if (locText) {
-        msg = `${locText}`;
+        msg += `${locText}`;
+    } else if (resname) {
+        msg += `${resname}`;
     }
 
     return msg + `เลย`;

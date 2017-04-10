@@ -29,7 +29,7 @@ if(!ESTAURANT_API_AUTH){
 
 const DEFAULT_LAT = process.env.LAT || 13.7329531;
 const DEFAULT_LON = process.env.LON || 100.5663767;
-const DEFAULT_DISTANCE = process.env.DISTANCE || '5km';
+const DEFAULT_DISTANCE = process.env.DISTANCE || '2km';
 
 let DEFAULT_LOCATION = {}
 
@@ -41,7 +41,7 @@ if (DEFAULT_LAT && DEFAULT_LON && DEFAULT_DISTANCE) {
   }
 }
 
-const BOT_NAME = 'Pang';
+const BOT_NAME = 'Peta';
 
 module.exports = {
   WIT_TOKEN,

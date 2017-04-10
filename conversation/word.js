@@ -120,13 +120,13 @@ const pronounce = (word, country, response) => {
 
 }
 
-const onPronounce = (entities, context, response) => {
+const onPronounce = (entities, response) => {
     return getWord(entities, response)
         .then(word => {
             if (word && word.pronunciationAudios) {
-                return pronounce(word, context, "us", response)
+                return pronounce(word, "us", response)
                     .then(() => {
-                        return pronounce(word, context, "uk", response);
+                        return pronounce(word, "uk", response);
                     });
             }
 

@@ -168,6 +168,11 @@ const buildQuery = (opts) => {
         should.push(nameWhereQ);
     }
 
+    if (opts.name) {
+        let nameQ = buildWildCardQ(opts.name, 'name');
+        must.push(nameQ);
+    }
+
     let q = {
         "query": buildBoolQ({ must, must_not, should, filter: filters })
     };

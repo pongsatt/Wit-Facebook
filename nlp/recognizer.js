@@ -37,9 +37,9 @@ const getLang = (msg) => {
 
             if (result && result.languages && result.languages.length) {
                 console.log('Msg lang: ', result.languages);
-                return resolve(result.languages[0].code);
+                return resolve(result.languages[0].code == 'th'?'th':'en');
             }
-            return resolve('');
+            return resolve('en');
         });
     });
 }
