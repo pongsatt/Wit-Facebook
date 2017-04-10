@@ -15,12 +15,10 @@ class FBBot {
                 return res.onResponse(response => {
                     if (typeof response == 'string') {
                         return fbTextSend(response, context);
-                    } else if (Array.isArray(response)) {
-                        return fbSend(buildList(response), context);
                     } else if (response.audio) {
                         return fbSend(buildAudio(response.url), context);
                     } else {
-                        return fbSend(buildACard(response), context);
+                        return fbSend(buildCards(response), context);
                     }
                 });
             })
@@ -46,7 +44,7 @@ const fbSend = (msg, context) => {
     return Promise.resolve();
 }
 
-const buildACard = (cards) => {
+const buildCards = (cards) => {
     let elements = buildElement(cards);
 
     return buildGenericTemplate(elements);
