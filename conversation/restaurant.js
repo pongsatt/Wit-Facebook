@@ -100,8 +100,10 @@ const doAction = (intent, context, response) => {
 
     if (!p && intent.includes('foodtype')) {
         context.food = null;
+      	context.resname = null;
     } else if (!p && intent && intent.includes('food')) {
         context.foodtype = null;
+      	context.resname = null;
     }
 
     if (!p && intent != 'res_change' && intent != 'common_reject') {
@@ -119,13 +121,14 @@ const doAction = (intent, context, response) => {
         context.location = null;
         context.food = null;
         context.foodtype = null;
+      	context.resname = null;
         context.minPrice = null;
         context.maxPrice = null;
     }
 
     if (!p && intent == 'res_name') {
         context.food = null;
-        context.foodtype = null;
+        context.foodtype = null;      
         context.minPrice = null;
         context.maxPrice = null;
     }
