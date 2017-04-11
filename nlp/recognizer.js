@@ -72,8 +72,8 @@ const test = (str, p) => {
 const getEntities = (r) => {
     let entities = {};
 
-    for (n in r) {
-        if (n != 'index' && n != 'input') {
+    for (let n in r) {
+        if (isNaN(+n) && n != 'index' && n != 'input') {
             entities[n] = r[n];
         }
     }
