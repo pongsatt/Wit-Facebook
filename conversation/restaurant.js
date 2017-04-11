@@ -22,41 +22,22 @@ class RestaurantConversation {
             });
     }
 
-    response1(intent, entities, response) {
-        this.context = getCurrentContext(entities, this.context);
-
-        this.context = nextAction(intent, this.context);
-
-        let action = this.context.action;
-
-        return processAction(action, this.context, response)
-            .then((newStatus) => {
-                console.log('New status: ', newStatus);
-                this.context = nextState(action, this.context, newStatus);
-
-                let status = this.context.status;
-
-                this.ended = !status || status == 'ended';
-                return Promise.resolve(this.context);
-            });
-    }
-
 }
 
 const doAction = (intent, context, response) => {
-    var { status, food, foodtype, minPrice, maxPrice, where, location, msg, lastTotal, resname } = context;
+    var { status, food, foodtype, minPrice, maxPrice, where, location, msg, lastTotal, resname, result_ids } = context;
 
     //start preparation
     let p;
 
     if (!p && intent == 'res_great') {
         p = response('อยากกินอะไรละ');
-        context.status = 'ended'
+        context.status = 'ended';
     }
 
     if (!p && intent == 'res_cancel' && intent == 'common_ok') {
         p = response('ขอบคุณครับ');
-        context.status = 'ended'
+        context.status = 'ended';
     }
 
     if (!p && intent == 'res_exp') {
@@ -100,10 +81,10 @@ const doAction = (intent, context, response) => {
 
     if (!p && intent.includes('foodtype')) {
         context.food = null;
-      	context.resname = null;
+        context.resname = null;
     } else if (!p && intent && intent.includes('food')) {
         context.foodtype = null;
-      	context.resname = null;
+        context.resname = null;
     }
 
     if (!p && intent != 'res_change' && intent != 'common_reject') {
@@ -121,14 +102,14 @@ const doAction = (intent, context, response) => {
         context.location = null;
         context.food = null;
         context.foodtype = null;
-      	context.resname = null;
+        context.resname = null;
         context.minPrice = null;
         context.maxPrice = null;
     }
 
     if (!p && intent == 'res_name') {
         context.food = null;
-        context.foodtype = null;      
+        context.foodtype = null;
         context.minPrice = null;
         context.maxPrice = null;
     }
@@ -150,14 +131,14 @@ const doAction = (intent, context, response) => {
     //end status handler
 
     //end preparation
-    var { status, food, foodtype, minPrice, maxPrice, where, location, msg, result_ids } = context;
+    ({ status, food, foodtype, minPrice, maxPrice, where, location, msg, result_ids } = context);
 
     if (!p && !location && !where && !resname) {
         p = response('แถวไหนเหรอ หรือจะ share location ก็ได้นะ');
         context.status = 'wait_location';
     }
 
-    if(!p && resname){
+    if (!p && resname) {
         context.status = 'ended';
     }
 
@@ -189,18 +170,20 @@ const doAction = (intent, context, response) => {
         return response(`มี error เดี๋ยวลองดูใหม่อีกทีนะ`)
             .then(() => context);
     });
-}
+};
 
 const buildQuery = (intent, context) => {
-    let { status, food, foodtype, minPrice, maxPrice, where, location, result_ids, resname } = context;
-    let q = { food, foodtype, minPrice, maxPrice, where, location, 
-        exclude_ids: result_ids, result_ids, size: 3, name: resname, timeOfDay: ''};
+    let { food, foodtype, minPrice, maxPrice, where, location, result_ids, resname } = context;
+    let q = {
+        food, foodtype, minPrice, maxPrice, where, location,
+        exclude_ids: result_ids, result_ids, size: 3, name: resname, timeOfDay: ''
+    };
 
     return q;
-}
+};
 
 const buildFirstMsg = (intent, context) => {
-    let { status, food, foodtype, minPrice, maxPrice, where, location, resname } = context;
+    let { food, foodtype, minPrice, maxPrice, where, location, resname } = context;
     let msg = ``;
 
     foodtype = foodtype && `อาหาร${foodtype}`;
@@ -210,9 +193,9 @@ const buildFirstMsg = (intent, context) => {
     if (where) locText = `ที่${where}`;
     else if (location) locText = `บริเวณนี้`;
 
-    if (foodText && locText && minPrice != undefined && maxPrice != undefined) {
+    if (foodText && locText && minPrice !== undefined && maxPrice !== undefined) {
         msg = `เดี๋ยวหาร้านที่ขาย${foodText}${locText} ราคาอยู่ระหว่าง ${minPrice} และ ${maxPrice}`;
-    } else if (foodText && locText && minPrice != undefined) {
+    } else if (foodText && locText && minPrice !== undefined) {
         msg = `เดี๋ยวหาร้านที่ขาย${foodText}${locText} ราคาไม่เกิน ${minPrice}`;
     } else if (foodText && locText) {
         msg = `เดี๋ยวหาร้านที่ขาย${foodText}${locText}`;
@@ -231,10 +214,10 @@ const buildFirstMsg = (intent, context) => {
     }
 
     return msg;
-}
+};
 
 const buildLastMsg = (intent, context) => {
-    let { status, food, foodtype, minPrice, maxPrice, where, location, resname } = context;
+    let { food, foodtype, minPrice, maxPrice, where, location, resname } = context;
     let msg = ``;
 
     foodtype = foodtype && `อาหาร${foodtype}`;
@@ -244,9 +227,9 @@ const buildLastMsg = (intent, context) => {
     if (where) locText = `ที่${where}`;
     else if (location) locText = `บริเวณนี้`;
 
-    if (foodText && locText && minPrice != undefined && maxPrice != undefined) {
+    if (foodText && locText && minPrice !== undefined && maxPrice !== undefined) {
         msg = `ได้ละร้านที่ขาย${foodText}${locText} ราคาอยู่ระหว่าง ${minPrice} และ ${maxPrice}`;
-    } else if (foodText && locText && minPrice != undefined) {
+    } else if (foodText && locText && minPrice !== undefined) {
         msg = `ได้ละร้านที่ขาย${foodText}${locText} ราคาไม่เกิน ${minPrice}`;
     } else if (foodText && locText) {
         msg = `ได้ละร้านที่ขาย${foodText}${locText}`;
@@ -256,13 +239,13 @@ const buildLastMsg = (intent, context) => {
         msg = `ได้ละร้าน${locText}`;
     } else if (resname) {
         msg = `ได้ละร้าน ${resname} `;
-    } 
+    }
 
     return msg;
-}
+};
 
 const buildErrorMsg = (intent, context) => {
-    let { status, food, foodtype, minPrice, maxPrice, where, location, resname } = context;
+    let { food, foodtype, minPrice, maxPrice, where, location, resname } = context;
     let msg = `ไม่มีร้าน`;
 
     foodtype = foodtype && `อาหาร${foodtype}`;
@@ -272,9 +255,9 @@ const buildErrorMsg = (intent, context) => {
     if (where) locText = `ที่${where}`;
     else if (location) locText = `บริเวณนี้`;
 
-    if (foodText && locText && minPrice != undefined && maxPrice != undefined) {
+    if (foodText && locText && minPrice !== undefined && maxPrice !== undefined) {
         msg += `ขาย${foodText}${locText} ราคาอยู่ระหว่าง ${minPrice} และ ${maxPrice}`;
-    } else if (foodText && locText && minPrice != undefined) {
+    } else if (foodText && locText && minPrice !== undefined) {
         msg += `ขาย${foodText}${locText} ราคาไม่เกิน ${minPrice}`;
     } else if (foodText && locText) {
         msg += `ขาย${foodText}${locText}`;
@@ -287,87 +270,11 @@ const buildErrorMsg = (intent, context) => {
     }
 
     return msg + `เลย`;
-}
+};
 
 const newContext = (intent, entities, context) => {
     return Object.assign({}, context, entities);
-}
-
-const getCurrentContext = (entities, context) => {
-    return Object.assign({}, context, entities);
-}
-
-const processAction = (action, context, response) => {
-    let p;
-    let { food, where, status, minPrice, maxPrice } = context;
-
-    switch (action) {
-        case 'pickone':
-            p = onPick(
-                {
-                    first: "ไม่รู้จะกินอะไรใช่มะ เดี๋ยวหาร้านแถวนี้ให้ รอแป๊บหนึ่งนะ",
-                    last: "ลองดูร้านนี้เป็นยังไง",
-                    error: "ขอโทษที ไม่พบร้านแถวนี้เลย"
-                },
-                { recommended: true, size: 1, timeOfDay: '', location: Config.DEFAULT_LOCATION },
-                response);
-            break;
-        case 'picknewone':
-            p = onPick(
-                {
-                    first: "โอเค งั้นลองใหม่ แป๊บนะ",
-                    last: "ลองดูร้านนี้เป็นยังไง",
-                    error: "ขอโทษที ไม่พบร้านแถวนี้เลย"
-                },
-                { recommended: true, size: 1, timeOfDay: '', location: Config.DEFAULT_LOCATION },
-                response);
-            break;
-        case 'greet':
-            p = response('อยากกินอะไรละ');
-            break;
-        case 'bye':
-            p = response('ขอบคุณครับ');
-            break;
-        case 'search_food':
-            p = onSearch(
-                {
-                    first: `อยากกิน${food}เหรอ รอแป๊บ`,
-                    last: "ลองดูร้านนี้เป็นยังไง",
-                    error: `ขอโทษที ไม่เจอร้านขาย${food}แถวนี้เลย`
-                },
-                { food, size: 1, timeOfDay: '', location: Config.DEFAULT_LOCATION },
-                response);
-            break;
-        case 'search_any_where':
-            p = onPick(
-                {
-                    first: `เดี๋ยวหาร้านแถว${where}ให้ รอแป๊บ`,
-                    last: "ลองดูร้านนี้เป็นยังไง",
-                    error: `ขอโทษที ไม่มีข้อมูลร้านแถว${where}`
-                },
-                { where, size: 1, timeOfDay: '' },
-                response);
-            break;
-        case 'search_food_where':
-            p = onPick(
-                {
-                    first: `เดี๋ยวหาร้านที่ขาย${food}แถว${where}ให้ รอแป๊บ`,
-                    last: "ลองดูร้านนี้เป็นยังไง",
-                    error: `ขอโทษที ไม่มีข้อมูลร้านที่ขาย${food}แถว${where}เลย`
-                },
-                { food, where, size: 1, timeOfDay: '' },
-                response);
-            break;
-
-        default:
-            p = response(`ไม่เข้าใจอะ ไม่รู้จะหาร้านอะไรให้ดี`);
-    }
-
-    return p.then(result => status)
-        .cache(error => {
-            return response(`มี error เดี๋ยวลองดูใหม่อีกทีนะ`);
-        });
-}
+};
 
 const onPick = (responses, query, response) => {
     return response(responses.first)
@@ -390,8 +297,9 @@ const onPick = (responses, query, response) => {
 
             return response(cards).then(() => ress);
         });
-}
+};
 
+/* jshint ignore:start */
 const onSearch = (responses, query, response) => {
     return response(responses.first)
         .then(() => api.search(query))
@@ -411,12 +319,13 @@ const onSearch = (responses, query, response) => {
         }, error => {
             return response(responses.error || `ขอโทษที หาร้านที่ต้องการไม่เจอ ลองถามใหม่นะ`);
         });
-}
+};
+/* jshint ignore:end */
 
 const toCard = (doc) => {
     let res = doc._source;
 
-    let desc = `${res.cuisine}`
+    let desc = `${res.cuisine}`;
     let menus = res.menus && res.menus.join(',');
     if (menus) desc += ` เมนูแนะนำ ${menus}`;
 
@@ -435,73 +344,9 @@ const toCard = (doc) => {
             { title: 'Open', url: url },
             { title: 'Location', url: map }
         ]
-    }
+    };
 
     return card;
-}
-
-const nextAction = (intent, context) => {
-    let { food, where, status, action } = context;
-
-    if (status == 'wait_answer') {
-        switch (intent) {
-            case 'common_reject':
-                action = 'picknewone';
-                break;
-            case 'res_cancel':
-            case 'common_ok':
-                action = 'bye';
-                break;
-            case 'res_exp':
-                action = 'lower_price'
-                context.maxPrice = 100;
-                break;
-            default:
-                if (food && where) {
-                    action = 'search_food_where';
-                } else if (food) {
-                    action = 'search_food';
-                } else if (where) {
-                    action = 'search_any_where';
-                }
-        }
-    } else {
-        switch (intent) {
-            case 'res_any':
-                action = 'pickone';
-                break;
-            case 'res_greet':
-                action = 'greet';
-                break;
-            case 'res_food':
-                action = 'search_food';
-                break;
-            case 'res_any_where':
-                action = 'search_any_where';
-                break;
-        }
-    }
-
-    context.action = action;
-
-    return context;
-}
-
-const nextState = (action, context, newStatus) => {
-    let status = newStatus || context.status;
-
-    if (status == '') {
-        status = 'wait_answer';
-    } else if (status == 'not_found') {
-        status = 'ended';
-    } else if (status == 'end') {
-        status = 'ended';
-    }
-
-    context.status = status;
-
-    return context;
-
-}
+};
 
 module.exports = RestaurantConversation;
