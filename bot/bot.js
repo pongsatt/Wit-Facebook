@@ -6,14 +6,17 @@ const GreetConversation = require('../conversation/greeting');
 const RestaurantConversation = require('../conversation/restaurant');
 const WordConversation = require('../conversation/word');
 const NotUnderstand = require('../conversation/notunderstand');
+const Learn = require('../ml/learn');
 
 class Bot {
   constructor() {
     this.intentResolver = new IntentResolver();
     this.recognizer = new Recognizer();
+    this.learner = new Learn();
     this.conversations = {};
     this.contexts = {};
     this.topic = '';
+    this.learn = true;
   }
 
   message(msg, context) {
@@ -23,12 +26,27 @@ class Bot {
         let conv = this.getOrCreateConversation(intent, context);
         // console.log('Got Conversion: ', conv);
 
-        return {
-          onResponse(response) {
-            return conv.response(intent, entities, response);
-          }
-        }
+        return (response) => {
+            let p = conv.response(intent, entities, response);
+
+            if(this.learn){
+              p = p.then((c) => {
+                let key = this.learner.addSentenceToLearn(msg, {intent, entities});
+                return response(createConfirmButtons(key))
+                .then(()=>c);
+              });
+            }
+
+            return p;
+          };
       });
+  }
+
+  postback(payload){
+    console.log('payload: ', payload);
+
+    const {post, key} = payload;
+    this.learner.confirmSentenceLearned(key, post === 'yes');
   }
 
   getOrCreateConversation(intent, context) {
@@ -78,7 +96,17 @@ const getTopic = (intent, context, previousTopic) => {
   }
 
   return previousTopic || 'unknown';
-}
+};
+
+const createConfirmButtons = (key) => {
+  return {
+    text: 'Ok with result?',
+    buttons: [
+      {title: 'Yes', payload: {post: 'yes', key}},
+      {title: 'No', payload: {post: 'no', key}}
+    ]
+  };
+};
 
 module.exports = Bot;
 
@@ -93,8 +121,8 @@ if (require.main === module) {
   interactive((command) => {
     let context = { sessionId: 1 };
     return bot.message(command, context)
-      .then(res => {
-        return res.onResponse(response => {
+      .then(onResponse => {
+        return onResponse(response => {
           console.log('Response: ', response);
           return Promise.resolve();
         });

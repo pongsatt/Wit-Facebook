@@ -11,12 +11,14 @@ class FBBot {
 
     message(msg, context) {
         return this.bot.message(msg, context)
-            .then(res => {
-                return res.onResponse(response => {
+            .then(onResponse => {
+                return onResponse(response => {
                     if (typeof response == 'string') {
                         return fbTextSend(response, context);
                     } else if (response.audio) {
                         return fbSend(buildAudio(response.url), context);
+                    } else if (response.buttons) {
+                        return fbSend(buildbuttonsTemplate(response), context);
                     } else {
                         return fbSend(buildCards(response), context);
                     }
@@ -48,7 +50,7 @@ const buildCards = (cards) => {
     let elements = buildElement(cards);
 
     return buildGenericTemplate(elements);
-}
+};
 
 const buildElement = (cards) => {
     let elements = [];
@@ -66,17 +68,11 @@ const buildElement = (cards) => {
             element.default_action = {
                 type: 'web_url',
                 url: url
-            }
+            };
         }
 
         if (buttons && buttons.length) {
-            element.buttons = buttons.map(b => {
-                return {
-                    type: 'web_url',
-                    title: b.title,
-                    url: b.url
-                };
-            });
+            element.buttons = buildbuttons(buttons);
         }
 
         elements.push(element);
@@ -107,8 +103,40 @@ const buildList = (elements) => {
                 "elements": elements
             }
         }
-    }
-}
+    };
+};
+
+const buildbuttonsTemplate = ({ text, buttons }) => {
+    return {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "button",
+                "text": text,
+                "buttons": buildbuttons(buttons)
+            }
+        }
+    };
+};
+
+const buildbuttons = (buttons) => {
+    return buttons.map(b => {
+        if (b.url) {
+            return {
+                type: 'web_url',
+                title: b.title,
+                url: b.url
+            };
+        } else {
+            return {
+                type: 'postback',
+                title: b.title,
+                payload: b.payload
+            };
+        }
+
+    });
+};
 
 const buildAudio = (url) => {
     return {

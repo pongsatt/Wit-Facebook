@@ -93,6 +93,7 @@ app.post('/webhook', (req, res) => {
     // We retrieve the message content
     const msg = messaging.message.text;
     const atts = messaging.message.attachments;
+    const postback = messaging.postback;
     var context = sessions[sessionId].context;
     context.sessionId = sessionId;
 
@@ -100,37 +101,40 @@ app.post('/webhook', (req, res) => {
       // We received an attachment
       console.log('atts:', JSON.stringify(atts));
 
-      let location = getFBLocation(atts);
+      if (atts && atts.length) {
+        let att = atts[0];
 
-      if(location){
-        bot.message(`My location is lat ${location.lat} lon ${location.lon}`, context);
-      }else{
-        FB.fbMessage(
-          sender,
-          { text: 'Sorry I can only process text messages for now.' }
-        );
+        if (att.type == 'location') {
+          let location = getFBLocation(att);
+          if (location) {
+            bot.message(`My location is lat ${location.lat} lon ${location.lon}`, context);
+          }
+        } else {
+          FB.fbMessage(
+            sender,
+            { text: 'Sorry I can only process text messages for now.' }
+          );
+        }
       }
 
-    }else if (msg) {
+
+
+    } else if (msg) {
       // We received a text message
       bot.message(msg, context);
+    } else if (postback) {
+      bot.postback(postback.payload);
     }
   }
   res.sendStatus(200);
 });
 
-const getFBLocation = (atts) => {
-  if(atts && atts.length){
-    let att = atts[0];
+const getFBLocation = (att) => {
+  let payload = att.payload;
 
-    if(att.type == 'location'){
-      let payload = att.payload;
-
-      return {
-        lat: payload.coordinates.lat,
-        lon: payload.coordinates.long,
-        maxDistance: Config.DEFAULT_DISTANCE
-      }
-    }
-  }
-}
+  return {
+    lat: payload.coordinates.lat,
+    lon: payload.coordinates.long,
+    maxDistance: Config.DEFAULT_DISTANCE
+  };
+};

@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 // Wit.ai parameters
 const WIT_TOKEN = process.env.WIT_TOKEN;
@@ -31,17 +31,21 @@ const DEFAULT_LAT = process.env.LAT || 13.7329531;
 const DEFAULT_LON = process.env.LON || 100.5663767;
 const DEFAULT_DISTANCE = process.env.DISTANCE || '2km';
 
-let DEFAULT_LOCATION = {}
+let DEFAULT_LOCATION = {};
 
 if (DEFAULT_LAT && DEFAULT_LON && DEFAULT_DISTANCE) {
   DEFAULT_LOCATION = {
     lat: parseFloat(DEFAULT_LAT),
     lon: parseFloat(DEFAULT_LON),
     maxDistance: DEFAULT_DISTANCE
-  }
+  };
 }
 
-const BOT_NAME = 'Peta';
+const BOT_NAME = process.env.BOT_NAME || 'Peta';
+
+const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017/nlp';
+
+const LEARN_MODE = process.env.LEARN_MODE || true;
 
 module.exports = {
   WIT_TOKEN,
@@ -52,5 +56,7 @@ module.exports = {
   ESTAURANT_API_AUTH,
   DEFAULT_LOCATION,
   DEFAULT_DISTANCE,
-  BOT_NAME
+  BOT_NAME,
+  MONGO_URL,
+  LEARN_MODE
 };
