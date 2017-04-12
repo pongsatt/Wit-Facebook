@@ -29,6 +29,10 @@ class FBBot {
                 return fbTextSend("Sorry, something wrong with me. Please try something else.", context);
             });
     }
+
+    postback(payload){
+        return this.bot.postback(payload);
+    }
 }
 
 const fbTextSend = (text, context) => {
