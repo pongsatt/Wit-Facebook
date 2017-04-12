@@ -79,7 +79,7 @@ app.post('/webhook', (req, res) => {
   const messaging = FB.getFirstMessagingEntry(req.body);
   // console.log("Receive facebook message: ", messaging);
 
-  if (messaging && messaging.message && !messaging.message.is_echo) {
+  if (messaging && messaging.message) {
 
     console.log('messaging:', JSON.stringify(messaging));
     // Yay! We got a new message!
@@ -94,7 +94,6 @@ app.post('/webhook', (req, res) => {
     // We retrieve the message content
     const msg = messaging.message.text;
     const atts = messaging.message.attachments;
-    const postback = messaging.postback;
     var context = sessions[sessionId].context;
     context.sessionId = sessionId;
 
@@ -115,14 +114,13 @@ app.post('/webhook', (req, res) => {
         }
       }
 
-
-
     } else if (msg) {
       // We received a text message
       bot.message(msg, context);
-    } else if (postback) {
-      bot.postback(postback.payload);
     }
+  } else if (messaging && messaging.postback) {
+    const postback = messaging.postback;
+    bot.postback(postback.payload);
   }
   res.sendStatus(200);
 });
