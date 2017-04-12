@@ -45,7 +45,9 @@ class Bot {
   postback(payload){
     console.log('payload: ', payload);
 
-    const {post, key} = payload;
+    const s = payload.split('|');
+    const post = s[0];
+    const key = s[1];
     this.learner.confirmSentenceLearned(key, post === 'yes');
   }
 
@@ -102,8 +104,8 @@ const createConfirmButtons = (key) => {
   return {
     text: 'Ok with result?',
     buttons: [
-      {title: 'Yes', payload: {post: 'yes', key}},
-      {title: 'No', payload: {post: 'no', key}}
+      {title: 'Yes', payload: 'yes|' + key},
+      {title: 'No', payload: 'no|' + key}
     ]
   };
 };
