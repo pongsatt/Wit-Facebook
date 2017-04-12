@@ -30,7 +30,7 @@ class MongoClient {
 
         return new Promise((resolve, reject) => {
             let Intent = correct?CorrectIntent:IncorrectIntent;
-            
+
             Intent.findOneAndUpdate(conditions, doc, opts, (error) => {
                 if(error){
                     console.error(error);
@@ -57,9 +57,9 @@ class MongoClient {
 
     }
 
-    saveEntity(type, value) {
-        let conditions = { type, value };
-        let doc = { type, value };
+    saveEntity(entity) {
+        let conditions = entity;
+        let doc = entity;
         let opts = { upsert: true };
 
         return new Promise((resolve, reject) => {

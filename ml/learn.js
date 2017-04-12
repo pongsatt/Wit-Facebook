@@ -38,7 +38,7 @@ class Learn {
         allPromise.push(saveIntent(sentence, intent, ok, this.mgClient));
 
         if (ok) {
-            let entities = getEntities(intent);
+            let entities = getEntities(intent.entities);
             if (entities && entities.length) {
                 entities.forEach(ent => {
                     allPromise.push(saveEntity(ent, this.mgClient));
@@ -76,6 +76,8 @@ const getEntities = (entities) => {
                 results.push({ type: k, value: v });
             }
         }
+
+        return results;
     }
 };
 
