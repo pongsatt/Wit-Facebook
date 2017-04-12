@@ -81,6 +81,7 @@ app.post('/webhook', (req, res) => {
 
   if (messaging && messaging.message && !messaging.message.is_echo) {
 
+    console.log('messaging:', JSON.stringify(messaging));
     // Yay! We got a new message!
 
     // We retrieve the Facebook user ID of the sender
@@ -98,9 +99,6 @@ app.post('/webhook', (req, res) => {
     context.sessionId = sessionId;
 
     if (atts) {
-      // We received an attachment
-      console.log('atts:', JSON.stringify(atts));
-
       if (atts && atts.length) {
         let att = atts[0];
 
