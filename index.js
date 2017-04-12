@@ -119,6 +119,7 @@ app.post('/webhook', (req, res) => {
       bot.message(msg, context);
     }
   } else if (messaging && messaging.postback) {
+    console.log('postback:', JSON.stringify(messaging.postback));
     const postback = messaging.postback;
     bot.postback(postback.payload);
   }
