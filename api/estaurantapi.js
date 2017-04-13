@@ -1,16 +1,13 @@
 'use strict';
 
-const Config = require('../config/const');
 const client = require('../es/client');
 const { buildBoolQ,
     buildGeoQ,
     buildMatchQ,
-    buildMustQ,
     buildNestedQ,
     buildRangeQ,
     buildExistQ,
-    buildIdsQ,
-    buildWildCardQ } = require('../es/query');
+    buildIdsQ} = require('../es/query');
 const { calculateDistance } = require('../utils/geo_util');
 const { getDayOfWeek, getTime } = require('../utils/date_util');
 
@@ -34,8 +31,8 @@ const pickOne = (opts, moreOpts) => {
                     }
                     return results;
                 });
-        })
-}
+        });
+};
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -49,7 +46,7 @@ const search = (opts, moreOpts) => {
     let q = buildQuery(opts);
 
     return find(q, opts);
-}
+};
 
 const find = (q, opts) => {
     return client.search(q)
@@ -57,7 +54,7 @@ const find = (q, opts) => {
             console.log('Found:', results.hits && results.hits.total);
             return postProcess(results, opts);
         });
-}
+};
 
 const postProcess = (results, opts) => {
     if (results && results.hits && results.hits.hits && opts.location) {
@@ -74,7 +71,7 @@ const postProcess = (results, opts) => {
     }
 
     return results;
-}
+};
 
 const buildQuery = (opts) => {
     opts = Object.assign({}, {
@@ -134,42 +131,36 @@ const buildQuery = (opts) => {
     }
 
     if (opts.keyword) {
-        let keywordQ;
-
-        if (opts.keyword.indexOf(' ') > -1) {
-            keywordQ = buildMatchQ(opts.keyword);
-        } else {
-            keywordQ = buildWildCardQ(opts.keyword);
-        }
+        let keywordQ = buildMatchQ(opts.keyword);
         must.push(keywordQ);
     }
 
     if (opts.foodtype) {
-        let typeQ = buildWildCardQ(opts.foodtype, 'cuisine');
+        let typeQ = buildMatchQ(opts.foodtype, 'cuisine');
         must.push(typeQ);
 
-        let nameTypeQ = buildWildCardQ(opts.foodtype, 'name');
+        let nameTypeQ = buildMatchQ(opts.foodtype, 'name');
         should.push(nameTypeQ);
     }
 
     if (opts.food) {
-        let foodQ = buildWildCardQ(opts.food, 'menus');
+        let foodQ = buildMatchQ(opts.food, 'menus');
         must.push(foodQ);
 
-        let nameFoodQ = buildWildCardQ(opts.food, 'name');
+        let nameFoodQ = buildMatchQ(opts.food, 'name');
         should.push(nameFoodQ);
     }
 
     if (opts.where) {
-        let whereQ = buildWildCardQ(opts.where, 'address.addressLocality');
+        let whereQ = buildMatchQ(opts.where, 'address.addressLocality');
         must.push(whereQ);
 
-        let nameWhereQ = buildWildCardQ(opts.where, 'name');
+        let nameWhereQ = buildMatchQ(opts.where, 'name');
         should.push(nameWhereQ);
     }
 
     if (opts.name) {
-        let nameQ = buildWildCardQ(opts.name, 'name');
+        let nameQ = buildMatchQ(opts.name, 'name');
         must.push(nameQ);
     }
 
@@ -183,9 +174,9 @@ const buildQuery = (opts) => {
     console.log('build q: ', JSON.stringify(q));
 
     return q;
-}
+};
 
 module.exports = {
     pickOne,
     search
-}
+};
