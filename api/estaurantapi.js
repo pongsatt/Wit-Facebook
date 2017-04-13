@@ -4,6 +4,7 @@ const client = require('../es/client');
 const { buildBoolQ,
     buildGeoQ,
     buildMatchQ,
+    buildMatchPhraseQ,
     buildNestedQ,
     buildRangeQ,
     buildExistQ,
@@ -136,31 +137,22 @@ const buildQuery = (opts) => {
     }
 
     if (opts.foodtype) {
-        let typeQ = buildMatchQ(opts.foodtype, 'cuisine');
+        let typeQ = buildMatchPhraseQ(opts.foodtype, 'cuisine');
         must.push(typeQ);
-
-        let nameTypeQ = buildMatchQ(opts.foodtype, 'name');
-        should.push(nameTypeQ);
     }
 
     if (opts.food) {
-        let foodQ = buildMatchQ(opts.food, 'menus');
+        let foodQ = buildMatchPhraseQ(opts.food, 'menus');
         must.push(foodQ);
-
-        let nameFoodQ = buildMatchQ(opts.food, 'name');
-        should.push(nameFoodQ);
     }
 
     if (opts.where) {
-        let whereQ = buildMatchQ(opts.where, 'address.addressLocality');
+        let whereQ = buildMatchPhraseQ(opts.where, 'address.addressLocality');
         must.push(whereQ);
-
-        let nameWhereQ = buildMatchQ(opts.where, 'name');
-        should.push(nameWhereQ);
     }
 
     if (opts.name) {
-        let nameQ = buildMatchQ(opts.name, 'name');
+        let nameQ = buildMatchPhraseQ(opts.name, 'name');
         must.push(nameQ);
     }
 
