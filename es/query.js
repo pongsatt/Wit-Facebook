@@ -102,7 +102,7 @@ const buildBoolQ = (q) => {
         boolQ.bool.should = q.should;
     }
 
-    if (q.filter && q.filter.length) {
+    if (q.filter) {
         boolQ.bool.filter = q.filter;
     }
 
