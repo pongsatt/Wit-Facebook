@@ -168,6 +168,15 @@ describe('FbBot', function () {
     //   return p;
     // });
 
+    it('should be able to learn', function () {
+      let context = { sessionId: 1 };
+      let learning = true;
+
+      let p = bot.message('อยากกินข้าวแถวอโศก', context, learning);
+
+      return p;
+    });
+
   });
 
   // describe('word', function () {

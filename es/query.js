@@ -31,6 +31,17 @@ const buildMatchQ = (keyword, field) => {
     };
 };
 
+const buildMatchPhraseQ = (keyword, field) => {
+    let fieldQ = {};
+
+    if(field) fieldQ[field] = keyword;
+    else fieldQ._all = keyword;
+
+    return {
+        "match_phrase": fieldQ
+    };
+};
+
 const buildFuzzyQ = (keyword, field) => {
     let fieldQ = {};
 
@@ -118,6 +129,7 @@ module.exports = {
     buildFilterQ,
     buildGeoQ,
     buildMatchQ,
+    buildMatchPhraseQ,
     buildMustQ,
     buildNestedQ,
     buildRangeQ,
