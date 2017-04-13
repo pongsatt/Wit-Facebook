@@ -472,6 +472,21 @@ describe('Recognizer', function () {
 
     });
 
+    describe('Command', function () {
+        it('should enable learn', function () {
+            let intentObj = r.intent('enable learn', 'en');
+            assertIntent(intentObj, 'cmd_enable_learn');
+        });
+
+        it('should enable learn', function () {
+            let intentObj = r.intent('disable learn', 'en');
+            assertIntent(intentObj, 'cmd_disable_learn');
+        });
+
+
+
+    });
+
     describe('Word', function () {
         it('should be meaning', function () {
             let intent = r.intent('test means', 'en');

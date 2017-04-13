@@ -1,6 +1,8 @@
 const Config = require('../config/const');
 
 module.exports = [
+    {lang: 'en', intent: 'cmd_enable_learn',  p:`enable learn`},
+    {lang: 'en', intent: 'cmd_disable_learn',  p:`disable learn`},
     {lang: 'en', intent: 'greet_me',  p:`(?<botname>${Config.BOT_NAME})`},
     
     {lang: 'en', intent: 'res_location',  p:'.*lat (?<lat>.*) lon (?<lon>.*).*'},

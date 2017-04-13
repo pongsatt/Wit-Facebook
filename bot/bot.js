@@ -1,22 +1,21 @@
 'use strict';
 
-const IntentResolver = require('../resolver/intentResolver');
 const Recognizer = require('../nlp/recognizer');
 const GreetConversation = require('../conversation/greeting');
 const RestaurantConversation = require('../conversation/restaurant');
 const WordConversation = require('../conversation/word');
 const NotUnderstand = require('../conversation/notunderstand');
+const CommandConversation = require('../conversation/command');
 const Learn = require('../ml/learn');
+const Config = require('../config/const');
 
 class Bot {
   constructor() {
-    this.intentResolver = new IntentResolver();
     this.recognizer = new Recognizer();
     this.learner = new Learn();
     this.conversations = {};
     this.contexts = {};
     this.topic = '';
-    this.learn = true;
   }
 
   message(msg, context) {
@@ -29,7 +28,7 @@ class Bot {
         return (response) => {
             let p = conv.response(intent, entities, response);
 
-            if(this.learn){
+            if(Config.LEARN_MODE === true){
               p = p.then((c) => {
                 let key = this.learner.addSentenceToLearn(msg, {intent, entities});
                 return response(createConfirmButtons(key))
@@ -82,6 +81,8 @@ const buildConversation = (topic, intent, context) => {
       return new RestaurantConversation(context);
     case 'word_search':
       return new WordConversation(context);
+    case 'command':
+      return new CommandConversation(context);
     default:
       return new NotUnderstand(context);
 
@@ -95,6 +96,8 @@ const getTopic = (intent, context, previousTopic) => {
     return 'restaurant_search';
   } else if (intent.startsWith('word_')) {
     return 'word_search';
+  } else if (intent.startsWith('cmd_')){
+    return 'command';
   }
 
   return previousTopic || 'unknown';
