@@ -140,15 +140,15 @@ describe('FbBot', function () {
     //   return p;
     // });
 
-    it('should not be able change when no res left', function () {
-      let context = { sessionId: 1 };
+    // it('should not be able change when no res left', function () {
+    //   let context = { sessionId: 1 };
 
-      let p = bot.message('อยากกินข้าวแถวอโศก', context);
-      p = assertContext(p, {status:'wait_next'});
-      p = p.then(() => bot.message('ไม่เอา', context));
-      p = p.then(() => bot.message('ราคาไม่เกิน 100', context));
-      return p;
-    });
+    //   let p = bot.message('อยากกินข้าวแถวอโศก', context);
+    //   p = assertContext(p, {status:'wait_next'});
+    //   p = p.then(() => bot.message('ไม่เอา', context));
+    //   p = p.then(() => bot.message('ราคาไม่เกิน 100', context));
+    //   return p;
+    // });
 
     // it('should start pick by location', function () {
     //   let context = { sessionId: 1 };

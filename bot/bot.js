@@ -7,7 +7,6 @@ const WordConversation = require('../conversation/word');
 const NotUnderstand = require('../conversation/notunderstand');
 const CommandConversation = require('../conversation/command');
 const Learn = require('../ml/learn');
-const Config = require('../config/const');
 
 class Bot {
   constructor() {
@@ -18,36 +17,58 @@ class Bot {
     this.topic = '';
   }
 
-  message(msg, context) {
-    return this.recognizer.recognize(msg)
-      .then(({ intent, entities }) => {
-        console.log('Found intent: ', JSON.stringify({ intent, entities }));
-        let conv = this.getOrCreateConversation(intent, context);
-        // console.log('Got Conversion: ', conv);
+  message(msg, context, learning) {
+    let p = this.learner.evaluateSentence(msg);
+    
+    p = p.then((intent) => {
+      if(!intent){
+        console.log('No intent from learner. Use rule base.');
+        return this.recognizer.recognize(msg);
+      }
 
-        return (response) => {
-            let p = conv.response(intent, entities, response);
+      console.log('Found intent from learner');
+      return {intent: intent.intent, entities: intent.entities, learned: true};
+    });
 
-            if(Config.LEARN_MODE === true){
-              p = p.then((c) => {
-                let key = this.learner.addSentenceToLearn(msg, {intent, entities});
-                return response(createConfirmButtons(key))
-                .then(()=>c);
-              });
-            }
+    p = p.then(({ intent, entities, learned }) => {
+      
+      console.log('Found intent: ', JSON.stringify({ intent, entities }));
+      let conv = this.getOrCreateConversation(intent, context);
+      // console.log('Got Conversion: ', conv);
 
-            return p;
-          };
-      });
+      return Promise.resolve({ intent, entities, conv, learned });
+    });
+
+    p = p.then(({ intent, entities, conv, learned }) => {
+      return (response) => {
+        let p1 = conv.response(intent, entities, response);
+
+        if (learning === true && !learned) {
+          console.log('In learning mode.');
+
+          p1 = p1.then((c) => {
+            let key = this.learner.addSentenceToLearn(msg, { intent, entities });
+            c.learning = true;
+            c.key = key;
+            return response(createConfirmButtons(key))
+              .then(() => c);
+          });
+        }
+
+        return p1;
+      };
+    });
+
+    return p;
   }
 
-  postback(payload){
+  postback(payload) {
     console.log('payload: ', payload);
 
     const s = payload.split('|');
     const post = s[0];
     const key = s[1];
-    this.learner.confirmSentenceLearned(key, post === 'yes');
+    return this.learner.confirmSentenceLearned(key, post === 'yes');
   }
 
   getOrCreateConversation(intent, context) {
@@ -65,7 +86,7 @@ class Bot {
 
     let existingConv = this.conversations[sessionId];
     if (!existingConv || existingConv.ended || topicChanged) {
-      context = Object.assign({}, context, this.contexts[sessionId], {topic});
+      context = Object.assign({}, context, this.contexts[sessionId], { topic });
       this.conversations[sessionId] = buildConversation(topic, intent, context);
     }
 
@@ -96,7 +117,7 @@ const getTopic = (intent, context, previousTopic) => {
     return 'restaurant_search';
   } else if (intent.startsWith('word_')) {
     return 'word_search';
-  } else if (intent.startsWith('cmd_')){
+  } else if (intent.startsWith('cmd_')) {
     return 'command';
   }
 
@@ -107,8 +128,8 @@ const createConfirmButtons = (key) => {
   return {
     text: 'Ok with result?',
     buttons: [
-      {title: 'Yes', payload: 'yes|' + key},
-      {title: 'No', payload: 'no|' + key}
+      { title: 'Yes', payload: 'yes|' + key },
+      { title: 'No', payload: 'no|' + key }
     ]
   };
 };

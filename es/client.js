@@ -27,9 +27,9 @@ const saveIfNotExist = (condition, doc, type, index) => {
         let cond = {};
         cond[path] = val;
 
-        filters.push({ match: cond });
+        filters.push({ match_phrase: cond });
     }
-    let q = { query: { bool: { filter:  filters} }, size: 0 };
+    let q = { query: { bool: { must:  filters} }, size: 0 };
 
     return search(q, type, index)
         .then(results => {

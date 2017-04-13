@@ -9,8 +9,8 @@ class FBBot {
         this.bot = new Bot();
     }
 
-    message(msg, context) {
-        return this.bot.message(msg, context)
+    message(msg, context, learning) {
+        return this.bot.message(msg, context, learning)
             .then(onResponse => {
                 return onResponse(response => {
                     if (typeof response == 'string') {

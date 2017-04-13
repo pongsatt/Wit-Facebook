@@ -51,7 +51,11 @@ class Learn {
     }
 
     evaluateSentence(sentence) {
-        return Promise.resolve(this.learnedCorrect[sentence]) || getIntent(sentence);
+        if(this.learnedCorrect[sentence]){
+            return Promise.resolve(this.learnedCorrect[sentence]);
+        }
+
+        return getIntent(sentence);
     }
 }
 

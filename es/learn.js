@@ -20,7 +20,13 @@ const getIntent = (sentence) => {
     query.size = 1;
     query.min_score = 0.75;
 
-    return client.searchDocuments(query, correctIntentType, index);
+    return client.searchDocuments(query, correctIntentType, index)
+    .then(results => {
+        if(results && results.length){
+            results = results[0].intent;
+        }
+        return results;
+    });
 };
 
 const getEntity = (value) => {

@@ -116,7 +116,7 @@ app.post('/webhook', (req, res) => {
 
     } else if (msg) {
       // We received a text message
-      bot.message(msg, context);
+      bot.message(msg, context, Config.LEARN_MODE);
     }
   } else if (messaging && messaging.postback) {
     console.log('postback:', JSON.stringify(messaging.postback));
