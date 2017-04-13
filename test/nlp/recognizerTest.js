@@ -483,8 +483,6 @@ describe('Recognizer', function () {
             assertIntent(intentObj, 'cmd_disable_learn');
         });
 
-
-
     });
 
     describe('Word', function () {

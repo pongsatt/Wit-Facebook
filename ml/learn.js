@@ -1,9 +1,10 @@
 const uuid = require('uuid/v1');
-const MongoClient = require('../mongo/client');
+// const MongoClient = require('../mongo/client');
+const client = require('../es/learn');
 
 class Learn {
     constructor() {
-        this.mgClient = new MongoClient();
+        // this.mgClient = new MongoClient();
         this.toLearnCache = {};
         this.learnedCorrect = {};
     }
@@ -35,13 +36,13 @@ class Learn {
         let allPromise = [];
 
         this.learnedCorrect[sentence] = intent;
-        allPromise.push(saveIntent(sentence, intent, ok, this.mgClient));
+        allPromise.push(saveIntent(sentence, intent, ok));
 
         if (ok) {
             let entities = getEntities(intent.entities);
             if (entities && entities.length) {
                 entities.forEach(ent => {
-                    allPromise.push(saveEntity(ent, this.mgClient));
+                    allPromise.push(saveEntity(ent));
                 });
             }
         }
@@ -50,19 +51,19 @@ class Learn {
     }
 
     evaluateSentence(sentence) {
-        return Promise.resolve(this.learnedCorrect[sentence]) || getIntent(sentence, this.mgClient);
+        return Promise.resolve(this.learnedCorrect[sentence]) || getIntent(sentence);
     }
 }
 
-const getIntent = (sentence, client) => {
+const getIntent = (sentence) => {
     return client.getIntent(sentence);
 };
 
-const saveIntent = (sentence, intent, correct, client) => {
+const saveIntent = (sentence, intent, correct) => {
     return client.saveIntent(sentence, intent, correct);
 };
 
-const saveEntity = (entity, client) => {
+const saveEntity = (entity) => {
     return client.saveEntity(entity);
 };
 

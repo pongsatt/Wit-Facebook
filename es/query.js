@@ -6,7 +6,7 @@ const buildIdsQ = (ids) => {
             values: ids
         }
     };
-}
+};
 
 const buildWildCardQ = (keyword, field) => {
     let fieldQ = {};
@@ -18,7 +18,7 @@ const buildWildCardQ = (keyword, field) => {
     return {
         "wildcard": fieldQ
     };
-}
+};
 
 const buildMatchQ = (keyword, field) => {
     let fieldQ = {};
@@ -29,7 +29,18 @@ const buildMatchQ = (keyword, field) => {
     return {
         "match": fieldQ
     };
-}
+};
+
+const buildFuzzyQ = (keyword, field) => {
+    let fieldQ = {};
+
+    if(field) fieldQ[field] = keyword;
+    else fieldQ._all = keyword;
+
+    return {
+        "fuzzy": fieldQ
+    };
+};
 
 const buildGeoQ = (location) => {
     return {
@@ -38,7 +49,7 @@ const buildGeoQ = (location) => {
             "geo.location": [location.lon, location.lat]
         }
     };
-}
+};
 
 const buildRangeQ = (field, exp, value) => {
     let expr = {};
@@ -50,19 +61,19 @@ const buildRangeQ = (field, exp, value) => {
     let q = { "range": fieldExpr };
 
     return q;
-}
+};
 
 const buildMustQ = () => {
     return {
         "must": arguments
-    }
-}
+    };
+};
 
 const buildExistQ = (field) => {
     return {
         "exists": {"field": field}
-    }
-}
+    };
+};
 
 const buildNestedQ = (path, q) => {
     return {
@@ -71,7 +82,7 @@ const buildNestedQ = (path, q) => {
             "query": q
         }
     };
-}
+};
 
 const buildBoolQ = (q) => {
     let boolQ = { bool: {} };
@@ -92,7 +103,11 @@ const buildBoolQ = (q) => {
     }
 
     return boolQ;
-}
+};
+
+const buildQuery = (q) => {
+    return {query: q};
+};
 
 module.exports = {
     buildBoolQ,
@@ -103,5 +118,7 @@ module.exports = {
     buildRangeQ,
     buildExistQ,
     buildWildCardQ,
-    buildIdsQ
-}
+    buildIdsQ,
+    buildFuzzyQ,
+    buildQuery
+};
