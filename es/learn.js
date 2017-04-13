@@ -1,18 +1,18 @@
 const client = require('./client');
-const {buildQuery, buildMatchQ} = require('./query');
+const { buildQuery, buildFilterQ, buildBoolQ, buildMatchQ } = require('./query');
 const index = 'nlp';
 const correctIntentType = 'correctIntent';
 const incorrectIntentType = 'incorrectIntent';
 const entityType = 'entity';
 
 const saveIntent = (sentence, intent, correct) => {
-    let doc = {sentence, intent};
+    let doc = { sentence, intent };
 
-    if(correct){
-        return client.saveIfNotExist({sentence}, doc, correctIntentType, index);
+    if (correct) {
+        return client.saveIfNotExist({ sentence }, doc, correctIntentType, index);
     }
 
-    return client.saveIfNotExist({sentence}, doc, incorrectIntentType, index);
+    return client.saveIfNotExist({ sentence }, doc, incorrectIntentType, index);
 };
 
 const getIntent = (sentence) => {
@@ -23,15 +23,15 @@ const getIntent = (sentence) => {
     return client.searchDocuments(query, correctIntentType, index);
 };
 
-const getEntity = (entity) => {
-    let query = buildQuery(buildMatchQ(entity.value, 'value'));
+const getEntity = (value) => {
+    let query = buildQuery(buildBoolQ(buildFilterQ(buildMatchQ(value, 'value'))));
     return client.searchDocuments(query, entityType, index);
 };
 
 const saveEntity = (entity) => {
     let doc = entity;
 
-    return client.saveIfNotExist({value: entity.value}, doc, entityType, index);
+    return client.saveIfNotExist(entity, doc, entityType, index);
 };
 
 module.exports = {

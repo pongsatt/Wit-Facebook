@@ -84,6 +84,10 @@ const buildNestedQ = (path, q) => {
     };
 };
 
+const buildFilterQ = (filters) => {
+    return {filter: filters};
+};
+
 const buildBoolQ = (q) => {
     let boolQ = { bool: {} };
     if (q.must && q.must.length) {
@@ -111,6 +115,7 @@ const buildQuery = (q) => {
 
 module.exports = {
     buildBoolQ,
+    buildFilterQ,
     buildGeoQ,
     buildMatchQ,
     buildMustQ,

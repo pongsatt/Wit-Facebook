@@ -21,12 +21,22 @@ const save = (doc, type, index) => {
 };
 
 const saveIfNotExist = (condition, doc, type, index) => {
-    return search({ query: { bool: { filter: { match: condition } } }, size: 0 }, type, index)
+    let filters = [];
+    for(let path in condition){
+        let val = condition[path];
+        let cond = {};
+        cond[path] = val;
+
+        filters.push({ match: cond });
+    }
+    let q = { query: { bool: { filter:  filters} }, size: 0 };
+
+    return search(q, type, index)
         .then(results => {
-            if (results && results.hits && results.hits.total) {
-                return Promise.resolve();
+            if (results && results.hits && results.hits.total === 0) {
+                return save(doc, type, index);
             }
-            return save(doc, type, index);
+            return Promise.resolve();
         });
 };
 
@@ -35,12 +45,13 @@ const post = (payload, op, type, index) => {
     type = type || 'restaurant';
     let url = Config.ESTAURANT_API_URL + `/${index}/${type}${op}`;
 
-    console.log('POST index: ', index, 'type: ', type, 'url: ', url, 'payload: ', JSON.stringify(payload));
+    console.log('POST index:', index, ' type:', type, ' op:', op, ' payload:', JSON.stringify(payload));
 
     return new Promise((resolve) => {
         return getClient('post', url, index, type)
             .send(payload)
             .end(function (response) {
+                console.log('Response: ', response.body);
                 return resolve(response.body);
             });
     });
