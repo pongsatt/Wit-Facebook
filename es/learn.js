@@ -1,13 +1,13 @@
 const client = require('./client');
-const { buildQuery, buildMatchPhraseQ, buildBoolQ } = require('./query');
+const { buildQuery, buildMatchPhraseQ } = require('./query');
 const esQuery = require('./dsl');
 const index = 'nlp';
 const correctIntentType = 'correctIntent';
 const incorrectIntentType = 'incorrectIntent';
 const entityType = 'entity';
 
-const saveIntent = (sentence, intent, correct) => {
-    let doc = { sentence, intent };
+const saveIntent = (sentence, normalizedSentence, intent, correct) => {
+    let doc = { sentence, normalizedSentence, intent };
 
     if (correct) {
         return client.saveIfNotExist({ sentence }, doc, correctIntentType, index);

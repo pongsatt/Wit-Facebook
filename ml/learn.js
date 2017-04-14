@@ -61,6 +61,10 @@ class Learn {
     getLearnedEntity(sentence){
         return client.getEntity(sentence);
     }
+
+    normalize(sentence, intent){
+        return normalize(sentence, intent);
+    }
 }
 
 const getIntent = (sentence) => {
@@ -68,7 +72,9 @@ const getIntent = (sentence) => {
 };
 
 const saveIntent = (sentence, intent, correct) => {
-    return client.saveIntent(sentence, intent, correct);
+    let normalizedSentence = normalize(sentence, intent);
+
+    return client.saveIntent(sentence, normalizedSentence, intent, correct);
 };
 
 const saveEntity = (entity) => {
@@ -88,6 +94,20 @@ const getEntities = (entities) => {
 
         return results;
     }
+};
+
+const normalize = (sentence, intent) => {
+    let { entities } = intent;
+
+    if(entities){
+        for(let type in entities){
+            let value = entities[type];
+
+            sentence = sentence.replace(value, type);
+        }
+    }
+
+    return sentence;
 };
 
 module.exports = Learn;
