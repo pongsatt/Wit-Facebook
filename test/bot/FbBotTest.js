@@ -180,7 +180,7 @@ describe('FbBot', function () {
     it('should detect entity when found unknown intent', function () {
       let context = { sessionId: 1 };
 
-      let p = bot.message('อยากกินราดหน้าแถวพร้อมพงษ์', context);
+      let p = bot.message('อโศก', context);
       p = assertContext(p, {where:'อโศก'});
 
       return p;

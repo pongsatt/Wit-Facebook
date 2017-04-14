@@ -25,6 +25,7 @@ const getIntent = (sentence) => {
                         .matchPhrase('sentence', sentence, { slop: 50 })
                     .q;
     query.size = 1;
+    query.min_score = 2;
 
     return client.getDocument(query, 'intent', correctIntentType, index);
 };

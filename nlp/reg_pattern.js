@@ -8,7 +8,7 @@ module.exports = [
     {lang: 'en', intent: 'res_location',  p:'.*lat (?<lat>.*) lon (?<lon>.*).*'},
 
     {lang: 'en', intent: 'greet_me',  p:`(hi|hello)(?<botname>${Config.BOT_NAME})`},
-    {lang: 'th', intent: 'greet_me',  p:`(สวัสดี|หวัดดี|ว่าไง)(?<botname>${Config.BOT_NAME})`},
+    {lang: 'th', intent: 'greet_me',  p:`^(สวัสดี|หวัดดี|ว่าไง).*(?<botname>${Config.BOT_NAME})$`},
     {lang: 'en', intent: 'greet_normal',  p:'(hi|hello)'},
     {lang: 'th', intent: 'greet_normal',  p:'(สวัสดี|หวัดดี|ว่าไง)'},
     {lang: 'th', intent: 'greet_pos',  p:'^(เจ๋ง|เยี่ยม|ดี|เก่ง*?)'},
@@ -66,4 +66,4 @@ module.exports = [
     {lang: 'th', intent: 'res_food_where',  p:'^(อยู่|มา)(ที่|ใน|แถว|ใกล้)?(?<where>.*?)อยากกิน(?<food>.*)'},
     {lang: 'th', intent: 'res_food',  p:'.*อยากกิน(?<food>.*)$'},
 
-]
+];

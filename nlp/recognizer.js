@@ -32,7 +32,7 @@ class Recognizer {
 }
 
 const getLang = (msg) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         cld.detect(msg, function (err, result) {
 
             if (result && result.languages && result.languages.length) {
@@ -42,14 +42,14 @@ const getLang = (msg) => {
             return resolve('en');
         });
     });
-}
+};
 
 const match = (str, strLang) => {
     for (let o of patterns) {
         const { lang, intent, p } = o;
 
         if (!lang || !strLang || strLang == lang) {
-            let r = test(str, p);
+            let r = execTest(str, p);
 
             if (r) {
                 let entities = getEntities(r);
@@ -60,30 +60,32 @@ const match = (str, strLang) => {
 
     }
 
-}
+};
 
-const test = (str, p) => {
+const execTest = (str, p) => {
     var regex = XRegExp(p, 'i');
     var parts = XRegExp.exec(str, regex);
 
     return parts && parts.length && parts;
-}
+};
 
 const getEntities = (r) => {
     let entities = {};
 
     for (let n in r) {
         if (isNaN(+n) && n != 'index' && n != 'input') {
-            entities[n] = r[n];
+            let val = r[n];
+            if(val) val = val.trim();
+            entities[n] = val;
         }
     }
 
     return entities;
-}
+};
 
 if (require.main === module) {
     let rec = new Recognizer();
     console.log(rec.recognize('อยากกินอะไรอร่อยๆแถวๆนี้'));
 }
 
-module.exports = Recognizer
+module.exports = Recognizer;

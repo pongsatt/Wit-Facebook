@@ -11,13 +11,13 @@ const assertIntent = (intentObj, expIntent, expEntities) => {
     assert.equal(intent, expIntent, JSON.stringify(intentObj));
 
     if (expEntities) {
-        for (k in expEntities) {
+        for (let k in expEntities) {
             let v = expEntities[k];
             assert.propertyVal(entities, k, v, intentObj);
         }
     }
 
-}
+};
 
 describe('Recognizer', function () {
     describe('Restaurant Recognizer', function () {
@@ -43,22 +43,22 @@ describe('Recognizer', function () {
 
         it('should res_any3', function () {
             let intentObj = r.intent('กินไรดี', 'th');
-            assertIntent(intentObj, 'res_any')
+            assertIntent(intentObj, 'res_any');
         });
 
         it('should res_any4', function () {
             let intentObj = r.intent('กินอะไรดี', 'th');
-            assertIntent(intentObj, 'res_any')
+            assertIntent(intentObj, 'res_any');
         });
 
         it('should res_any5', function () {
             let intentObj = r.intent('แนะนำร้านแถวนี้หน่อย', 'th');
-            assertIntent(intentObj, 'res_any')
+            assertIntent(intentObj, 'res_any');
         });
 
         it('should res_any6', function () {
             let intentObj = r.intent('กินไรดีวันนี้', 'th');
-            assertIntent(intentObj, 'res_any')
+            assertIntent(intentObj, 'res_any');
         });
 
         it('should res_greet', function () {
@@ -128,17 +128,17 @@ describe('Recognizer', function () {
 
         it('should res_food1', function () {
             let intentObj = r.intent('แล้วถ้าเป็นของหวานละ');
-            assertIntent(intentObj, 'res_food', { food: 'ของหวาน' })
+            assertIntent(intentObj, 'res_food', { food: 'ของหวาน' });
         });
 
         it('should res_food2', function () {
             let intentObj = r.intent('แล้วมีส้มตำมะ');
-            assertIntent(intentObj, 'res_food', { food: 'ส้มตำ' })
+            assertIntent(intentObj, 'res_food', { food: 'ส้มตำ' });
         });
 
         it('should res_food3', function () {
             let intentObj = r.intent('แล้วถ้าขนมจีนละ');
-            assertIntent(intentObj, 'res_food', { food: 'ขนมจีน' })
+            assertIntent(intentObj, 'res_food', { food: 'ขนมจีน' });
         });
 
         it('should res_food4', function () {
@@ -339,13 +339,13 @@ describe('Recognizer', function () {
             assertIntent(intentObj, 'res_name', {resname: 'torinada'});
         });
 
-        it('should res_any_near', function () {
+        it('should res_any_near1', function () {
             let intentObj = r.intent('อยากกินอะไรก็ได้แถวนี้');
             assertIntent(intentObj, 'res_any_near');
         });
 
-        it('should res_any_near', function () {
-            let intentObj = r.intent('อยากกินอะไรอร่อยๆ แถวนี้');
+        it('should res_any_near2', function () {
+            let intentObj = r.intent('อยากกินอะไรอร่อยๆแถวนี้');
             assertIntent(intentObj, 'res_any_near');
         });
 
@@ -419,27 +419,27 @@ describe('Recognizer', function () {
 
         it('should change th1', function () {
             let intentObj = r.intent('เปลี่ยนเป็นข้าว', 'th');
-            assertIntent(intentObj, 'common_change', { obj: 'ข้าว' })
+            assertIntent(intentObj, 'common_change', { obj: 'ข้าว' });
         });
 
         it('should where th1', function () {
             let intentObj = r.intent('แถวบางซื่อ', 'th');
-            assertIntent(intentObj, 'common_where', { where: 'บางซื่อ' })
+            assertIntent(intentObj, 'common_where', { where: 'บางซื่อ' });
         });
 
         it('should where th2', function () {
             let intentObj = r.intent('ที่ทองหล่อละ', 'th');
-            assertIntent(intentObj, 'common_where', { where: 'ทองหล่อ' })
+            assertIntent(intentObj, 'common_where', { where: 'ทองหล่อ' });
         });
 
         it('should where th3', function () {
             let intentObj = r.intent('แถวพระโขนง', 'th');
-            assertIntent(intentObj, 'common_where', { where: 'พระโขนง' })
+            assertIntent(intentObj, 'common_where', { where: 'พระโขนง' });
         });
 
         it('should where th4', function () {
             let intentObj = r.intent('ในห้างเซ็ลทรัลบางนา', 'th');
-            assertIntent(intentObj, 'common_where', { where: 'ห้างเซ็ลทรัลบางนา' })
+            assertIntent(intentObj, 'common_where', { where: 'ห้างเซ็ลทรัลบางนา' });
         });
 
     });
@@ -453,20 +453,30 @@ describe('Recognizer', function () {
 
     });
 
+    describe('Bigram extraction', function () {
+        it('should get two words term', function () {
+            let intent = r.intent('ร้าน after you', 'th');
+
+            assertIntent(intent, 'res_name', {resname:'after you',});
+        });
+
+
+    });
+
     describe('About me', function () {
         it('should get my name1', function () {
             let intentObj = r.intent(Config.BOT_NAME, 'en');
-            assertIntent(intentObj, 'greet_me', {botname: Config.BOT_NAME})
+            assertIntent(intentObj, 'greet_me', {botname: Config.BOT_NAME});
         });
 
         it('should get my name2', function () {
             let intentObj = r.intent(`Hi ${Config.BOT_NAME}`, 'en');
-            assertIntent(intentObj, 'greet_me', {botname: Config.BOT_NAME})
+            assertIntent(intentObj, 'greet_me', {botname: Config.BOT_NAME});
         });
 
         it('should get my name3', function () {
             let intentObj = r.intent(`สวัสดี ${Config.BOT_NAME}`, 'th');
-            assertIntent(intentObj, 'greet_me', {botname: Config.BOT_NAME})
+            assertIntent(intentObj, 'greet_me', {botname: Config.BOT_NAME});
         });
 
 
@@ -497,6 +507,7 @@ describe('Recognizer', function () {
         });
 
     });
+    
 
 
 });

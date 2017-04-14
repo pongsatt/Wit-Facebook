@@ -16,12 +16,12 @@ class Thai {
 }
 
 const removeSymbol = (str) => {
-    return str.replace(/ๆ| /g, '');
-}
+    return str.replace(/ๆ/g, '');
+};
 
 const tokenize = (str) => {
     return wordcut.cutIntoArray(str);
-}
+};
 
 const removeStopsWord = (arr) => {
     let results = [];
@@ -31,11 +31,11 @@ const removeStopsWord = (arr) => {
     }
 
     return results;
-}
+};
 
 if (require.main === module) {
     let thai = new Thai();
     console.log(thai.clean('อยากกินอะไรอร่อยๆ แถวๆ นี้'));
 }
 
-module.exports = Thai
+module.exports = Thai;
