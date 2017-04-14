@@ -20,12 +20,11 @@ const getIntent = (sentence) => {
     let query = esQuery()
                 .bool()
                     .must()
-                        .match('sentence', sentence, { minimum_should_match: '85%' })
+                        .match('sentence', sentence, { minimum_should_match: '90%' })
                     .should()
                         .matchPhrase('sentence', sentence, { slop: 50 })
                     .q;
     query.size = 1;
-    query.min_score = 0.75;
 
     return client.getDocument(query, 'intent', correctIntentType, index);
 };
