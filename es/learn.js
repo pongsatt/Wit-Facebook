@@ -1,5 +1,4 @@
 const client = require('./client');
-const { buildQuery, buildMatchPhraseQ } = require('./query');
 const esQuery = require('./dsl');
 const index = 'nlp';
 const correctIntentType = 'correctIntent';
@@ -17,21 +16,19 @@ const saveIntent = (sentence, normalizedSentence, intent, correct) => {
 };
 
 const getIntent = (sentence) => {
-    let query = esQuery()
+    let query = esQuery({size:1, min_score: 2})
                 .bool()
                     .must()
                         .match('sentence', sentence, { minimum_should_match: '90%' })
                     .should()
                         .matchPhrase('sentence', sentence, { slop: 50 })
                     .q;
-    query.size = 1;
-    query.min_score = 2;
 
     return client.getDocument(query, 'intent', correctIntentType, index);
 };
 
 const getEntity = (value) => {
-    let query = buildQuery(buildMatchPhraseQ(value, 'value'));
+    let query = esQuery().matchPhrase('value', value).q;
     return client.getDocument(query, '', entityType, index);
 };
 

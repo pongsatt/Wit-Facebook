@@ -1,11 +1,18 @@
 const objectPath = require("object-path");
 
-const queryFn = (root) => {
-    root = root || { query: {} };
+const queryFn = (options) => {
+    let path = 'query';
+    let root = { query: {} };
+
+    if(options){
+        root = Object.assign(root, options);
+    }
 
     return {
         q: root,
-        bool: boolFn(root)
+        bool: boolFn(root),
+        match: matchFn(root, path),
+        matchPhrase: matchPhraseFn(root, path)
     };
 };
 
