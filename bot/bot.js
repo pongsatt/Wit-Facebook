@@ -20,23 +20,44 @@ class Bot {
   message(msg, context, learning) {
     let p = this.learner.evaluateSentence(msg);
     
-    p = p.then((intent) => {
-      if(!intent){
+    p = p.then((intentObj) => {
+      if(!intentObj){
         console.log('No intent from learner. Use rule base.');
         return this.recognizer.recognize(msg);
       }
 
       console.log('Found intent from learner');
-      return {intent: intent.intent, entities: intent.entities, learned: true};
+      intentObj.learned = true;
+
+      return intentObj;
     });
 
-    p = p.then(({ intent, entities, learned }) => {
+    p = p.then(intentObj => {
+      if(intentObj.intent === 'unknown'){
+        console.log('Unknown intent. Lookup learned entity.');
+        return this.learner.getLearnedEntity(msg)
+        .then(entity => {
+          if(entity){
+            intentObj.entities = intentObj.entities  || {};
+            intentObj.entities[entity.type] = entity.value; 
+          }
+          intentObj.learned = true;
+          return intentObj;
+        });
+      }
+      return intentObj;
+    });
+
+    p = p.then(intentObj => {
+      console.log('Found intent: ', JSON.stringify(intentObj));
+      let { intent, entities } = intentObj;
+
+      context = Object.assign({}, context, entities);
       
-      console.log('Found intent: ', JSON.stringify({ intent, entities }));
       let conv = this.getOrCreateConversation(intent, context);
       // console.log('Got Conversion: ', conv);
-
-      return Promise.resolve({ intent, entities, conv, learned });
+      intentObj.conv = conv;
+      return intentObj;
     });
 
     p = p.then(({ intent, entities, conv, learned }) => {

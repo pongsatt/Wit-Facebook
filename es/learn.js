@@ -1,5 +1,5 @@
 const client = require('./client');
-const { buildQuery, buildFilterQ, buildBoolQ, buildMatchQ } = require('./query');
+const { buildQuery, buildMatchPhraseQ, buildMatchQ } = require('./query');
 const index = 'nlp';
 const correctIntentType = 'correctIntent';
 const incorrectIntentType = 'incorrectIntent';
@@ -20,18 +20,12 @@ const getIntent = (sentence) => {
     query.size = 1;
     query.min_score = 0.75;
 
-    return client.searchDocuments(query, correctIntentType, index)
-    .then(results => {
-        if(results && results.length){
-            results = results[0].intent;
-        }
-        return results;
-    });
+    return client.getDocument(query, 'intent', correctIntentType, index);
 };
 
 const getEntity = (value) => {
-    let query = buildQuery(buildBoolQ(buildFilterQ(buildMatchQ(value, 'value'))));
-    return client.searchDocuments(query, entityType, index);
+    let query = buildQuery(buildMatchPhraseQ(value, 'value'));
+    return client.getDocument(query, '', entityType, index);
 };
 
 const saveEntity = (entity) => {

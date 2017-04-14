@@ -168,11 +168,20 @@ describe('FbBot', function () {
     //   return p;
     // });
 
-    it('should be able to learn', function () {
-      let context = { sessionId: 1 };
-      let learning = true;
+    // it('should be able to learn', function () {
+    //   let context = { sessionId: 1 };
+    //   let learning = true;
 
-      let p = bot.message('อยากกินข้าวแถวอโศก', context, learning);
+    //   let p = bot.message('อยากกินข้าวแถวอโศก', context, learning);
+
+    //   return p;
+    // });
+
+    it('should detect entity when found unknown intent', function () {
+      let context = { sessionId: 1 };
+
+      let p = bot.message('อโศก', context);
+      p = assertContext(p, {where:'อโศก'});
 
       return p;
     });

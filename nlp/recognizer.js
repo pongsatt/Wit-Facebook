@@ -13,7 +13,7 @@ class Recognizer {
             .then(lang => {
                 let intent = this.intent(str, lang);
                 return intent || {intent: 'unknown', entities: {lang, msg: str}};
-            })
+            });
     }
 
     intent(str, lang) {

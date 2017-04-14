@@ -57,6 +57,10 @@ class Learn {
 
         return getIntent(sentence);
     }
+
+    getLearnedEntity(sentence){
+        return client.getEntity(sentence);
+    }
 }
 
 const getIntent = (sentence) => {

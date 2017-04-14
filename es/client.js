@@ -7,10 +7,15 @@ const search = (query, type, index) => {
 };
 
 const searchDocuments = (query, type, index) => {
-    return post(query, '/_search', type, index)
+    return post(query, '/_search', type, index);
+};
+
+const getDocument = (query, path, type, index) => {
+    return searchDocuments(query, type, index)
         .then(results => {
             if (results && results.hits && results.hits.total) {
-                return results.hits.hits.map(d => d._source);
+                if(path) return results.hits.hits[0]._source[path];
+                return results.hits.hits[0]._source;
             }
             return Promise.resolve();
         });
@@ -70,6 +75,7 @@ const getClient = (method, url) => {
 module.exports = {
     search,
     searchDocuments,
+    getDocument,
     save,
     saveIfNotExist
 };
