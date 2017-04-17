@@ -46,7 +46,7 @@ const saveIfNotExist = (condition, doc, type, index) => {
 };
 
 const post = (payload, op, type, index) => {
-    index = index || 'estaurant_th';
+    index = index || 'estaurant';
     type = type || 'restaurant';
     let url = Config.ESTAURANT_API_URL + `/${index}/${type}${op}`;
 
