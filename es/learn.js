@@ -27,9 +27,26 @@ const getIntent = (sentence) => {
     return client.getDocument(query, 'intent', correctIntentType, index);
 };
 
+const detectIntent = (normalizedSentence) => {
+    let query = esQuery({size:1, min_score: 2})
+                .bool()
+                    .must()
+                        .match('normalizedSentence', normalizedSentence, { minimum_should_match: '90%' })
+                    .should()
+                        .matchPhrase('normalizedSentence', normalizedSentence, { slop: 50 })
+                    .q;
+
+    return client.getDocument(query, 'intent', correctIntentType, index);
+};
+
 const getEntity = (value) => {
     let query = esQuery().matchPhrase('value', value).q;
     return client.getDocument(query, '', entityType, index);
+};
+
+const getAllEntities = () => {
+    let query = esQuery({size:1000}).matchAll().q;
+    return client.getDocuments(query, '', entityType, index);
 };
 
 const saveEntity = (entity) => {
@@ -42,5 +59,7 @@ module.exports = {
     saveIntent,
     getIntent,
     saveEntity,
-    getEntity
+    getEntity,
+    getAllEntities,
+    detectIntent
 };

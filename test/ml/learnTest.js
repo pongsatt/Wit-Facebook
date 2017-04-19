@@ -48,13 +48,23 @@ describe('Learn', function () {
     //   return p;
     // });
 
-    it('should nomalize sentence', function () {
-      let sentence = 'อยากกินแกงกระหรี่แถวพร้อมพงษ์';
-      let intentObj = { intent: 'res_food_where', entities: { food: 'แกงกระหรี่', where: 'พร้อมพงษ์' } };
+    // it('should nomalize sentence', function () {
+    //   let sentence = 'อยากกินแกงกระหรี่แถวพร้อมพงษ์';
+    //   let intentObj = { intent: 'res_food_where', entities: { food: 'แกงกระหรี่', where: 'พร้อมพงษ์' } };
 
-      let normalizedSentence = learn.normalize(sentence, intentObj);
+    //   let normalizedSentence = learn.normalize(sentence, intentObj);
 
-      assert.equal(normalizedSentence, 'อยากกินfoodแถวwhere');
+    //   assert.equal(normalizedSentence, 'อยากกินfoodแถวwhere');
+    // });
+
+    it('should detect intent', function () {
+      return learn.detectIntent('อยากกินกระเพราแถวอโศก')
+      .then(({intent, entities}) => {
+        assert.equal(intent, 'res_food_where');
+        assert.propertyVal(entities, 'where', 'อโศก');
+      })
+      .then(() => learn.detectIntent('อยากกินกระเพราแถวสยาม'));
+
     });
 
 

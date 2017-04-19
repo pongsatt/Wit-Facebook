@@ -11,11 +11,23 @@ const searchDocuments = (query, type, index) => {
 };
 
 const getDocument = (query, path, type, index) => {
+    return getDocuments(query, path, type, index)
+        .then(results => {
+            if (results && results.length) {
+                return results[0];
+            }
+            return Promise.resolve();
+        });
+};
+
+const getDocuments = (query, path, type, index) => {
     return searchDocuments(query, type, index)
         .then(results => {
             if (results && results.hits && results.hits.total) {
-                if(path) return results.hits.hits[0]._source[path];
-                return results.hits.hits[0]._source;
+                return results.hits.hits.map(r => {
+                    if (path) return r._source[path];
+                    return r._source;
+                });
             }
             return Promise.resolve();
         });
@@ -27,14 +39,14 @@ const save = (doc, type, index) => {
 
 const saveIfNotExist = (condition, doc, type, index) => {
     let filters = [];
-    for(let path in condition){
+    for (let path in condition) {
         let val = condition[path];
         let cond = {};
         cond[path] = val;
 
         filters.push({ match_phrase: cond });
     }
-    let q = { query: { bool: { must:  filters} }, size: 0 };
+    let q = { query: { bool: { must: filters } }, size: 0 };
 
     return search(q, type, index)
         .then(results => {
@@ -75,6 +87,7 @@ const getClient = (method, url) => {
 module.exports = {
     search,
     searchDocuments,
+    getDocuments,
     getDocument,
     save,
     saveIfNotExist

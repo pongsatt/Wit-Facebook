@@ -12,7 +12,8 @@ const queryFn = (options) => {
         q: root,
         bool: boolFn(root),
         match: matchFn(root, path),
-        matchPhrase: matchPhraseFn(root, path)
+        matchPhrase: matchPhraseFn(root, path),
+        matchAll: matchAllFn(root, path)
     };
 };
 
@@ -69,6 +70,16 @@ const matchPhraseFn = (root, path) => {
     let type = 'match_phrase';
     return (field, value, options) => {
         return matchGenericFn(root, path, type, field, value, options);
+    };
+};
+
+const matchAllFn = (root) => {
+
+    return () => {
+        root.query.match_all = {};
+        return {
+            q: root
+        };
     };
 };
 
